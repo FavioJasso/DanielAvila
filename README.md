@@ -1,4 +1,13 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Daniel Avila Portfolio
+
+A Next.js web application built for Daniel Avila, an IT Professional based in New Jersey.
+
+**Developed by Camino Code**
+Applied AI Systems, Data Science and Product Engineering organization based in New Jersey.
+*Build Systems That Think With You.*
+
+- **CEO & Head of Product:** Favio Jasso
+- **Software Engineer:** John Rey Calesa
 
 ## Getting Started
 
