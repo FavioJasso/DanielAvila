@@ -5,4 +5,3 @@ This is a project fufilled by Camino Code for Daniel Avila, IT Professional base
 Camino Code is a Applied AI Systems, Data Science and Product Engineering organization based in New Jersey which Build Systems That Think With You. 
 <li>CEO & Head of Product: Favio Jasso
 <li>Software Engineer: John Rey Calesa
-<li>Creative Designer: XXX
