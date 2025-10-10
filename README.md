@@ -1,4 +1,4 @@
-# DanielAvila
+# Daniel Avila
 
 This is a project fufilled by Camino Code for Daniel Avila, an IT Professional based in New Jersey. 
 
