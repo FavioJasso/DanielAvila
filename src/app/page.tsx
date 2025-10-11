@@ -6,17 +6,17 @@ export default function Home() {
         <div className="container mx-auto flex justify-between items-center">
           <div className="font-bold text-xl">Daniel Avila</div>
           <ul className="flex gap-6">
-            <li className="hover:text-gray-300 cursor-pointer">Home</li>
-            <li className="hover:text-gray-300 cursor-pointer">Skills</li>
-            <li className="hover:text-gray-300 cursor-pointer">Experience</li>
-            <li className="hover:text-gray-300 cursor-pointer">Projects</li>
-            <li className="hover:text-gray-300 cursor-pointer">Contact</li>
+            <li><a href="#home" className="hover:text-gray-300">Home</a></li>
+            <li><a href="#skills" className="hover:text-gray-300">Skills</a></li>
+            <li><a href="#experience" className="hover:text-gray-300">Experience</a></li>
+            <li><a href="#projects" className="hover:text-gray-300">Projects</a></li>
+            <li><a href="#contact" className="hover:text-gray-300">Contact</a></li>
           </ul>
         </div>
       </nav>
 
       {/* Header Section */}
-      <header className="bg-gray-100 py-20 text-center">
+      <header id="home" className="bg-gray-100 py-20 text-center">
         <p className="text-sm text-gray-600">Desktop Support Technician</p>
         <p className="text-gray-500">— Hello</p>
         <p className="text-lg mt-4">I AM</p>
@@ -25,7 +25,7 @@ export default function Home() {
       </header>
 
       {/* About Me Section */}
-      <section className="container mx-auto py-16 px-4">
+      <section id="about" className="container mx-auto py-16 px-4">
         <h2 className="text-3xl font-bold mb-6">ABOUT ME</h2>
         <p className="text-gray-700 leading-relaxed max-w-3xl">
           I am Daniel Avila, a dedicated Desktop Support Technician currently working at STORIS, Inc. and the County College of Morris IT Help Desk. With hands-on experience in hardware, software, and technical support, I strive to provide efficient solutions, manage IT assets, and deliver reliable support to end-users.
@@ -33,7 +33,7 @@ export default function Home() {
       </section>
 
       {/* Skills Section */}
-      <section className="bg-gray-50 py-16">
+      <section id="skills" className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-6">SKILLS</h2>
           <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -46,7 +46,7 @@ export default function Home() {
       </section>
 
       {/* Experience Section */}
-      <section className="container mx-auto py-16 px-4">
+      <section id="experience" className="container mx-auto py-16 px-4">
         <h2 className="text-3xl font-bold mb-8">EXPERIENCE</h2>
 
         <div className="mb-8">
@@ -75,7 +75,7 @@ export default function Home() {
       </section>
 
       {/* Projects Section */}
-      <section className="bg-gray-50 py-16">
+      <section id="projects" className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8">PROJECTS</h2>
 
@@ -94,7 +94,7 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section className="container mx-auto py-16 px-4">
+      <section id="contact" className="container mx-auto py-16 px-4">
         <h2 className="text-3xl font-bold mb-4">CONTACT</h2>
         <p className="text-xl mb-8">LET&apos;S CONNECT!</p>
 
