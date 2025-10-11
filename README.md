@@ -1,4 +1,4 @@
-# Daniel Avila Portfolio
+# DanielAvila.com
 
 A Next.js web application built for Daniel Avila, an IT Professional based in New Jersey.
 
