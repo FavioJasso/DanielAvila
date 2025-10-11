@@ -131,9 +131,7 @@ export default function Home() {
             {/* STORIS */}
             <div className="relative">
               <div className="bg-white rounded-3xl p-6 mb-6 shadow-lg w-48 h-32 flex items-center justify-center">
-                <div className="bg-blue-900 w-28 h-28 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">STORIS</span>
-                </div>
+                <img src="/storis-logo.png" alt="STORIS Logo" className="w-28 h-28 object-contain" />
               </div>
               <div className="bg-blue-500 text-white rounded-3xl p-8 shadow-lg">
                 <h3 className="text-2xl font-bold mb-3">Desktop Support Technician</h3>
@@ -147,9 +145,7 @@ export default function Home() {
             {/* County College of Morris */}
             <div className="relative flex flex-col items-end">
               <div className="bg-white rounded-3xl p-6 mb-6 shadow-lg w-48 h-32 flex items-center justify-center">
-                <div className="bg-blue-900 w-28 h-28 rounded-xl flex items-center justify-center">
-                  <span className="text-yellow-400 font-bold text-xs text-center leading-tight">COUNTY<br/>COLLEGE<br/>of MORRIS</span>
-                </div>
+                <img src="/ccm-logo.png" alt="County College of Morris Logo" className="w-28 h-28 object-contain" />
               </div>
               <div className="bg-blue-500 text-white rounded-3xl p-8 shadow-lg">
                 <h3 className="text-2xl font-bold mb-3">Information Technology Help Desk</h3>
@@ -182,9 +178,7 @@ export default function Home() {
             {/* Apprentice Drafter */}
             <div className="relative flex flex-col items-end">
               <div className="bg-white rounded-3xl p-6 mb-6 shadow-lg w-48 h-32 flex items-center justify-center">
-                <div className="w-28 h-28 rounded-full bg-amber-900 flex items-center justify-center border-4 border-amber-600">
-                  <span className="text-yellow-400 font-bold text-xs text-center">ADDA</span>
-                </div>
+                <img src="/adda-logo.png" alt="ADDA Logo" className="w-28 h-28 object-contain" />
               </div>
               <div className="bg-blue-500 text-white rounded-3xl p-8 shadow-lg">
                 <h3 className="text-2xl font-bold mb-3">Apprentice Drafter</h3>
