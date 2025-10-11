@@ -204,7 +204,7 @@ export default function Home() {
             {/* Campus IT Support Cases */}
             <div className="bg-blue-400 rounded-3xl p-8 shadow-lg flex flex-col md:flex-row items-center justify-between">
               <button className="bg-white text-gray-800 px-8 py-3 rounded-full font-semibold hover:bg-gray-50 transition-colors mb-6 md:mb-0">
-                See details →
+                View Project →
               </button>
               <div className="flex-1 md:ml-8 text-white">
                 <div className="bg-white text-gray-800 px-8 py-4 rounded-full inline-block mb-4 font-semibold">
@@ -227,7 +227,7 @@ export default function Home() {
                 </p>
               </div>
               <button className="bg-white text-gray-800 px-8 py-3 rounded-full font-semibold hover:bg-gray-50 transition-colors mb-6 md:mb-0 order-1 md:order-2">
-                See details →
+                View Project →
               </button>
             </div>
           </div>
@@ -322,7 +322,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-blue-500 text-white py-6 text-center">
-        <p className="text-sm">© 2025 Daniel Avila. All rights reserved.</p>
+        <p className="text-sm">© 2025 Daniel Avila. All rights reserved. Made by Camino Code <span>🌸</span></p>
       </footer>
     </div>
   );
