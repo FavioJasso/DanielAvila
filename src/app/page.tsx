@@ -1,640 +1,748 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Structured Data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Daniel Avila",
+    jobTitle: "Desktop Support Technician",
+    description:
+      "Experienced Desktop Support Technician specializing in hardware, software installation, and technical support",
+    url: "https://www.danielavila.tech",
+    image: "https://www.danielavila.tech/profile-image.png",
+    worksFor: [
+      {
+        "@type": "Organization",
+        name: "STORIS, Inc.",
+      },
+      {
+        "@type": "Organization",
+        name: "County College of Morris",
+      },
+    ],
+    alumniOf: {
+      "@type": "Organization",
+      name: "County College of Morris",
+    },
+    hasCredential: [
+      {
+        "@type": "EducationalOccupationalCredential",
+        credentialCategory: "certificate",
+        name: "Microsoft Office Specialist Certification",
+        issuedBy: {
+          "@type": "Organization",
+          name: "Microsoft",
+        },
+      },
+    ],
+    knowsAbout: [
+      "Desktop Support",
+      "Computer Repair",
+      "Software Installation",
+      "Inventory Management",
+      "IT Help Desk",
+      "Technical Support",
+      "Hardware Troubleshooting",
+    ],
+    sameAs: [
+      "https://linkedin.com/in/danielavila",
+      "https://github.com/danielavila",
+    ],
+  };
+
   return (
-    <div className="min-h-screen">
-      {/* Navigation Bar */}
-      <nav className="bg-white shadow-sm py-4 animate-[fadeInDown_0.6s_ease-out]">
-        <div className="container mx-auto flex justify-between items-center px-4 md:px-8">
-          <div className="font-bold text-xl md:text-2xl text-[#212020] animate-[fadeIn_0.8s_ease-out]">
-            Daniel Avila
-          </div>
+    <>
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-[#212020] z-50"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
+      <div className="min-h-screen">
+        {/* Navigation Bar */}
+        <nav className="bg-white shadow-sm py-4 animate-[fadeInDown_0.6s_ease-out]">
+          <div className="container mx-auto flex justify-between items-center px-4 md:px-8">
+            <div className="font-bold text-xl md:text-2xl text-[#212020] animate-[fadeIn_0.8s_ease-out]">
+              Daniel Avila
+            </div>
 
-          {/* Desktop Menu */}
-          <ul className="hidden md:flex gap-8 text-[#212020]">
-            <li className="animate-[fadeInDown_0.8s_ease-out_0.1s_both]">
-              <a
-                href="#home"
-                className="hover:text-[#3970EB] font-medium transition-colors duration-300"
-              >
-                Home
-              </a>
-            </li>
-            <li className="animate-[fadeInDown_0.8s_ease-out_0.2s_both]">
-              <a
-                href="#skills"
-                className="hover:text-[#3970EB] font-medium transition-colors duration-300"
-              >
-                Skills
-              </a>
-            </li>
-            <li className="animate-[fadeInDown_0.8s_ease-out_0.3s_both]">
-              <a
-                href="#experience"
-                className="hover:text-[#3970EB] font-medium transition-colors duration-300"
-              >
-                Experience
-              </a>
-            </li>
-            <li className="animate-[fadeInDown_0.8s_ease-out_0.4s_both]">
-              <a
-                href="#projects"
-                className="hover:text-[#3970EB] font-medium transition-colors duration-300"
-              >
-                Projects
-              </a>
-            </li>
-            <li className="animate-[fadeInDown_0.8s_ease-out_0.5s_both]">
-              <a
-                href="#contact"
-                className="hover:text-[#3970EB] font-medium transition-colors duration-300"
-              >
-                Contact
-              </a>
-            </li>
-          </ul>
-        </div>
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden text-[#212020] z-50"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              )}
+            </button>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 bg-white z-40 pt-20 px-8 animate-[fadeIn_0.3s_ease-out]">
-            <ul className="flex flex-col gap-6 text-[#212020] text-lg">
-              <li>
+            {/* Desktop Menu */}
+            <ul className="hidden md:flex gap-8 text-[#212020]">
+              <li className="animate-[fadeInDown_0.8s_ease-out_0.1s_both]">
                 <a
                   href="#home"
-                  className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className="hover:text-[#3970EB] font-medium transition-colors duration-300"
                 >
                   Home
                 </a>
               </li>
-              <li>
+              <li className="animate-[fadeInDown_0.8s_ease-out_0.2s_both]">
                 <a
                   href="#skills"
-                  className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className="hover:text-[#3970EB] font-medium transition-colors duration-300"
                 >
                   Skills
                 </a>
               </li>
-              <li>
+              <li className="animate-[fadeInDown_0.8s_ease-out_0.3s_both]">
                 <a
                   href="#experience"
-                  className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className="hover:text-[#3970EB] font-medium transition-colors duration-300"
                 >
                   Experience
                 </a>
               </li>
-              <li>
+              <li className="animate-[fadeInDown_0.8s_ease-out_0.4s_both]">
                 <a
                   href="#projects"
-                  className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className="hover:text-[#3970EB] font-medium transition-colors duration-300"
                 >
                   Projects
                 </a>
               </li>
-              <li>
+              <li className="animate-[fadeInDown_0.8s_ease-out_0.5s_both]">
                 <a
                   href="#contact"
-                  className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
-                  onClick={() => setMobileMenuOpen(false)}
+                  className="hover:text-[#3970EB] font-medium transition-colors duration-300"
                 >
                   Contact
                 </a>
               </li>
             </ul>
           </div>
-        )}
-      </nav>
 
-      <section
-        className="bg-cover bg-center"
-        style={{ backgroundImage: "url('/solid-blue-to-white.png')" }}
-      >
-        {/* Header Section */}
-        <header id="home" className="relative py-8 md:py-16 overflow-hidden">
-          <div className="container mx-auto px-4 md:px-8 relative">
-            {/* Top Left - Desktop Support Technician */}
-            <div className="absolute top-0 left-4 md:left-8 z-20 animate-[slideInLeft_1s_ease-out_0.6s_both]">
-              <p className="text-[#212020] font-medium mb-1 md:mb-2 text-sm md:text-base">
-                Desktop Support
-              </p>
-              <p className="text-[#212020] font-medium text-sm md:text-base">
-                Technician
-              </p>
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden fixed inset-0 bg-white z-40 pt-20 px-8 animate-[fadeIn_0.3s_ease-out]">
+              <ul className="flex flex-col gap-6 text-[#212020] text-lg">
+                <li>
+                  <a
+                    href="#home"
+                    className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#skills"
+                    className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Skills
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#experience"
+                    className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Experience
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#projects"
+                    className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Projects
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#contact"
+                    className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Contact
+                  </a>
+                </li>
+              </ul>
             </div>
+          )}
+        </nav>
 
-            {/* Background - Large text DANIEL (behind image) */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-              <h1 className="text-[8rem] md:text-[20rem] font-medium text-white/20 leading-none tracking-tight select-none animate-[fadeIn_1.5s_ease-out]">
-                DANIEL
-              </h1>
-            </div>
+        <section
+          className="bg-cover bg-center"
+          style={{ backgroundImage: "url('/solid-blue-to-white.png')" }}
+        >
+          {/* Header Section */}
+          <header id="home" className="relative py-8 md:py-16 overflow-hidden">
+            <div className="container mx-auto px-4 md:px-8 relative">
+              {/* Top Left - Desktop Support Technician */}
+              <div className="absolute top-0 left-4 md:left-8 z-20 animate-[slideInLeft_1s_ease-out_0.6s_both]">
+                <p className="text-[#212020] font-medium mb-1 md:mb-2 text-sm md:text-base">
+                  Desktop Support
+                </p>
+                <p className="text-[#212020] font-medium text-sm md:text-base">
+                  Technician
+                </p>
+              </div>
 
-            {/* Center - Profile image (in front of DANIEL text) */}
-            <div className="flex items-center justify-center relative z-10 py-8 md:py-8 pt-16 md:pt-8">
-              <div className="w-48 h-48 md:w-80 md:h-80 rounded-xl overflow-hidden animate-[scaleIn_1s_ease-out_0.3s_both] hover:scale-105 transition-transform duration-500">
-                <img
-                  src="/profile-image.png"
-                  alt="Daniel Avila"
-                  className="w-full h-full object-cover"
-                />
+              {/* Background - Large text DANIEL (behind image) */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                <h1 className="text-[8rem] md:text-[20rem] font-medium text-white/20 leading-none tracking-tight select-none animate-[fadeIn_1.5s_ease-out]">
+                  DANIEL
+                </h1>
+              </div>
+
+              {/* Center - Profile image (in front of DANIEL text) */}
+              <div className="flex items-center justify-center relative z-10 py-8 md:py-8 pt-16 md:pt-8">
+                <div className="w-48 h-48 md:w-80 md:h-80 rounded-xl overflow-hidden animate-[scaleIn_1s_ease-out_0.3s_both] hover:scale-105 transition-transform duration-500">
+                  <img
+                    src="/profile-image.png"
+                    alt="Daniel Avila"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </header>
+          </header>
 
-        {/* About Me Section */}
-        <section id="about" className="py-12 md:py-20 px-4 bg-transparent">
+          {/* About Me Section */}
+          <section id="about" className="py-12 md:py-20 px-4 bg-transparent">
+            <div className="container mx-auto px-4 md:px-8 relative">
+              <div className="flex items-center mb-8 md:mb-12 animate-[slideInLeft_0.8s_ease-out]">
+                <div className="w-24 md:w-48 h-1 bg-[#212020] mr-2 md:mr-4"></div>
+                <h2 className="text-3xl md:text-5xl font-medium tracking-wide text-[#212020]">
+                  ABOUT ME
+                </h2>
+              </div>
+              <p className="text-[#212020] leading-relaxed text-base md:text-xl mb-6 md:mb-8 md:ml-[calc(12rem+1rem)] mx-auto max-w-3xl animate-[fadeInUp_1s_ease-out_0.2s_both]">
+                I am Daniel Avila,{" "}
+                <span className="text-[#3970EB] font-bold">
+                  a dedicated Desktop Support Technician currently working at
+                  STORIS, Inc.
+                </span>{" "}
+                and the County College of Morris IT Help Desk. With hands-on
+                experience in hardware, software, and technical support, I
+                strive to provide efficient solutions, manage IT assets, and
+                deliver reliable support to end-users.
+              </p>
+              <a
+                href="#contact"
+                className="inline-block bg-[#3970EB] text-white px-8 md:px-10 py-3 md:py-4 rounded-full text-base md:text-lg font-bold hover:opacity-90 hover:scale-105 transition-all duration-300 md:ml-[calc(12rem+1rem)] animate-[fadeInUp_1s_ease-out_0.4s_both]"
+              >
+                Connect
+              </a>
+            </div>
+          </section>
+
+          {/* Skills Section */}
+          <section id="skills" className="py-12 md:py-20 px-4">
+            <div className="container mx-auto px-4 md:px-8 relative">
+              <div className="flex justify-end items-center mb-8 md:mb-12 animate-[slideInRight_0.8s_ease-out]">
+                <h2 className="text-3xl md:text-5xl font-medium tracking-wide text-[#212020]">
+                  SKILLS
+                </h2>
+                <div className="w-24 md:w-48 h-1 bg-[#212020] ml-2 md:ml-4"></div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mt-8 md:mt-16 md:mr-[calc(12rem+1rem)]">
+                <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
+                  <div
+                    className="p-4 md:p-8 rounded-2xl shadow-lg mb-2 md:mb-4 w-28 h-28 md:w-40 md:h-40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite]"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)",
+                    }}
+                  >
+                    <svg
+                      className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                      <polyline
+                        points="22 12 18 12 15 21 9 3 6 12 2 12"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
+                    Desktop
+                  </h3>
+                  <h3 className="text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
+                    Support
+                  </h3>
+                </div>
+
+                <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
+                  <div
+                    className="p-4 md:p-8 rounded-2xl shadow-lg mb-2 md:mb-4 w-28 h-28 md:w-40 md:h-40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite]"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)",
+                    }}
+                  >
+                    <svg
+                      className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                      <line
+                        x1="18"
+                        y1="6"
+                        x2="6"
+                        y2="18"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                      />
+                      <line
+                        x1="6"
+                        y1="6"
+                        x2="18"
+                        y2="18"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
+                    Computer
+                  </h3>
+                  <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
+                    Repair
+                  </h3>
+                </div>
+
+                <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
+                  <div
+                    className="p-4 md:p-8 rounded-2xl shadow-lg mb-2 md:mb-4 w-28 h-28 md:w-40 md:h-40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite]"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)",
+                    }}
+                  >
+                    <svg
+                      className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 7v6m0 0l-3-3m3 3l3-3"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
+                    Software
+                  </h3>
+                  <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
+                    Installation
+                  </h3>
+                </div>
+
+                <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
+                  <div
+                    className="p-4 md:p-8 rounded-2xl shadow-lg mb-2 md:mb-4 w-28 h-28 md:w-40 md:h-40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite]"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)",
+                    }}
+                  >
+                    <svg
+                      className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                      />
+                      <rect
+                        x="9"
+                        y="13"
+                        width="2"
+                        height="2"
+                        fill="currentColor"
+                      />
+                      <rect
+                        x="13"
+                        y="13"
+                        width="2"
+                        height="2"
+                        fill="currentColor"
+                      />
+                      <rect
+                        x="9"
+                        y="17"
+                        width="2"
+                        height="2"
+                        fill="currentColor"
+                      />
+                      <rect
+                        x="13"
+                        y="17"
+                        width="2"
+                        height="2"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
+                    Inventory
+                  </h3>
+                  <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
+                    Management
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        {/* Experience Section */}
+        <section
+          id="experience"
+          className="py-12 md:py-20 px-4 bg-cover bg-center"
+          style={{ backgroundImage: "url('/blue-to-white.png')" }}
+        >
           <div className="container mx-auto px-4 md:px-8 relative">
             <div className="flex items-center mb-8 md:mb-12 animate-[slideInLeft_0.8s_ease-out]">
               <div className="w-24 md:w-48 h-1 bg-[#212020] mr-2 md:mr-4"></div>
               <h2 className="text-3xl md:text-5xl font-medium tracking-wide text-[#212020]">
-                ABOUT ME
+                EXPERIENCE
               </h2>
             </div>
-            <p className="text-[#212020] leading-relaxed text-base md:text-xl mb-6 md:mb-8 md:ml-[calc(12rem+1rem)] mx-auto max-w-3xl animate-[fadeInUp_1s_ease-out_0.2s_both]">
-              I am Daniel Avila,{" "}
-              <span className="text-[#3970EB] font-bold">
-                a dedicated Desktop Support Technician currently working at
-                STORIS, Inc.
-              </span>{" "}
-              and the County College of Morris IT Help Desk. With hands-on
-              experience in hardware, software, and technical support, I strive
-              to provide efficient solutions, manage IT assets, and deliver
-              reliable support to end-users.
-            </p>
-            <a
-              href="#contact"
-              className="inline-block bg-[#3970EB] text-white px-8 md:px-10 py-3 md:py-4 rounded-full text-base md:text-lg font-bold hover:opacity-90 hover:scale-105 transition-all duration-300 md:ml-[calc(12rem+1rem)] animate-[fadeInUp_1s_ease-out_0.4s_both]"
-            >
-              Connect
-            </a>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* STORIS */}
+              <div className="relative flex flex-col items-start w-full md:w-[98%] animate-[slideInLeft_1s_ease-out_0.2s_both] group">
+                <div className="bg-white rounded-r-2xl md:rounded-r-3xl p-4 mb-4 md:p-6 md:mb-6 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl">
+                  <img
+                    src="/storis-logo.png"
+                    alt="STORIS Logo"
+                    className="w-20 h-20 md:w-28 md:h-28 object-contain transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
+                <div className="bg-[#3970EB] text-white rounded-r-2xl md:rounded-r-3xl p-4 md:p-8 shadow-lg w-full transition-all duration-500 group-hover:shadow-2xl group-hover:translate-x-2">
+                  <h3 className="text-lg md:text-2xl font-medium mb-3">
+                    Desktop Support Technician
+                  </h3>
+                  <p className="mb-2 md:mb-4 text-white/80">
+                    STORIS, Inc&nbsp;&nbsp;&nbsp;Part time
+                  </p>
+                  <p className="leading-relaxed text-sm md:text-base">
+                    Install software and hardware on new laptops, manage IT
+                    inventory, resolve employee support tickets, and deploy
+                    laptops to remote staff
+                  </p>
+                </div>
+              </div>
+
+              {/* County College of Morris */}
+              <div className="relative flex flex-col items-end w-full md:w-[98%] animate-[slideInRight_1s_ease-out_0.4s_both] group">
+                <div className="bg-white rounded-l-2xl md:rounded-l-3xl p-4 mb-4 md:p-6 md:mb-6 shadow-lg  flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl">
+                  <img
+                    src="/ccm-logo.png"
+                    alt="County College of Morris Logo"
+                    className="w-20 h-20 md:w-28 md:h-28 object-contain transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
+                <div className="bg-[#3970EB] text-white rounded-l-2xl md:rounded-l-3xl p-4 md:p-8 shadow-lg w-full transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-x-2">
+                  <h3 className="text-lg md:text-2xl font-medium mb-3">
+                    Information Technology Help Desk
+                  </h3>
+                  <p className="mb-2 md:mb-4 text-white/80">
+                    County College of Morris&nbsp;&nbsp;&nbsp;Part time
+                  </p>
+                  <p className="leading-relaxed text-sm md:text-base">
+                    Troubleshoot devices (Windows, Mac, Linux, iOS, Android),
+                    support campus software, and assist with Wi-Fi/VPN
+                    connectivity
+                  </p>
+                </div>
+              </div>
+
+              {/* Microsoft Certification */}
+              <div className="relative flex flex-col items-start w-full md:w-[98%] animate-[slideInLeft_1s_ease-out_0.6s_both] group">
+                <div className="bg-white rounded-r-2xl md:rounded-r-3xl p-4 mb-4 md:p-6 md:mb-6 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl">
+                  <img
+                    src="/microsoft-logo.png"
+                    alt="Microsoft"
+                    className="w-20 h-20 md:w-28 md:h-28 object-contain transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
+                <div className="bg-[#3970EB] text-white rounded-r-2xl md:rounded-r-3xl p-4 md:p-8 shadow-lg w-full transition-all duration-500 group-hover:shadow-2xl group-hover:translate-x-2">
+                  <h3 className="text-lg md:text-2xl font-medium mb-3">
+                    Microsoft Office Specialist Certification
+                  </h3>
+                  <p className="mb-2 md:mb-4 text-white/80">Microsoft</p>
+                  <p className="leading-relaxed text-sm md:text-base">
+                    Lorem ipsum detail.
+                  </p>
+                </div>
+              </div>
+
+              {/* Apprentice Drafter */}
+              <div className="relative flex flex-col items-end w-full md:w-[98%] animate-[slideInRight_1s_ease-out_0.8s_both] group">
+                <div className="bg-white rounded-l-2xl md:rounded-l-3xl p-4 mb-4 md:p-6 md:mb-6 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl">
+                  <img
+                    src="/adda-logo.png"
+                    alt="ADDA Logo"
+                    className="w-20 h-20 md:w-28 md:h-28 object-contain transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
+                <div className="bg-[#3970EB] text-white rounded-l-2xl md:rounded-l-3xl p-4 md:p-8 shadow-lg w-full transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-x-2">
+                  <h3 className="text-lg md:text-2xl font-medium mb-3">
+                    Apprentice Drafter
+                  </h3>
+                  <p className="mb-2 md:mb-4 text-white/80">
+                    American Design Drafting Association
+                  </p>
+                  <p className="leading-relaxed text-sm md:text-base">
+                    Lorem ipsum detail.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Skills Section */}
-        <section id="skills" className="py-12 md:py-20 px-4">
+        {/* Projects Section */}
+        <section
+          id="projects"
+          className="py-12 md:py-20 px-4 bg-cover bg-center"
+          style={{ backgroundImage: "url('/white-to-blue.png')" }}
+        >
           <div className="container mx-auto px-4 md:px-8 relative">
-            <div className="flex justify-end items-center mb-8 md:mb-12 animate-[slideInRight_0.8s_ease-out]">
-              <h2 className="text-3xl md:text-5xl font-medium tracking-wide text-[#212020]">
-                SKILLS
+            <div className="flex justify-end items-center mb-8 md:mb-16 animate-[slideInRight_0.8s_ease-out]">
+              <h2 className="text-3xl md:text-5xl font-medium tracking-wide text-[#212020] mr-2 md:mr-4">
+                PROJECTS
               </h2>
-              <div className="w-24 md:w-48 h-1 bg-[#212020] ml-2 md:ml-4"></div>
+              <div className="w-24 md:w-48 h-1 bg-[#212020]"></div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mt-8 md:mt-16 md:mr-[calc(12rem+1rem)]">
-              <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-                <div className="p-4 md:p-8 rounded-2xl shadow-lg mb-2 md:mb-4 w-28 h-28 md:w-40 md:h-40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite]" style={{ background: "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)" }}>
-                  <svg
-                    className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                    <polyline
-                      points="22 12 18 12 15 21 9 3 6 12 2 12"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                    />
-                  </svg>
+
+            <div className="space-y-8">
+              {/* Campus IT Support Cases */}
+              <div className="bg-[#3970EB] rounded-l-2xl md:rounded-l-3xl p-4 md:p-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 w-full md:w-[80%] ml-auto animate-[slideInRight_1s_ease-out_0.2s_both] group hover:shadow-2xl hover:-translate-x-2 transition-all duration-500">
+                <button className="bg-white text-[#212020] text-sm md:text-base px-6 py-2 md:px-8 md:py-3 rounded-full font-bold hover:bg-gray-50 hover:scale-110 transition-all duration-300 mb-6 md:mb-0">
+                  View Project →
+                </button>
+                <div className="flex-1 md:ml-8 text-white">
+                  <div className="bg-white text-[#212020] text-sm md:text-base px-4 py-2 md:px-8 md:py-4 rounded-full inline-block mb-4 font-bold group-hover:scale-105 transition-transform duration-300">
+                    Campus IT Support Cases
+                  </div>
+                  <p className="text-sm md:text-lg leading-relaxed">
+                    Assisted students and staff with technical troubleshooting
+                    across multiple platforms.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
-                  Desktop
-                </h3>
-                <h3 className="text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
-                  Support
-                </h3>
               </div>
 
-              <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-                <div className="p-4 md:p-8 rounded-2xl shadow-lg mb-2 md:mb-4 w-28 h-28 md:w-40 md:h-40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite]" style={{ background: "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)" }}>
-                  <svg
-                    className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                    <line
-                      x1="18"
-                      y1="6"
-                      x2="6"
-                      y2="18"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                    />
-                    <line
-                      x1="6"
-                      y1="6"
-                      x2="18"
-                      y2="18"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                    />
-                  </svg>
+              {/* Laptop Deployment System */}
+              <div className="bg-[#3970EB] rounded-r-2xl md:rounded-r-3xl p-4 md:p-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 w-full md:w-[80%] mr-auto animate-[slideInLeft_1s_ease-out_0.4s_both] group hover:shadow-2xl hover:translate-x-2 transition-all duration-500">
+                <div className="flex-1 md:mr-8 text-white order-2 md:order-1">
+                  <div className="bg-white text-[#212020] text-sm md:text-base px-4 py-2 md:px-8 md:py-4 rounded-full inline-block mb-4 font-bold group-hover:scale-105 transition-transform duration-300">
+                    Laptop Deployment System
+                  </div>
+                  <p className="text-sm md:text-lg leading-relaxed">
+                    Managed configuration and deployment of laptops for remote
+                    employees at STORIS.
+                  </p>
                 </div>
-                <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
-                  Computer
-                </h3>
-                <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
-                  Repair
-                </h3>
+                <button className="bg-white text-[#212020] text-sm md:text-base px-6 py-2 md:px-8 md:py-3 rounded-full font-bold hover:bg-gray-50 hover:scale-110 transition-all duration-300 mb-6 md:mb-0 order-1 md:order-2">
+                  View Project →
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center mt-16 md:mt-32 animate-[slideInLeft_1s_ease-out_0.6s_both]">
+              <div className="w-24 md:w-48 h-1 bg-black mr-2 md:mr-4"></div>
+              <h2 className="text-3xl md:text-5xl font-medium tracking-wide">
+                CONTACT
+              </h2>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="bg-[#3970EB] py-12 md:py-20 px-4">
+          <div className="container mx-auto px-4 md:px-8 relative">
+            <h3 className="text-2xl md:text-3xl font-medium mb-6 md:mb-8 text-white animate-[fadeInUp_0.8s_ease-out]">
+              LET&apos;S CONNECT!
+            </h3>
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+              {/* Form */}
+              <div className="bg-white rounded-2xl md:rounded-r-3xl p-6 md:p-10 shadow-lg animate-[slideInLeft_1s_ease-out_0.2s_both] hover:shadow-2xl hover:scale-105 transition-all duration-500">
+                <form className="space-y-4 md:space-y-6">
+                  <div className="animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
+                    <label className="block text-[#212020] font-bold mb-2 text-sm md:text-base">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Enter your name"
+                      className="w-full border-2 border-[#3970EB] rounded-full px-4 py-2 md:px-6 md:py-3 text-sm md:text-base focus:outline-none focus:border-[#3970EB] focus:scale-105 transition-all duration-300"
+                    />
+                  </div>
+
+                  <div className="animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
+                    <label className="block text-[#212020] font-bold mb-2 text-sm md:text-base">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="Enter your email address"
+                      className="w-full border-2 border-[#3970EB] rounded-full px-4 py-2 md:px-6 md:py-3 text-sm md:text-base focus:outline-none focus:border-[#3970EB] focus:scale-105 transition-all duration-300"
+                    />
+                  </div>
+
+                  <div className="animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
+                    <label className="block text-[#212020] font-bold mb-2 text-sm md:text-base">
+                      Message
+                    </label>
+                    <textarea
+                      placeholder="Enter your message"
+                      rows={4}
+                      className="w-full border-2 border-[#3970EB] rounded-3xl px-4 py-2 md:px-6 md:py-3 text-sm md:text-base focus:outline-none focus:border-[#3970EB] focus:scale-105 transition-all duration-300 resize-none"
+                    ></textarea>
+                  </div>
+                </form>
               </div>
 
-              <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
-                <div className="p-4 md:p-8 rounded-2xl shadow-lg mb-2 md:mb-4 w-28 h-28 md:w-40 md:h-40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite]" style={{ background: "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)" }}>
-                  <svg
-                    className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 7v6m0 0l-3-3m3 3l3-3"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
-                  Software
-                </h3>
-                <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
-                  Installation
-                </h3>
-              </div>
+              {/* Right Side - Social Links */}
+              <div className="flex flex-col justify-end items-end text-right">
+                <div className="flex gap-4 md:gap-8 mb-6 md:mb-8">
+                  <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
+                    <div className="bg-white p-3 md:p-4 rounded-xl shadow-lg mb-2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite] cursor-pointer">
+                      <svg
+                        className="w-6 h-6 md:w-8 md:h-8 text-[#3970EB] transition-transform duration-500 group-hover:rotate-12"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                        <path d="M14 2v6h6" />
+                        <path d="M16 13H8" />
+                        <path d="M16 17H8" />
+                        <path d="M10 9H8" />
+                      </svg>
+                    </div>
+                    <span className="text-white font-medium text-xs md:text-sm transition-transform duration-300 group-hover:scale-110">
+                      Resume
+                    </span>
+                  </div>
 
-              <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
-                <div className="p-4 md:p-8 rounded-2xl shadow-lg mb-2 md:mb-4 w-28 h-28 md:w-40 md:h-40 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite]" style={{ background: "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)" }}>
-                  <svg
-                    className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                    />
-                    <rect
-                      x="9"
-                      y="13"
-                      width="2"
-                      height="2"
-                      fill="currentColor"
-                    />
-                    <rect
-                      x="13"
-                      y="13"
-                      width="2"
-                      height="2"
-                      fill="currentColor"
-                    />
-                    <rect
-                      x="9"
-                      y="17"
-                      width="2"
-                      height="2"
-                      fill="currentColor"
-                    />
-                    <rect
-                      x="13"
-                      y="17"
-                      width="2"
-                      height="2"
-                      fill="currentColor"
-                    />
-                  </svg>
+                  <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
+                    <div className="bg-white p-3 md:p-4 rounded-xl shadow-lg mb-2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite] cursor-pointer">
+                      <svg
+                        className="w-6 h-6 md:w-8 md:h-8 text-[#3970EB] transition-transform duration-500 group-hover:rotate-12"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                      </svg>
+                    </div>
+                    <span className="text-white font-medium text-xs md:text-sm transition-transform duration-300 group-hover:scale-110">
+                      LinkedIn
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
+                    <div className="bg-white p-3 md:p-4 rounded-xl shadow-lg mb-2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite] cursor-pointer">
+                      <svg
+                        className="w-6 h-6 md:w-8 md:h-8 text-[#3970EB] transition-transform duration-500 group-hover:rotate-12"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                      </svg>
+                    </div>
+                    <span className="text-white font-medium text-xs md:text-sm transition-transform duration-300 group-hover:scale-110">
+                      Github
+                    </span>
+                  </div>
                 </div>
-                <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
-                  Inventory
-                </h3>
-                <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
-                  Management
-                </h3>
+
+                <p className="text-white text-sm md:text-lg font-medium animate-[fadeInUp_1s_ease-out_1s_both]">
+                  Simplifying Technology for People and Businesses
+                </p>
               </div>
             </div>
           </div>
         </section>
-      </section>
 
-      {/* Experience Section */}
-      <section
-        id="experience"
-        className="py-12 md:py-20 px-4 bg-cover bg-center"
-        style={{ backgroundImage: "url('/blue-to-white.png')" }}
-      >
-        <div className="container mx-auto px-4 md:px-8 relative">
-          <div className="flex items-center mb-8 md:mb-12 animate-[slideInLeft_0.8s_ease-out]">
-            <div className="w-24 md:w-48 h-1 bg-[#212020] mr-2 md:mr-4"></div>
-            <h2 className="text-3xl md:text-5xl font-medium tracking-wide text-[#212020]">
-              EXPERIENCE
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* STORIS */}
-            <div className="relative flex flex-col items-start w-full md:w-[98%] animate-[slideInLeft_1s_ease-out_0.2s_both] group">
-              <div className="bg-white rounded-r-2xl md:rounded-r-3xl p-4 mb-4 md:p-6 md:mb-6 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl">
-                <img
-                  src="/storis-logo.png"
-                  alt="STORIS Logo"
-                  className="w-20 h-20 md:w-28 md:h-28 object-contain transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
-              <div className="bg-[#3970EB] text-white rounded-r-2xl md:rounded-r-3xl p-4 md:p-8 shadow-lg w-full transition-all duration-500 group-hover:shadow-2xl group-hover:translate-x-2">
-                <h3 className="text-lg md:text-2xl font-medium mb-3">
-                  Desktop Support Technician
-                </h3>
-                <p className="mb-2 md:mb-4 text-white/80">
-                  STORIS, Inc&nbsp;&nbsp;&nbsp;Part time
-                </p>
-                <p className="leading-relaxed text-sm md:text-base">
-                  Install software and hardware on new laptops, manage IT
-                  inventory, resolve employee support tickets, and deploy
-                  laptops to remote staff
-                </p>
-              </div>
-            </div>
-
-            {/* County College of Morris */}
-            <div className="relative flex flex-col items-end w-full md:w-[98%] animate-[slideInRight_1s_ease-out_0.4s_both] group">
-              <div className="bg-white rounded-l-2xl md:rounded-l-3xl p-4 mb-4 md:p-6 md:mb-6 shadow-lg  flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl">
-                <img
-                  src="/ccm-logo.png"
-                  alt="County College of Morris Logo"
-                  className="w-20 h-20 md:w-28 md:h-28 object-contain transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
-              <div className="bg-[#3970EB] text-white rounded-l-2xl md:rounded-l-3xl p-4 md:p-8 shadow-lg w-full transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-x-2">
-                <h3 className="text-lg md:text-2xl font-medium mb-3">
-                  Information Technology Help Desk
-                </h3>
-                <p className="mb-2 md:mb-4 text-white/80">
-                  County College of Morris&nbsp;&nbsp;&nbsp;Part time
-                </p>
-                <p className="leading-relaxed text-sm md:text-base">
-                  Troubleshoot devices (Windows, Mac, Linux, iOS, Android),
-                  support campus software, and assist with Wi-Fi/VPN
-                  connectivity
-                </p>
-              </div>
-            </div>
-
-            {/* Microsoft Certification */}
-            <div className="relative flex flex-col items-start w-full md:w-[98%] animate-[slideInLeft_1s_ease-out_0.6s_both] group">
-              <div className="bg-white rounded-r-2xl md:rounded-r-3xl p-4 mb-4 md:p-6 md:mb-6 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl">
-                <img
-                  src="/microsoft-logo.png"
-                  alt="Microsoft"
-                  className="w-20 h-20 md:w-28 md:h-28 object-contain transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
-              <div className="bg-[#3970EB] text-white rounded-r-2xl md:rounded-r-3xl p-4 md:p-8 shadow-lg w-full transition-all duration-500 group-hover:shadow-2xl group-hover:translate-x-2">
-                <h3 className="text-lg md:text-2xl font-medium mb-3">
-                  Microsoft Office Specialist Certification
-                </h3>
-                <p className="mb-2 md:mb-4 text-white/80">Microsoft</p>
-                <p className="leading-relaxed text-sm md:text-base">Lorem ipsum detail.</p>
-              </div>
-            </div>
-
-            {/* Apprentice Drafter */}
-            <div className="relative flex flex-col items-end w-full md:w-[98%] animate-[slideInRight_1s_ease-out_0.8s_both] group">
-              <div className="bg-white rounded-l-2xl md:rounded-l-3xl p-4 mb-4 md:p-6 md:mb-6 shadow-lg flex items-center justify-center transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl">
-                <img
-                  src="/adda-logo.png"
-                  alt="ADDA Logo"
-                  className="w-20 h-20 md:w-28 md:h-28 object-contain transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
-              <div className="bg-[#3970EB] text-white rounded-l-2xl md:rounded-l-3xl p-4 md:p-8 shadow-lg w-full transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-x-2">
-                <h3 className="text-lg md:text-2xl font-medium mb-3">
-                  Apprentice Drafter
-                </h3>
-                <p className="mb-2 md:mb-4 text-white/80">
-                  American Design Drafting Association
-                </p>
-                <p className="leading-relaxed text-sm md:text-base">Lorem ipsum detail.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Projects Section */}
-      <section
-        id="projects"
-        className="py-12 md:py-20 px-4 bg-cover bg-center"
-        style={{ backgroundImage: "url('/white-to-blue.png')" }}
-      >
-        <div className="container mx-auto px-4 md:px-8 relative">
-          <div className="flex justify-end items-center mb-8 md:mb-16 animate-[slideInRight_0.8s_ease-out]">
-            <h2 className="text-3xl md:text-5xl font-medium tracking-wide text-[#212020] mr-2 md:mr-4">
-              PROJECTS
-            </h2>
-            <div className="w-24 md:w-48 h-1 bg-[#212020]"></div>
-          </div>
-
-          <div className="space-y-8">
-            {/* Campus IT Support Cases */}
-            <div className="bg-[#3970EB] rounded-l-2xl md:rounded-l-3xl p-4 md:p-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 w-full md:w-[80%] ml-auto animate-[slideInRight_1s_ease-out_0.2s_both] group hover:shadow-2xl hover:-translate-x-2 transition-all duration-500">
-              <button className="bg-white text-[#212020] text-sm md:text-base px-6 py-2 md:px-8 md:py-3 rounded-full font-bold hover:bg-gray-50 hover:scale-110 transition-all duration-300 mb-6 md:mb-0">
-                View Project →
-              </button>
-              <div className="flex-1 md:ml-8 text-white">
-                <div className="bg-white text-[#212020] text-sm md:text-base px-4 py-2 md:px-8 md:py-4 rounded-full inline-block mb-4 font-bold group-hover:scale-105 transition-transform duration-300">
-                  Campus IT Support Cases
-                </div>
-                <p className="text-sm md:text-lg leading-relaxed">
-                  Assisted students and staff with technical troubleshooting
-                  across multiple platforms.
-                </p>
-              </div>
-            </div>
-
-            {/* Laptop Deployment System */}
-            <div className="bg-[#3970EB] rounded-r-2xl md:rounded-r-3xl p-4 md:p-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 w-full md:w-[80%] mr-auto animate-[slideInLeft_1s_ease-out_0.4s_both] group hover:shadow-2xl hover:translate-x-2 transition-all duration-500">
-              <div className="flex-1 md:mr-8 text-white order-2 md:order-1">
-                <div className="bg-white text-[#212020] text-sm md:text-base px-4 py-2 md:px-8 md:py-4 rounded-full inline-block mb-4 font-bold group-hover:scale-105 transition-transform duration-300">
-                  Laptop Deployment System
-                </div>
-                <p className="text-sm md:text-lg leading-relaxed">
-                  Managed configuration and deployment of laptops for remote
-                  employees at STORIS.
-                </p>
-              </div>
-              <button className="bg-white text-[#212020] text-sm md:text-base px-6 py-2 md:px-8 md:py-3 rounded-full font-bold hover:bg-gray-50 hover:scale-110 transition-all duration-300 mb-6 md:mb-0 order-1 md:order-2">
-                View Project →
-              </button>
-            </div>
-          </div>
-          <div className="flex items-center mt-16 md:mt-32 animate-[slideInLeft_1s_ease-out_0.6s_both]">
-            <div className="w-24 md:w-48 h-1 bg-black mr-2 md:mr-4"></div>
-            <h2 className="text-3xl md:text-5xl font-medium tracking-wide">CONTACT</h2>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="bg-[#3970EB] py-12 md:py-20 px-4">
-        <div className="container mx-auto px-4 md:px-8 relative">
-          <h3 className="text-2xl md:text-3xl font-medium mb-6 md:mb-8 text-white animate-[fadeInUp_0.8s_ease-out]">
-            LET&apos;S CONNECT!
-          </h3>
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-            {/* Form */}
-            <div className="bg-white rounded-2xl md:rounded-r-3xl p-6 md:p-10 shadow-lg animate-[slideInLeft_1s_ease-out_0.2s_both] hover:shadow-2xl hover:scale-105 transition-all duration-500">
-              <form className="space-y-4 md:space-y-6">
-                <div className="animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-                  <label className="block text-[#212020] font-bold mb-2 text-sm md:text-base">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter your name"
-                    className="w-full border-2 border-[#3970EB] rounded-full px-4 py-2 md:px-6 md:py-3 text-sm md:text-base focus:outline-none focus:border-[#3970EB] focus:scale-105 transition-all duration-300"
-                  />
-                </div>
-
-                <div className="animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
-                  <label className="block text-[#212020] font-bold mb-2 text-sm md:text-base">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="Enter your email address"
-                    className="w-full border-2 border-[#3970EB] rounded-full px-4 py-2 md:px-6 md:py-3 text-sm md:text-base focus:outline-none focus:border-[#3970EB] focus:scale-105 transition-all duration-300"
-                  />
-                </div>
-
-                <div className="animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
-                  <label className="block text-[#212020] font-bold mb-2 text-sm md:text-base">
-                    Message
-                  </label>
-                  <textarea
-                    placeholder="Enter your message"
-                    rows={4}
-                    className="w-full border-2 border-[#3970EB] rounded-3xl px-4 py-2 md:px-6 md:py-3 text-sm md:text-base focus:outline-none focus:border-[#3970EB] focus:scale-105 transition-all duration-300 resize-none"
-                  ></textarea>
-                </div>
-              </form>
-            </div>
-
-            {/* Right Side - Social Links */}
-            <div className="flex flex-col justify-end items-end text-right">
-              <div className="flex gap-4 md:gap-8 mb-6 md:mb-8">
-                <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-                  <div className="bg-white p-3 md:p-4 rounded-xl shadow-lg mb-2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite] cursor-pointer">
-                    <svg
-                      className="w-6 h-6 md:w-8 md:h-8 text-[#3970EB] transition-transform duration-500 group-hover:rotate-12"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
-                      <path d="M14 2v6h6" />
-                      <path d="M16 13H8" />
-                      <path d="M16 17H8" />
-                      <path d="M10 9H8" />
-                    </svg>
-                  </div>
-                  <span className="text-white font-medium text-xs md:text-sm transition-transform duration-300 group-hover:scale-110">
-                    Resume
-                  </span>
-                </div>
-
-                <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
-                  <div className="bg-white p-3 md:p-4 rounded-xl shadow-lg mb-2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite] cursor-pointer">
-                    <svg
-                      className="w-6 h-6 md:w-8 md:h-8 text-[#3970EB] transition-transform duration-500 group-hover:rotate-12"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                  </div>
-                  <span className="text-white font-medium text-xs md:text-sm transition-transform duration-300 group-hover:scale-110">
-                    LinkedIn
-                  </span>
-                </div>
-
-                <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
-                  <div className="bg-white p-3 md:p-4 rounded-xl shadow-lg mb-2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite] cursor-pointer">
-                    <svg
-                      className="w-6 h-6 md:w-8 md:h-8 text-[#3970EB] transition-transform duration-500 group-hover:rotate-12"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                    </svg>
-                  </div>
-                  <span className="text-white font-medium text-xs md:text-sm transition-transform duration-300 group-hover:scale-110">
-                    Github
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-white text-sm md:text-lg font-medium animate-[fadeInUp_1s_ease-out_1s_both]">
-                Simplifying Technology for People and Businesses
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-[#3970EB] text-white py-4 md:py-6 text-center">
-        <p className="text-xs md:text-sm">
-          © 2025 Daniel Avila. All rights reserved. Made by Camino Code{" "}
-          <span>🌸</span>
-        </p>
-      </footer>
-    </div>
+        {/* Footer */}
+        <footer className="bg-[#3970EB] text-white py-4 md:py-6 text-center">
+          <p className="text-xs md:text-sm">
+            © 2025 Daniel Avila. All rights reserved. Made by Camino Code{" "}
+            <span>🌸</span>
+          </p>
+        </footer>
+      </div>
+    </>
   );
 }

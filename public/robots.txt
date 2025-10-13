@@ -1,0 +1,12 @@
+# robots.txt for Daniel Avila Portfolio
+# https://www.danielavila.tech/robots.txt
+
+User-agent: *
+Allow: /
+
+# Disallow admin or private pages if any
+# Disallow: /admin/
+# Disallow: /private/
+
+# Sitemap location
+Sitemap: https://www.danielavila.tech/sitemap.xml
