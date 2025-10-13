@@ -26,7 +26,6 @@ Applied AI Systems, Data Science and Product Engineering organization based in N
 - **Styling**: Tailwind CSS 4
 - **Language**: TypeScript
 - **Fonts**: Monda & Quicksand (via Bunny Fonts)
-- **Build Tool**: Turbopack
 
 ## 📦 Installation & Development
 
