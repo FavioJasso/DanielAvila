@@ -17,7 +17,10 @@ export default function Home() {
               </a>
             </li>
             <li>
-              <a href="#experience" className="hover:text-[#3970EB] font-medium">
+              <a
+                href="#experience"
+                className="hover:text-[#3970EB] font-medium"
+              >
                 Experience
               </a>
             </li>
@@ -70,14 +73,14 @@ export default function Home() {
       <section>
         {/* About Me Section */}
         <section id="about" className="bg-[#F6F6F6] py-20 px-4">
-          <div className="container mx-auto max-w-4xl">
-            <div className="flex justify-start items-center mb-12">
-              <div className="w-48 h-1 bg-[#212020]"></div>
-              <h2 className="text-5xl font-medium tracking-wide text-[#212020] mr-4">
+          <div className="container mx-auto">
+            <div className="flex items-center mb-12">
+              <div className="w-48 h-1 bg-[#212020] mr-4"></div>
+              <h2 className="text-5xl font-medium tracking-wide text-[#212020]">
                 ABOUT ME
               </h2>
             </div>
-            <p className="text-[#212020] leading-relaxed text-xl mb-8">
+            <p className="text-[#212020] leading-relaxed text-xl mb-8 ml-[calc(12rem+1rem)] mx-auto max-w-3xl">
               I am Daniel Avila,{" "}
               <span className="text-[#3970EB] font-bold">
                 a dedicated Desktop Support Technician currently working at
@@ -90,7 +93,7 @@ export default function Home() {
             </p>
             <a
               href="#contact"
-              className="inline-block bg-[#3970EB] text-white px-10 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity"
+              className="inline-block bg-[#3970EB] text-white px-10 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity ml-[calc(12rem+1rem)]"
             >
               Connect
             </a>
@@ -104,12 +107,12 @@ export default function Home() {
         >
           <div className="container mx-auto max-w-6xl">
             <div className="flex justify-end items-center mb-12">
-              <h2 className="text-5xl font-medium tracking-wide text-[#212020] mr-4">
+              <h2 className="text-5xl font-medium tracking-wide text-[#212020]">
                 SKILLS
               </h2>
-              <div className="w-48 h-1 bg-[#212020]"></div>
+              <div className="w-48 h-1 bg-[#212020] ml-4"></div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-16 mr-[calc(12rem+1rem)]">
               <div className="flex flex-col items-center">
                 <div className="bg-[#3970EB] p-8 rounded-2xl shadow-lg mb-4 w-40 h-40 flex items-center justify-center">
                   <svg
@@ -274,8 +277,8 @@ export default function Home() {
         className="bg-gradient-to-br from-[#3970EB]/10 via-[#3970EB]/5 to-purple-50 py-20 px-4"
       >
         <div className="container mx-auto max-w-6xl">
-          <div className="mb-16">
-            <div className="w-48 h-1 bg-[#212020] mb-4"></div>
+          <div className="flex items-center mb-12">
+            <div className="w-48 h-1 bg-[#212020] mr-4"></div>
             <h2 className="text-5xl font-medium tracking-wide text-[#212020]">
               EXPERIENCE
             </h2>
@@ -284,14 +287,14 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* STORIS */}
             <div className="relative flex flex-col items-start w-[98%]">
-              <div className="bg-white rounded-3xl p-6 mb-6 shadow-lg flex items-center justify-center">
+              <div className="bg-white rounded-r-3xl p-6 mb-6 shadow-lg flex items-center justify-center">
                 <img
                   src="/storis-logo.png"
                   alt="STORIS Logo"
                   className="w-28 h-28 object-contain"
                 />
               </div>
-              <div className="bg-[#3970EB] text-white rounded-3xl p-8 shadow-lg w-full">
+              <div className="bg-[#3970EB] text-white rounded-r-3xl p-8 shadow-lg w-full">
                 <h3 className="text-2xl font-medium mb-3">
                   Desktop Support Technician
                 </h3>
@@ -308,14 +311,14 @@ export default function Home() {
 
             {/* County College of Morris */}
             <div className="relative flex flex-col items-end w-[98%]">
-              <div className="bg-white rounded-3xl p-6 mb-6 shadow-lg  flex items-center justify-center">
+              <div className="bg-white rounded-l-3xl p-6 mb-6 shadow-lg  flex items-center justify-center">
                 <img
                   src="/ccm-logo.png"
                   alt="County College of Morris Logo"
                   className="w-28 h-28 object-contain"
                 />
               </div>
-              <div className="bg-[#3970EB] text-white rounded-3xl p-8 shadow-lg w-full">
+              <div className="bg-[#3970EB] text-white rounded-l-3xl p-8 shadow-lg w-full">
                 <h3 className="text-2xl font-medium mb-3">
                   Information Technology Help Desk
                 </h3>
@@ -332,14 +335,14 @@ export default function Home() {
 
             {/* Microsoft Certification */}
             <div className="relative flex flex-col items-start w-[98%]">
-              <div className="bg-white rounded-3xl p-6 mb-6 shadow-lg flex items-center justify-center">
+              <div className="bg-white rounded-r-3xl p-6 mb-6 shadow-lg flex items-center justify-center">
                 <img
                   src="/microsoft-logo.png"
                   alt="Microsoft"
                   className="w-28 h-28 object-contain"
                 />
               </div>
-              <div className="bg-[#3970EB] text-white rounded-3xl p-8 shadow-lg w-full">
+              <div className="bg-[#3970EB] text-white rounded-r-3xl p-8 shadow-lg w-full">
                 <h3 className="text-2xl font-medium mb-3">
                   Microsoft Office Specialist Certification
                 </h3>
@@ -350,15 +353,17 @@ export default function Home() {
 
             {/* Apprentice Drafter */}
             <div className="relative flex flex-col items-end w-[98%]">
-              <div className="bg-white rounded-3xl p-6 mb-6 shadow-lg flex items-center justify-center">
+              <div className="bg-white rounded-l-3xl p-6 mb-6 shadow-lg flex items-center justify-center">
                 <img
                   src="/adda-logo.png"
                   alt="ADDA Logo"
                   className="w-28 h-28 object-contain"
                 />
               </div>
-              <div className="bg-[#3970EB] text-white rounded-3xl p-8 shadow-lg w-full">
-                <h3 className="text-2xl font-medium mb-3">Apprentice Drafter</h3>
+              <div className="bg-[#3970EB] text-white rounded-l-3xl p-8 shadow-lg w-full">
+                <h3 className="text-2xl font-medium mb-3">
+                  Apprentice Drafter
+                </h3>
                 <p className="mb-4 text-white/80">
                   American Design Drafting Association
                 </p>
@@ -381,7 +386,7 @@ export default function Home() {
 
           <div className="space-y-8">
             {/* Campus IT Support Cases */}
-            <div className="bg-[#3970EB] rounded-3xl p-8 shadow-lg flex flex-col md:flex-row items-center justify-between w-[80%] ml-auto">
+            <div className="bg-[#3970EB] rounded-l-3xl p-8 shadow-lg flex flex-col md:flex-row items-center justify-between w-[80%] ml-auto">
               <button className="bg-white text-[#212020] px-8 py-3 rounded-full font-bold hover:bg-gray-50 transition-colors mb-6 md:mb-0">
                 View Project →
               </button>
@@ -397,7 +402,7 @@ export default function Home() {
             </div>
 
             {/* Laptop Deployment System */}
-            <div className="bg-[#3970EB] rounded-3xl p-8 shadow-lg flex flex-col md:flex-row items-center justify-between w-[80%] mr-auto">
+            <div className="bg-[#3970EB] rounded-r-3xl p-8 shadow-lg flex flex-col md:flex-row items-center justify-between w-[80%] mr-auto">
               <div className="flex-1 md:mr-8 text-white order-2 md:order-1">
                 <div className="bg-white text-[#212020] px-8 py-4 rounded-full inline-block mb-4 font-bold">
                   Laptop Deployment System
@@ -421,8 +426,8 @@ export default function Home() {
         className="bg-gradient-to-br from-[#3970EB]/10 via-[#3970EB]/5 to-purple-50 py-20 px-4"
       >
         <div className="container mx-auto max-w-6xl">
-          <div className="mb-16">
-            <div className="w-48 h-1 bg-[#212020] mb-4"></div>
+          <div className="flex items-center mb-12">
+            <div className="w-48 h-1 bg-[#212020] mr-4"></div>
             <h2 className="text-5xl font-medium tracking-wide text-[#212020]">
               CONTACT
             </h2>
@@ -430,7 +435,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 gap-12">
             {/* Form */}
-            <div className="bg-white rounded-3xl p-10 shadow-lg">
+            <div className="bg-white rounded-r-3xl p-10 shadow-lg">
               <h3 className="text-3xl font-medium mb-8 text-[#212020]">
                 LET&apos;S CONNECT!
               </h3>
