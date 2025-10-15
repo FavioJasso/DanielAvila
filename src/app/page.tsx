@@ -615,7 +615,7 @@ export default function Home() {
                     </span>
                   </div>
 
-                  <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
+                  <a href="https://www.linkedin.com/in/danielavila2/" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
                     <div className="bg-white p-3 md:p-4 rounded-xl shadow-lg mb-2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite] cursor-pointer">
                       <svg
                         className="w-6 h-6 md:w-8 md:h-8 text-[#3970EB] transition-transform duration-500 group-hover:rotate-12"
@@ -628,9 +628,9 @@ export default function Home() {
                     <span className="text-white font-medium text-xs md:text-sm transition-transform duration-300 group-hover:scale-110">
                       LinkedIn
                     </span>
-                  </div>
+                  </a>
 
-                  <div className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
+                  <a href="https://github.com/Happie04" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center group animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
                     <div className="bg-white p-3 md:p-4 rounded-xl shadow-lg mb-2 w-12 h-12 md:w-16 md:h-16 flex items-center justify-center transition-all duration-500 group-hover:scale-125 group-hover:shadow-2xl group-hover:animate-[float_2s_ease-in-out_infinite] cursor-pointer">
                       <svg
                         className="w-6 h-6 md:w-8 md:h-8 text-[#3970EB] transition-transform duration-500 group-hover:rotate-12"
@@ -643,7 +643,7 @@ export default function Home() {
                     <span className="text-white font-medium text-xs md:text-sm transition-transform duration-300 group-hover:scale-110">
                       Github
                     </span>
-                  </div>
+                  </a>
                 </div>
 
                 <p className="text-white text-sm md:text-lg font-medium animate-[fadeInUp_1s_ease-out_1s_both]">
