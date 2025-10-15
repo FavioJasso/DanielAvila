@@ -14,7 +14,7 @@ export default function Home() {
     description:
       "Experienced Desktop Support Technician specializing in hardware, software installation, and technical support",
     url: "https://www.danielavila.tech",
-    image: "https://www.danielavila.tech/profile-image.png",
+    image: "https://www.danielavila.tech/AvilaProfileImage.png",
     worksFor: [
       {
         "@type": "Organization",
@@ -235,7 +235,7 @@ export default function Home() {
               <div className="flex items-center justify-center relative z-10 py-8 md:py-8 pt-16 md:pt-8">
                 <div className="w-48 h-48 md:w-80 md:h-80 rounded-xl overflow-hidden animate-[scaleIn_1s_ease-out_0.3s_both] hover:scale-105 transition-transform duration-500">
                   <img
-                    src="/profile-image.png"
+                    src="/AvilaProfileImage.png"
                     alt="Daniel Avila"
                     className="w-full h-full object-cover"
                   />
@@ -656,9 +656,21 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="bg-[#3970EB] text-white py-4 md:py-6 text-center border-t-2 border-white">
-          <p className="text-xs md:text-sm">
+          <p className="text-xs md:text-sm flex items-center justify-center gap-2">
             © 2025 Daniel Avila. All rights reserved. Made by Camino Code{" "}
-            <span>🌸</span>
+            <a 
+              href="https://www.caminocode.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center hover:opacity-80 transition-opacity"
+              title="Visit Camino Code"
+            >
+              <img 
+                src="/footer-logo.png" 
+                alt="Camino Code Logo" 
+                className="inline-block h-8 md:h-10 w-auto"
+              />
+            </a>
           </p>
         </footer>
       </div>

@@ -76,7 +76,7 @@ Vercel is the recommended platform for deploying Next.js applications.
 
 Place these images in the `/public` folder:
 
-- `profile-image.png` - Your profile photo
+- `AvilaProfileImage.png` - Your profile photo
 - `og-image.png` - Social media preview (1200x630px)
 - `favicon.ico` - Browser tab icon
 - `icon-192.png` - PWA icon (192x192px)
