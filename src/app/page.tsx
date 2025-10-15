@@ -1060,7 +1060,7 @@ export default function Home() {
                   <img
                     src="/footer-logo.png"
                     alt="Camino Code Logo"
-                    className="h-12 md:h-16 w-auto bg-white rounded-xl"
+                    className="h-12 md:h-16 w-auto bg-white rounded-2xl"
                   />
                 </a>
               </div>
