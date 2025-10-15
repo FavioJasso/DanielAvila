@@ -270,7 +270,6 @@ export default function Home() {
                       <span>View Projects</span>
                     </a>
                   </div>
-
                 </div>
 
                 <div className="order-1 md:order-2 relative animate-[fadeInRight_1s_ease-out_0.3s_both]">
@@ -343,7 +342,6 @@ export default function Home() {
                       satisfaction.
                     </p>
                   </div>
-
                 </div>
 
                 <div className="space-y-4 animate-[fadeInUp_1s_ease-out_0.4s_both]">
@@ -430,170 +428,6 @@ export default function Home() {
                           Always learning and adapting to new technologies and
                           industry best practices
                         </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Skills Section */}
-          <section
-            id="skills"
-            className="py-16 md:py-24 px-4 relative overflow-hidden"
-          >
-            <div className="absolute top-20 right-10 w-80 h-80 bg-[#3970EB]/5 rounded-full blur-3xl -z-10"></div>
-            <div className="absolute bottom-20 left-10 w-80 h-80 bg-[#3970EB]/5 rounded-full blur-3xl -z-10"></div>
-
-            <div className="container mx-auto px-4 md:px-8 relative max-w-6xl">
-              <div className="flex justify-end items-center mb-12 md:mb-16 animate-[slideInRight_0.8s_ease-out]">
-                <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-[#212020]">
-                  SKILLS
-                </h2>
-                <div className="w-16 md:w-24 h-1 bg-gradient-to-l from-[#3970EB] to-transparent ml-4"></div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                <div className="group animate-[fadeInUp_0.8s_ease-out_0.2s_both]">
-                  <div className="bg-gradient-to-br from-white to-blue-50/50 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                    <div className="flex items-start gap-4 md:gap-6">
-                      <div className="flex-shrink-0">
-                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#3970EB] to-[#2958d4] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                          <img
-                            src="/icons/desktop-pulse.png"
-                            alt="Desktop Support"
-                            className="w-10 h-10 md:w-12 md:h-12 object-contain"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex-1">
-                        <h3 className="text-xl md:text-2xl font-bold text-[#212020] mb-2 group-hover:text-[#3970EB] transition-colors duration-300">
-                          Desktop Support
-                        </h3>
-                        <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                          Expert in providing technical assistance, resolving
-                          hardware and software issues, and ensuring seamless
-                          user experience.
-                        </p>
-                        <div className="mt-4">
-                          <div className="flex justify-between text-xs text-gray-500 mb-1">
-                            <span>Proficiency</span>
-                            <span>Expert</span>
-                          </div>
-                          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-[#3970EB] to-[#2958d4] rounded-full w-[95%] group-hover:w-full transition-all duration-700"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="group animate-[fadeInUp_0.8s_ease-out_0.4s_both]">
-                  <div className="bg-gradient-to-br from-white to-blue-50/50 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                    <div className="flex items-start gap-4 md:gap-6">
-                      <div className="flex-shrink-0">
-                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#3970EB] to-[#2958d4] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                          <img
-                            src="/icons/desktop-repair.png"
-                            alt="Computer Repair"
-                            className="w-10 h-10 md:w-12 md:h-12 object-contain"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex-1">
-                        <h3 className="text-xl md:text-2xl font-bold text-[#212020] mb-2 group-hover:text-[#3970EB] transition-colors duration-300">
-                          Computer Repair
-                        </h3>
-                        <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                          Skilled in diagnosing and repairing computer hardware
-                          issues, component replacement, and system
-                          optimization.
-                        </p>
-                        <div className="mt-4">
-                          <div className="flex justify-between text-xs text-gray-500 mb-1">
-                            <span>Proficiency</span>
-                            <span>Advanced</span>
-                          </div>
-                          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-[#3970EB] to-[#2958d4] rounded-full w-[90%] group-hover:w-full transition-all duration-700"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="group animate-[fadeInUp_0.8s_ease-out_0.6s_both]">
-                  <div className="bg-gradient-to-br from-white to-blue-50/50 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                    <div className="flex items-start gap-4 md:gap-6">
-                      <div className="flex-shrink-0">
-                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#3970EB] to-[#2958d4] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                          <img
-                            src="/icons/desktop-download.png"
-                            alt="Software Installation"
-                            className="w-10 h-10 md:w-12 md:h-12 object-contain"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex-1">
-                        <h3 className="text-xl md:text-2xl font-bold text-[#212020] mb-2 group-hover:text-[#3970EB] transition-colors duration-300">
-                          Software Installation
-                        </h3>
-                        <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                          Proficient in deploying, configuring, and managing
-                          software applications across multiple platforms and
-                          environments.
-                        </p>
-                        <div className="mt-4">
-                          <div className="flex justify-between text-xs text-gray-500 mb-1">
-                            <span>Proficiency</span>
-                            <span>Expert</span>
-                          </div>
-                          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-[#3970EB] to-[#2958d4] rounded-full w-[92%] group-hover:w-full transition-all duration-700"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="group animate-[fadeInUp_0.8s_ease-out_0.8s_both]">
-                  <div className="bg-gradient-to-br from-white to-blue-50/50 rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-                    <div className="flex items-start gap-4 md:gap-6">
-                      <div className="flex-shrink-0">
-                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#3970EB] to-[#2958d4] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                          <img
-                            src="/icons/desktop-inventory.png"
-                            alt="Inventory Management"
-                            className="w-10 h-10 md:w-12 md:h-12 object-contain"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex-1">
-                        <h3 className="text-xl md:text-2xl font-bold text-[#212020] mb-2 group-hover:text-[#3970EB] transition-colors duration-300">
-                          Inventory Management
-                        </h3>
-                        <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                          Experienced in tracking IT assets, maintaining
-                          inventory records, and optimizing resource allocation
-                          efficiently.
-                        </p>
-                        <div className="mt-4">
-                          <div className="flex justify-between text-xs text-gray-500 mb-1">
-                            <span>Proficiency</span>
-                            <span>Advanced</span>
-                          </div>
-                          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-[#3970EB] to-[#2958d4] rounded-full w-[88%] group-hover:w-full transition-all duration-700"></div>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -741,8 +575,10 @@ export default function Home() {
                         Microsoft
                       </p>
                       <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
-                        Professional certification demonstrating expertise in
-                        Microsoft Office applications and productivity tools.
+                        Professional certification demonstrating advanced
+                        expertise in Microsoft Office applications, and
+                        essential workplace software solutions for modern
+                        businesses.
                       </p>
                       <div className="flex items-center gap-2 mt-6">
                         <div className="flex-1 h-1 bg-gradient-to-r from-[#3970EB] to-transparent"></div>
@@ -1224,7 +1060,7 @@ export default function Home() {
                   <img
                     src="/footer-logo.png"
                     alt="Camino Code Logo"
-                    className="h-8 md:h-10 w-auto brightness-0 invert"
+                    className="h-12 md:h-16 w-auto"
                   />
                 </a>
               </div>
