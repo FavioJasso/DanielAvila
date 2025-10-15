@@ -83,6 +83,8 @@ export default function RootLayout({
           href="https://fonts.bunny.net/css?family=monda:500,700|quicksand:500,600,700"
           rel="stylesheet"
         />
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script noModule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
       </head>
       <body
         className="antialiased bg-white text-[#212020]"
