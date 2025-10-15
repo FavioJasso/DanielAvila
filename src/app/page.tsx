@@ -1048,7 +1048,7 @@ export default function Home() {
 
               <div className="text-center md:text-right">
                 <p className="text-xs text-white/70 mb-2">
-                  Crafted with excellence by
+                  Crafted with excellence by:
                 </p>
                 <a
                   href="https://www.caminocode.com/"
@@ -1060,7 +1060,7 @@ export default function Home() {
                   <img
                     src="/footer-logo.png"
                     alt="Camino Code Logo"
-                    className="h-12 md:h-16 w-auto"
+                    className="h-12 md:h-16 w-auto bg-white rounded-xl"
                   />
                 </a>
               </div>
