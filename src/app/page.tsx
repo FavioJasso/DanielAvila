@@ -244,6 +244,15 @@ export default function Home() {
             </div>
           </header>
 
+          {/* Solid Blue Image - 200px height, full width */}
+          <div className="absolute left-0 right-0 z-50 pointer-events-none top-[320px] md:top-[480px]">
+            <img
+              src="/solid-blue.png"
+              alt="Solid Blue"
+              className="w-full h-[100px] md:h-[140px] object-cover animate-[fadeIn_1s_ease-out]"
+            />
+          </div>
+
           {/* About Me Section */}
           <section id="about" className="py-12 md:py-20 px-4 bg-transparent">
             <div className="container mx-auto px-4 md:px-8 relative">
@@ -291,25 +300,11 @@ export default function Home() {
                         "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)",
                     }}
                   >
-                    <svg
-                      className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                      <polyline
-                        points="22 12 18 12 15 21 9 3 6 12 2 12"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                      />
-                    </svg>
+                    <img
+                      src="/icons/desktop-pulse.png"
+                      alt="Desktop Support"
+                      className="w-16 h-16 md:w-24 md:h-24 object-contain transition-transform duration-500 group-hover:rotate-12"
+                    />
                   </div>
                   <h3 className="text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
                     Desktop
@@ -327,37 +322,11 @@ export default function Home() {
                         "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)",
                     }}
                   >
-                    <svg
-                      className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                      <line
-                        x1="18"
-                        y1="6"
-                        x2="6"
-                        y2="18"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                      />
-                      <line
-                        x1="6"
-                        y1="6"
-                        x2="18"
-                        y2="18"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                      />
-                    </svg>
+                    <img
+                      src="/icons/desktop-repair.png"
+                      alt="Computer Repair"
+                      className="w-16 h-16 md:w-24 md:h-24 object-contain transition-transform duration-500 group-hover:rotate-12"
+                    />
                   </div>
                   <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
                     Computer
@@ -375,25 +344,11 @@ export default function Home() {
                         "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)",
                     }}
                   >
-                    <svg
-                      className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 7v6m0 0l-3-3m3 3l3-3"
-                      />
-                    </svg>
+                    <img
+                      src="/icons/desktop-download.png"
+                      alt="Software Installation"
+                      className="w-16 h-16 md:w-24 md:h-24 object-contain transition-transform duration-500 group-hover:rotate-12"
+                    />
                   </div>
                   <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
                     Software
@@ -411,47 +366,11 @@ export default function Home() {
                         "linear-gradient(180deg, rgba(57, 112, 235, 0.87) -23.58%, #F6F6F6 254.88%)",
                     }}
                   >
-                    <svg
-                      className="w-16 h-16 md:w-24 md:h-24 text-white transition-transform duration-500 group-hover:rotate-12"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                      />
-                      <rect
-                        x="9"
-                        y="13"
-                        width="2"
-                        height="2"
-                        fill="currentColor"
-                      />
-                      <rect
-                        x="13"
-                        y="13"
-                        width="2"
-                        height="2"
-                        fill="currentColor"
-                      />
-                      <rect
-                        x="9"
-                        y="17"
-                        width="2"
-                        height="2"
-                        fill="currentColor"
-                      />
-                      <rect
-                        x="13"
-                        y="17"
-                        width="2"
-                        height="2"
-                        fill="currentColor"
-                      />
-                    </svg>
+                    <img
+                      src="/icons/desktop-inventory.png"
+                      alt="Inventory Management"
+                      className="w-16 h-16 md:w-24 md:h-24 object-contain transition-transform duration-500 group-hover:rotate-12"
+                    />
                   </div>
                   <h3 className="text-base md:text-xl font-bold text-[#212020] text-center transition-colors duration-300 group-hover:text-[#3970EB]">
                     Inventory
@@ -590,32 +509,32 @@ export default function Home() {
             <div className="space-y-8">
               {/* Campus IT Support Cases */}
               <div className="bg-[#3970EB] rounded-l-2xl md:rounded-l-3xl p-4 md:p-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 w-full md:w-[80%] ml-auto animate-[slideInRight_1s_ease-out_0.2s_both] group hover:shadow-2xl hover:-translate-x-2 transition-all duration-500">
-                <button className="bg-white text-[#212020] text-sm md:text-base px-6 py-2 md:px-8 md:py-3 rounded-full font-bold hover:bg-gray-50 hover:scale-110 transition-all duration-300 mb-6 md:mb-0">
-                  View Project →
-                </button>
-                <div className="flex-1 md:ml-8 text-white">
-                  <div className="bg-white text-[#212020] text-sm md:text-base px-4 py-2 md:px-8 md:py-4 rounded-full inline-block mb-4 font-bold group-hover:scale-105 transition-transform duration-300">
+                <div className="flex-1 md:ml-8 text-white order-1 md:order-2 w-full text-right md:text-left">
+                  <div className="bg-white text-[#212020] text-lg md:text-base px-6 py-3 md:px-8 md:py-4 rounded-full inline-block mb-4 font-bold group-hover:scale-105 transition-transform duration-300">
                     Campus IT Support Cases
                   </div>
-                  <p className="text-sm md:text-lg leading-relaxed">
+                  <p className="text-sm md:text-lg leading-relaxed mb-6 md:mb-0">
                     Assisted students and staff with technical troubleshooting
                     across multiple platforms.
                   </p>
                 </div>
+                <button className="bg-white text-[#212020] text-sm md:text-base px-6 py-2 md:px-8 md:py-3 rounded-full font-bold hover:bg-gray-50 hover:scale-110 transition-all duration-300 order-2 md:order-1 self-center">
+                  View Project →
+                </button>
               </div>
 
               {/* Laptop Deployment System */}
               <div className="bg-[#3970EB] rounded-r-2xl md:rounded-r-3xl p-4 md:p-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 w-full md:w-[80%] mr-auto animate-[slideInLeft_1s_ease-out_0.4s_both] group hover:shadow-2xl hover:translate-x-2 transition-all duration-500">
-                <div className="flex-1 md:mr-8 text-white order-2 md:order-1">
-                  <div className="bg-white text-[#212020] text-sm md:text-base px-4 py-2 md:px-8 md:py-4 rounded-full inline-block mb-4 font-bold group-hover:scale-105 transition-transform duration-300">
+                <div className="flex-1 md:mr-8 text-white order-1 md:order-1 w-full text-left">
+                  <div className="bg-white text-[#212020] text-lg md:text-base px-6 py-3 md:px-8 md:py-4 rounded-full inline-block mb-4 font-bold group-hover:scale-105 transition-transform duration-300">
                     Laptop Deployment System
                   </div>
-                  <p className="text-sm md:text-lg leading-relaxed">
+                  <p className="text-sm md:text-lg leading-relaxed mb-6 md:mb-0">
                     Managed configuration and deployment of laptops for remote
                     employees at STORIS.
                   </p>
                 </div>
-                <button className="bg-white text-[#212020] text-sm md:text-base px-6 py-2 md:px-8 md:py-3 rounded-full font-bold hover:bg-gray-50 hover:scale-110 transition-all duration-300 mb-6 md:mb-0 order-1 md:order-2">
+                <button className="bg-white text-[#212020] text-sm md:text-base px-6 py-2 md:px-8 md:py-3 rounded-full font-bold hover:bg-gray-50 hover:scale-110 transition-all duration-300 order-2 md:order-2 self-center">
                   View Project →
                 </button>
               </div>
@@ -630,7 +549,7 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="bg-[#3970EB] py-12 md:py-20 px-4">
+        <section id="contact" className="bg-[#3970EB]/90 py-12 md:py-20 px-4">
           <div className="container mx-auto px-4 md:px-8 relative">
             <h3 className="text-2xl md:text-3xl font-medium mb-6 md:mb-8 text-white animate-[fadeInUp_0.8s_ease-out]">
               LET&apos;S CONNECT!
@@ -736,7 +655,7 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="bg-[#3970EB] text-white py-4 md:py-6 text-center">
+        <footer className="bg-[#3970EB] text-white py-4 md:py-6 text-center border-t-2 border-white">
           <p className="text-xs md:text-sm">
             © 2025 Daniel Avila. All rights reserved. Made by Camino Code{" "}
             <span>🌸</span>
