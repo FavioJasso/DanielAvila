@@ -5,6 +5,15 @@ import emailjs from "emailjs-com";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<"success" | "error">("success");
+  const [dialogMessage, setDialogMessage] = useState("");
+
+  const showDialog = (type: "success" | "error", message: string) => {
+    setDialogType(type);
+    setDialogMessage(message);
+    setDialogOpen(true);
+  };
 
   useEffect(() => {
     const form = document.getElementById("contact-form") as HTMLFormElement;
@@ -16,10 +25,11 @@ export default function Home() {
           .sendForm("service_epaw1g5", "template_xgiobnl", form, "O7IxMgPavA6zaZ2Mq")
           .then(
             () => {
-              alert("Message sent successfully!");
+              showDialog("success", "Message sent successfully!");
+              form.reset();
             },
-            (error) => {
-              alert("Failed to send message: " + JSON.stringify(error));
+            () => {
+              showDialog("error", "Failed to send message. Please try again.");
             }
           );
       };
@@ -1125,6 +1135,81 @@ export default function Home() {
           </div>
         </footer>
       </div>
+
+      {/* Custom Dialog */}
+      {dialogOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-[fadeIn_0.3s_ease-out]"
+          onClick={() => setDialogOpen(false)}
+        >
+          <div
+            className="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-[slideInUp_0.4s_ease-out]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className={`p-8 ${
+                dialogType === "success"
+                  ? "bg-gradient-to-br from-green-50 to-white"
+                  : "bg-gradient-to-br from-red-50 to-white"
+              }`}
+            >
+              <div className="flex flex-col items-center text-center">
+                <div
+                  className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 ${
+                    dialogType === "success"
+                      ? "bg-gradient-to-br from-green-500 to-green-600"
+                      : "bg-gradient-to-br from-red-500 to-red-600"
+                  }`}
+                >
+                  {dialogType === "success" ? (
+                    <svg
+                      className="w-10 h-10 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      className="w-10 h-10 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  )}
+                </div>
+                <h3 className="text-2xl font-bold text-[#212020] mb-3">
+                  {dialogType === "success" ? "Success!" : "Error"}
+                </h3>
+                <p className="text-gray-600 mb-6">{dialogMessage}</p>
+                <button
+                  onClick={() => setDialogOpen(false)}
+                  className={`px-8 py-3 rounded-full font-bold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ${
+                    dialogType === "success"
+                      ? "bg-gradient-to-r from-green-500 to-green-600"
+                      : "bg-gradient-to-r from-red-500 to-red-600"
+                  }`}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
