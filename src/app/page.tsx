@@ -22,7 +22,12 @@ export default function Home() {
         e.preventDefault();
 
         emailjs
-          .sendForm("service_epaw1g5", "template_xgiobnl", form, "O7IxMgPavA6zaZ2Mq")
+          .sendForm(
+            "service_epaw1g5",
+            "template_xgiobnl",
+            form,
+            "O7IxMgPavA6zaZ2Mq"
+          )
           .then(
             () => {
               showDialog("success", "Message sent successfully!");
@@ -1149,7 +1154,7 @@ export default function Home() {
             <div
               className={`p-8 ${
                 dialogType === "success"
-                  ? "bg-gradient-to-br from-green-50 to-white"
+                  ? "bg-gradient-to-br from-blue-50 to-white"
                   : "bg-gradient-to-br from-red-50 to-white"
               }`}
             >
@@ -1157,7 +1162,7 @@ export default function Home() {
                 <div
                   className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 ${
                     dialogType === "success"
-                      ? "bg-gradient-to-br from-green-500 to-green-600"
+                      ? "bg-gradient-to-br from-blue-500 to-blue-600"
                       : "bg-gradient-to-br from-red-500 to-red-600"
                   }`}
                 >
@@ -1199,7 +1204,7 @@ export default function Home() {
                   onClick={() => setDialogOpen(false)}
                   className={`px-8 py-3 rounded-full font-bold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ${
                     dialogType === "success"
-                      ? "bg-gradient-to-r from-green-500 to-green-600"
+                      ? "bg-gradient-to-r from-blue-500 to-blue-600"
                       : "bg-gradient-to-r from-red-500 to-red-600"
                   }`}
                 >
