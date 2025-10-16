@@ -162,21 +162,13 @@ export default function Home() {
               </li>
               <li className="animate-[fadeInDown_0.8s_ease-out_0.2s_both]">
                 <a
-                  href="#skills"
-                  className="hover:text-[#3970EB] font-medium transition-colors duration-300"
-                >
-                  Skills
-                </a>
-              </li>
-              <li className="animate-[fadeInDown_0.8s_ease-out_0.3s_both]">
-                <a
                   href="#experience"
                   className="hover:text-[#3970EB] font-medium transition-colors duration-300"
                 >
                   Experience
                 </a>
               </li>
-              <li className="animate-[fadeInDown_0.8s_ease-out_0.4s_both]">
+              <li className="animate-[fadeInDown_0.8s_ease-out_0.3s_both]">
                 <a
                   href="#projects"
                   className="hover:text-[#3970EB] font-medium transition-colors duration-300"
@@ -184,7 +176,7 @@ export default function Home() {
                   Projects
                 </a>
               </li>
-              <li className="animate-[fadeInDown_0.8s_ease-out_0.5s_both]">
+              <li className="animate-[fadeInDown_0.8s_ease-out_0.4s_both]">
                 <a
                   href="#contact"
                   className="hover:text-[#3970EB] font-medium transition-colors duration-300"
@@ -205,15 +197,6 @@ export default function Home() {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Home
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#skills"
-                    className="hover:text-[#3970EB] font-medium transition-colors duration-300 block"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Skills
                   </a>
                 </li>
                 <li>
