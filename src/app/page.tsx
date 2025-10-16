@@ -726,30 +726,40 @@ export default function Home() {
                       <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
                         <div className="flex-1">
                           <h3 className="text-xl md:text-2xl font-bold text-[#212020] mb-3">
-                            Campus IT Support Cases
+                            June 2025 High-Performance PC Build
                           </h3>
                           <p className="text-gray-700 leading-relaxed text-sm md:text-base mb-4">
-                            Assisted students and staff with technical
-                            troubleshooting across multiple platforms, resolving
-                            hardware and software issues efficiently.
+                            Custom-built workstation featuring AMD Ryzen 9 9900X
+                            and Radeon RX 9070XT, optimized for consulting,
+                            testing, OS upgrades, and professional software
+                            installation. Includes full specs, build photos, and
+                            technician services.
                           </p>
 
                           {/* Tech Stack/Tags */}
                           <div className="flex flex-wrap gap-2 mb-4">
                             <span className="px-3 py-1 bg-[#3970EB]/10 text-[#3970EB] text-xs font-semibold rounded-full">
-                              Technical Support
+                              Consulting & Technical Services
                             </span>
                             <span className="px-3 py-1 bg-[#3970EB]/10 text-[#3970EB] text-xs font-semibold rounded-full">
-                              Troubleshooting
+                              Hardware Selection & Assembly
                             </span>
                             <span className="px-3 py-1 bg-[#3970EB]/10 text-[#3970EB] text-xs font-semibold rounded-full">
-                              Multi-platform
+                              System Configuration (BIOS, OS, Software)
                             </span>
                           </div>
                         </div>
 
                         {/* CTA Button */}
-                        <button className="self-start md:self-center flex items-center gap-2 bg-gradient-to-r from-[#3970EB] to-[#2958d4] text-white px-6 py-3 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 group/btn">
+                        <button
+                          onClick={() =>
+                            window.open(
+                              "https://github.com/Happie04/June-2025-PC-Build",
+                              "_blank"
+                            )
+                          }
+                          className="self-start md:self-center flex items-center gap-2 bg-gradient-to-r from-[#3970EB] to-[#2958d4] text-white px-6 py-3 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 group/btn"
+                        >
                           <span>View Details</span>
                           <svg
                             className="w-5 h-5 transition-transform duration-300 group-hover/btn:translate-x-1"
@@ -789,30 +799,39 @@ export default function Home() {
                       <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
                         <div className="flex-1">
                           <h3 className="text-xl md:text-2xl font-bold text-[#212020] mb-3">
-                            Laptop Deployment System
+                            3D Printing Projects – Custom CAD Models & Prints
                           </h3>
                           <p className="text-gray-700 leading-relaxed text-sm md:text-base mb-4">
-                            Managed configuration and deployment of laptops for
-                            remote employees at STORIS, streamlining the
-                            onboarding process and ensuring consistent setup
-                            standards.
+                            Collection of 3D-printed projects including video
+                            game characters, coasters, and gadgets. Designed
+                            from scratch in OnShape, optimized in Cura, and
+                            printed on an Ender 3 V2 Pro with premium filament
+                            for durable, high-quality results.
                           </p>
 
                           <div className="flex flex-wrap gap-2 mb-4">
                             <span className="px-3 py-1 bg-[#3970EB]/10 text-[#3970EB] text-xs font-semibold rounded-full">
-                              Deployment
+                              OnShape (CAD Modeling)
                             </span>
                             <span className="px-3 py-1 bg-[#3970EB]/10 text-[#3970EB] text-xs font-semibold rounded-full">
-                              Configuration
+                              Cura (Slicing & Print Optimization)
                             </span>
                             <span className="px-3 py-1 bg-[#3970EB]/10 text-[#3970EB] text-xs font-semibold rounded-full">
-                              Remote Setup
+                              Ender 3 V2 Pro (3D Printing Hardware)
                             </span>
                           </div>
                         </div>
 
                         {/* CTA Button */}
-                        <button className="self-start md:self-center flex items-center gap-2 bg-gradient-to-r from-[#3970EB] to-[#2958d4] text-white px-6 py-3 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 group/btn">
+                        <button
+                          onClick={() =>
+                            window.open(
+                              "https://github.com/Happie04/3D-Printing-Projects",
+                              "_blank"
+                            )
+                          }
+                          className="self-start md:self-center flex items-center gap-2 bg-gradient-to-r from-[#3970EB] to-[#2958d4] text-white px-6 py-3 rounded-full font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 group/btn"
+                        >
                           <span>View Details</span>
                           <svg
                             className="w-5 h-5 transition-transform duration-300 group-hover/btn:translate-x-1"
