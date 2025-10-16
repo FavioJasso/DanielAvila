@@ -1,9 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import emailjs from "emailjs-com";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const form = document.getElementById("contact-form") as HTMLFormElement;
+    if (form) {
+      const handleSubmit = (e: Event) => {
+        e.preventDefault();
+
+        emailjs
+          .sendForm("service_epaw1g5", "template_xgiobnl", form, "O7IxMgPavA6zaZ2Mq")
+          .then(
+            () => {
+              alert("Message sent successfully!");
+            },
+            (error) => {
+              alert("Failed to send message: " + JSON.stringify(error));
+            }
+          );
+      };
+
+      form.addEventListener("submit", handleSubmit);
+
+      return () => {
+        form.removeEventListener("submit", handleSubmit);
+      };
+    }
+  }, []);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -820,15 +847,17 @@ export default function Home() {
             <div className="grid md:grid-cols-5 gap-8 md:gap-12">
               <div className="md:col-span-3 animate-[fadeInLeft_1s_ease-out_0.2s_both]">
                 <div className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-xl border border-gray-100">
-                  <form className="space-y-6">
+                  <form id="contact-form" className="space-y-6">
                     <div>
                       <label className="block text-[#212020] font-bold mb-2 text-sm md:text-base">
                         Your Name
                       </label>
                       <input
                         type="text"
-                        placeholder="John Doe"
+                        placeholder="Your Name"
+                        name="from_name"
                         className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 md:px-6 md:py-4 text-sm md:text-base focus:outline-none focus:border-[#3970EB] focus:ring-2 focus:ring-[#3970EB]/20 transition-all duration-300"
+                        required
                       />
                     </div>
 
@@ -838,7 +867,9 @@ export default function Home() {
                       </label>
                       <input
                         type="email"
-                        placeholder="john@example.com"
+                        placeholder="Your Email"
+                        name="from_email"
+                        required
                         className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 md:px-6 md:py-4 text-sm md:text-base focus:outline-none focus:border-[#3970EB] focus:ring-2 focus:ring-[#3970EB]/20 transition-all duration-300"
                       />
                     </div>
@@ -850,6 +881,8 @@ export default function Home() {
                       <textarea
                         placeholder="Tell me about your project or inquiry..."
                         rows={5}
+                        name="message"
+                        required
                         className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 md:px-6 md:py-4 text-sm md:text-base focus:outline-none focus:border-[#3970EB] focus:ring-2 focus:ring-[#3970EB]/20 transition-all duration-300 resize-none"
                       ></textarea>
                     </div>

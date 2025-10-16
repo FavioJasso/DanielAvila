@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
+import emailjs from "emailjs-com";
 import "./globals.css";
+
+emailjs.init("O7IxMgPavA6zaZ2Mq");
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.danielavila.tech/"),
@@ -84,8 +87,14 @@ export default function RootLayout({
           href="https://fonts.bunny.net/css?family=monda:500,700|quicksand:500,600,700"
           rel="stylesheet"
         />
-        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-        <script noModule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <script
+          type="module"
+          src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+        ></script>
+        <script
+          noModule
+          src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+        ></script>
       </head>
       <body
         className="antialiased bg-white text-[#212020]"
