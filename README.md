@@ -6,7 +6,7 @@ A modern, responsive portfolio website for Daniel Avila, Desktop Support Technic
 Applied AI Systems, Data Science and Product Engineering organization based in New Jersey.
 *Build Systems That Think With You.*
 
-- **CEO & Head of Product:** Favio Jasso
+- **Founder & CEO / Chief of Product :** Favio Jasso
 - **Software Engineer:** John Rey Calesa
 
 ---
