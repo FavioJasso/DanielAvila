@@ -1,0 +1,156 @@
+{
+ "key": "ui",
+ "build": {
+  "summary": "Built the full HTML game layer in src/components/game plus the /dev/ui harness, against GameApi and the ui store only (mock engine; the real one should drop in unchanged). Type-check is clean and every state and keyboard path was exercised, but the shared dev server on :3000 died part-way through (not by me), so everything after the first screenshot pass was verified against an offline bundle of the same harness page rather than through Next. The final code has therefore not been hydrated by Next itself.\n\nWhat exists:\n- GameRoot: fixed dvh stage, server-rendered title, lazy engine boot after idle, queued PRESS START, game/plain modes (scroll lock, inert plain page, focus hand-off), WebGL-unavailable and context-lost handling, window keyboard handling, CourseOverlay mounting. PlayButton exported alongside.\n- Title screen: original CSS logo (gold DANIEL, brand-blue AVILA, large tilted cream 64 with ruby extrusion), role line, blinking PRESS START, loading note that becomes control hints, speaker toggle, plain-version link, Camino Code credit.\n- Lobby HUD: bottom bar, sliding top banner, pause button, speaker, star counter, \"Jump into the painting\" and \"Grab the r\u00e9sum\u00e9 star\" buttons, thumbstick and JUMP on touch.\n- Pause menu: modal with focus trap and focus return, five course rows plus the r\u00e9sum\u00e9 star, PDF download, sound toggle, plain link, controls reference, Back button, arrow/Home/End navigation, uiMove/uiSelect/uiBack sounds.\n- Toast layer (auto-dismiss, aria-live) and white flash layer (soft fade under reduced motion).\n\nThe request asked for multiple agents; this session has no tool for spawning sub-agents, so the module was built by this one agent.",
+  "files": [
+   "src/components/game/GameRoot.tsx",
+   "src/components/game/game.css",
+   "src/components/game/TitleScreen.tsx",
+   "src/components/game/LobbyHud.tsx",
+   "src/components/game/PauseMenu.tsx",
+   "src/components/game/TouchControls.tsx",
+   "src/components/game/FlashLayer.tsx",
+   "src/components/game/ToastLayer.tsx",
+   "src/components/game/Notices.tsx",
+   "src/components/game/SpeakerToggle.tsx",
+   "src/components/game/StarCounter.tsx",
+   "src/components/game/commands.ts",
+   "src/components/game/icons.tsx",
+   "src/components/game/util.ts",
+   "src/app/dev/ui/page.tsx"
+  ],
+  "verification": [
+   "Type-check: `npx tsc --noEmit -p .` from the repo root exits 0 with no output (final run, after the last edit).",
+   "Dev server: http://localhost:3000 answered 200 at the start, then refused connections from about 14:45 onward and never came back (no `next dev` process running; next.config.ts had been edited by another engineer shortly before). I did not start a server.",
+   "Real dev server, first pass only (before the fixes listed below): title desktop + mobile, and lobby / door / near / star / pause / touch / toast / plain / nowebgl / lost on desktop and mobile rendered with no page errors or hydration warnings. The only console noise was the Vercel analytics script from layout.tsx being blocked. Those PNGs were later overwritten or superseded.",
+   "Offline substitute for everything after that: the same src/app/dev/ui/page.tsx bundled with the webpack that ships inside Next, opened via file:// with React StrictMode on, the compiled globals CSS and next/font files from .next, and game.css / course.css straight from source. Build script: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/offline-ui/build.cjs ; driver wrapper: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/ui/off.sh",
+   "Server render: GameRoot + PlayButton rendered with react-dom/server renderToString in Node (no window/document) without error. The HTML contains the visible stage, <h1 aria-label=\"Daniel Avila 64\"> with text \"DANIEL AVILA 64\", the role line, PRESS START, the loading note, href=\"#plain-portfolio\", the Camino Code link to https://www.caminocode.com/, the canvas and the noscript fallback; no HUD or pause markup.",
+   "Final screenshots (offline harness), 11 states x 4 viewports (1280x720, 390x844, 320x568, 844x390) plus extras, all opened and judged: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/ui/final/ (title-, lobby-, door-, near-, star-, pause-, toast-, lost-, plain-, nowebgl-, course- with suffixes desktop / mobile / 320 / land; also near-568x320.png, near-480x320.png, near-900.png, near-1024.png, touch-near-desktop.png, title-reduced-motion.png, course-toast-desktop.png, course-toast-mobile.png).",
+   "Layout audit by script: with banner, jump-into-painting button, thumbstick, JUMP and bar all showing, at 14 sizes from 320x480 to 1920x1080 (including 480x320, 568x320, 667x375, 844x390) there are 0 overlapping HUD controls, 0 off-screen, 0 HUD buttons under 44 px and no horizontal scroll. Same result with both action buttons showing at 4 sizes.",
+   "Keyboard, Enter / Space: on the title, Enter gives calls [\"start()\"], phase intro then lobby; Space does the same. Enter while the plain link is focused goes to plain mode and does not start.",
+   "Keyboard, Esc: in the lobby Esc gives [\"setPaused(true)\"], dialog open with aria-modal, focus on the first row, HUD inert; Esc again gives [\"setPaused(false)\"]. One call per key press. Typing Esc or M inside an input does nothing to pause or mute.",
+   "Keyboard, Tab order in the pause menu: EDUCATION, SKILLS, CAREER & LABS, CERTIFICATIONS, ABOUT & CONTACT, R\u00e9sum\u00e9 Star, Download r\u00e9sum\u00e9 (PDF), Sound: on, Plain HTML version, Back to the lobby, then wraps to EDUCATION. Shift+Tab from the first wraps to Back to the lobby. ArrowDown / ArrowUp wrap; Home / End jump to first / last.",
+   "Keyboard, M: muted false -> true (localStorage da64:muted = \"1\", speaker aria-pressed false) -> false (\"0\").",
+   "Fast travel: Enter on a pause row gives [\"setPaused(false)\", \"enterCourse(\\\"career\\\",{\\\"instant\\\":true})\"], the real CourseOverlay opens, toast \"New star!\", flash counter 1. Esc then gives exactly one exitCourse(), and the pause menu does not open.",
+   "Queued start: with the engine load delayed 2.5 s, clicking PRESS START shows \"STARTING\u2026\" with \"Loading the 3D lobby\u2026\"; once the engine is ready start() is called exactly once and the phase reaches lobby (b1-queued.png).",
+   "Failure paths: loader throws -> mode plain, webgl unavailable, notice is the first element in <body>, PlayButton absent, scroll unlocked. Engine reports unavailable -> notice shown, dismiss removes it. Context lost -> \"Tap to reload 3D\" produces a new canvas element and a new engine, webgl ok, phase title.",
+   "Plain <-> game: clicking the title link gives mode plain, hash #plain-portfolio, html data-da64 removed, plain page not inert, overflow visible, focus on the plain <main>, engine disposed. Clicking Play the 3D version gives mode game, hash cleared, data-da64=game, plain wrapper inert, overflow hidden, fresh engine, focus on PRESS START. Loading the page with #plain-portfolio opens in plain mode (strict and non-strict).",
+   "Touch (390x844, coarse pointer): thumbstick reports setStick(0.52,0.26), (0,1), (0.71,-0.71), then (0,0) on release; a 3 px nudge inside the dead zone reports nothing; knob resets. JUMP fires once per tap and once per keyboard activation, not twice. Stick bottom 698 px and JUMP bottom 684 px sit above the bar top at 708 px.",
+   "Flash and toast: bumping ui.flash mounts .da64-flash with animation da64-flash 0.64 s and removes it afterwards; under prefers-reduced-motion it uses da64-flash-soft 0.24 s. Toast shows in an aria-live=polite region and ui.toast is null again after about 3.4 s. Under reduced motion the logo bob and PRESS START blink are off.",
+   "Focus: a mouse click on NEXT DOOR leaves focus on <body> (so Space stays a jump key). Pause opened from the keyboard returns focus to the control that opened it (pause button, or NEXT DOOR when Esc was pressed there), in strict and non-strict mode. Clicking the dimmed backdrop closes the menu.",
+   "Pause menu links: download link is href=\"/Resume%20-%20Daniel%20Avila.pdf\" download=\"Resume - Daniel Avila.pdf\"; plain link is href=\"#plain-portfolio\".",
+   "Ownership: `git status --short` shows my changes only under src/components/game/ and src/app/dev/ui/."
+  ],
+  "knownIssues": [
+   "The dev server on :3000 went down mid-task and stayed down. The final code was verified through an offline bundle plus a Node server-render, not through Next: hydration of the final version in Next and a Turbopack compile of the last edits are unverified (tsc is clean; the first version hydrated without warnings before the server died).",
+   "Only the mock engine was exercised. Nothing here has run against the real engine, real WebGL context loss/restore, or the real audio module (the stub is silent, so no sound was heard or measured).",
+   "The no-JavaScript path (noscript rule hiding the stage) and the pre-hydration CSS rule that shows the plain page for a #plain-portfolio URL were not run in a browser; only the noscript markup's presence in the server HTML was checked.",
+   "Not tested on a real phone or with a screen reader. Touch was checked with emulated touch viewports, synthetic pointer events and the driver's drag/tap.",
+   "Contrast was reasoned by hand for a few pairs (for example cream on the pause-row hover colour), not measured with a tool across the UI.",
+   "On landscape phones around 800-900 px wide the top banner sits between the corner controls about 23 px right of centre; it does not overlap anything.",
+   "Closing the pause menu plays uiBack from the UI while the mock engine also plays unpause in setPaused(false); if the real engine does the same, the two sounds overlap.",
+   "The toast's position over a course overlay on phones assumes the overlay footer is roughly 76 px tall (toast sits 86 px above the bottom edge).",
+   "Safe-area insets are wired with env() but resolve to 0 because the viewport meta in layout.tsx has no viewport-fit=cover.",
+   "Two size overrides use !important because PaintingThumb sets its size as an inline style (pause-row thumbs under 380 px wide, banner thumb on short landscape screens)."
+  ],
+  "contractGaps": [
+   "#plain-portfolio is only the plain page's <main>; its header (with the nav and the PlayButton), skip link and footer are siblings. Making only that element inert would leave those focusable behind the stage, so GameRoot widens the inert target to the outermost ancestor of #plain-portfolio that does not contain the stage (the .pp wrapper today).",
+   "Nothing says who clears ui.toast. If it is never cleared, the engine setting the same text again is a no-op in the store and the second toast never shows, so the UI clears ui.toast when the toast times out.",
+   "The contract does not say whether the engine may reuse a canvas. GameRoot gives every engine instance a fresh <canvas> (remounted on plain -> game and on reload after context loss), so a disposed or lost context is never handed to the next engine.",
+   "A queued PRESS START calls api.start() outside the user gesture, so GameRoot calls getAudio().unlock() itself inside the gesture. The engine should not rely on being the only caller of unlock().",
+   "The shared StarIcon's empty state is nearly invisible on navy panels; game.css overrides its fill and stroke for the HUD counter and pause rows instead of editing the shared component.",
+   "The brief's fixed notice 'at the top of the page' would have covered the real plain header's navigation, so the notice is portalled into a div prepended to <body> and sits in normal flow above the sticky header."
+  ],
+  "integrationNotes": [
+   "Render <GameRoot /> as a sibling of the plain page, not inside it, and pass <PlayButton /> to PlainPortfolio's `actions`. GameRoot imports game.css itself. The harness at /dev/ui shows the intended composition.",
+   "Flipping loadGame() in services.ts is all the engine wiring needed. GameRoot has an optional `load` prop (defaults to loadGame) that only the harness uses.",
+   "The engine must set ui.engineReady = true once it can accept start(); the queued PRESS START waits on it. When an engine is disposed GameRoot resets engineReady, phase, paused, overlay, focusedDoor, nearDoor, nearStar and toast, and sets webgl back to pending unless it is unavailable.",
+   "Esc: GameRoot listens on window in the capture phase and ignores Esc while ui.overlay is set. The real CourseOverlay listens on document in capture, which runs after it, so the key is handled once (checked with the real overlay).",
+   "GameRoot calls getAudio().setMusic(null) when switching to plain mode, and getAudio().unlock() on PRESS START.",
+   "Added behaviour beyond the brief: a URL whose hash points at #plain-portfolio or any id inside it (for example /#contact) opens in plain mode, and PlayButton clears that hash. This keeps old deep links and the plain-version link working; say if you would rather the game always open.",
+   "Hooks other code can rely on: ids da64-start and da64-pause-button, attribute data-da64-play on the PlayButton, html[data-da64=\"game\"] while the game is showing, and the stage at z-index 100 with the course overlay rendered inside it (toasts at 45 and flash at 50 sit above the overlay's 40).",
+   "When the dev server is back, load /dev/ui once and watch the console for hydration warnings; that is the one check I could not repeat on the final code. Harness states: ?state=title|lobby|door|near|star|pause|touch|toast|course|lost|plain|nowebgl|throw, with &door=, &stars=, &touch=, &toast=, &delay=. window.__da64ui and window.__da64calls are exposed for scripted checks."
+  ],
+  "blueprintDeviations": [
+   "Title screen uses the lobby-orbit option with an original logo, per the guide's substitution table; no bust.",
+   "The door buttons read 'PREV DOOR' / 'NEXT DOOR' with triangle icons instead of literal '<' and '>' characters (aria-labels 'Previous door' / 'Next door').",
+   "The plain-version link on the title screen sits in the top-right corner as a ghost button rather than under PRESS START, to keep landscape phones from overflowing; it shortens to 'Plain HTML version' under 480 px.",
+   "The HUD is hidden, not dimmed, during the intro so it does not cross-fade over the title; it dims during entering and exiting.",
+   "Pause rows show the door label as the main line (EDUCATION) with 'COURSE n' above and the course title below, so recruiters see the plain section names.",
+   "The speaker toggle does not unlock audio by itself, so nothing can play before PRESS START.",
+   "The top banner collapses to one line (course number and title, no thumbnail or painting name) on screens 360 px tall or less."
+  ]
+ },
+ "review": {
+  "verdict": "solid-after-fixes",
+  "summary": "I reviewed every file in src/components/game and src/app/dev/ui against Guide 6.1, 6.2 and 6.8. Everything was tested on the live dev server at http://localhost:3000/dev/ui, which was reachable, unlike in the builder's run. I ran the mock engine and also the real src/game/engine, which is opt-in through a new ?engine=real harness flag. I took screenshots at 1920x1080, 1280x720, 844x390, 568x320, 390x844 (--mobile), 360x740 and 320x568, plus --reduced-motion, and opened and judged each one. I also ran a 13-check puppeteer suite against the live server. The builder's claims mostly held up. I found and fixed these: (1) the title overlapped itself on short landscape phones (the \"64\" ran into the plain-version link, and the hints ran into the credit); (2) the PDF download in the pause menu was below the fold on phones; (3) the \"Jump into the painting\" call-to-action had a muddy olive ring and an animated box-shadow that repainted every frame; (4) the phone HUD dropped \"/ MENU\" from the pause button; (5) the browser Back button after \"plain HTML version\" left the visitor stuck in plain mode with no hash; (6) while the WebGL context was lost, the HUD, title and pause menu stayed reachable behind the notice, and Esc could open the pause menu over it; (7) the context-lost button said \"Tap\" on desktop. Type-check is clean. There were no page errors or hydration warnings in any live run.",
+  "requirementChecks": [
+   "GameRoot fixed stage + server-rendered title: PASS (stage renders title immediately; data-da64=game scroll lock; plain page inert while game shows)",
+   "Lazy engine load after first paint (whenIdle) + queued PRESS START: PASS (?delay=2500: button shows STARTING\u2026, 'Loading the 3D lobby\u2026', start() called exactly once when engineReady, even with repeated clicks/Enter)",
+   "Modes game/plain + focus hand-off: PASS (title link -> plain, hash #plain-portfolio, focus on plain <main>, engine disposed; PlayButton -> game, focus PRESS START, fresh engine; rapid toggling clean)",
+   "Browser Back/Forward between game and plain: FIXED (was stuck in plain mode with empty hash after Back; now Back returns to game, Forward to plain; in-page plain anchors unaffected)",
+   "Deep links #plain-portfolio / #contact open plain; unrelated hash stays game: PASS",
+   "WebGL fallback: PASS (loader throw and engine-reported unavailable -> plain, notice first in body, dismissable, PlayButton hidden, scroll unlocked)",
+   "Context lost / reload: FIXED (HUD, title and pause menu were still tabbable/openable behind the notice; now inert, notice is an aria-modal alertdialog with focus on the reload button, deferred while a course overlay is open; reload creates a new canvas + engine; copy 'Tap to reload 3D' -> 'Reload the 3D view')",
+   "Keyboard ownership incl. Esc split: PASS (Esc on title/intro does nothing; lobby Esc toggles pause once per press; inside a course overlay Esc gives exactly one exitCourse() and never opens pause, verified with mock and real engine and the real CourseOverlay; M toggles mute but not inside inputs; Enter/Space start only on title and not when a link/button is focused)",
+   "PlayButton: PASS",
+   "Title screen: original chunky DANIEL AVILA 64 logo (per-word gold/brand-blue/cream with ruby extrusion, Titan One face, not SM64 letterforms or colour order), blinking PRESS START (click/tap/Enter/Space), speaker toggle, visible plain-version link: PASS; short-landscape overlap FIXED (568x320, 844x390 now fit cleanly)",
+   "Lobby HUD bottom bar [PREV DOOR] LOBBY (Use WASD to walk or click a door) [NEXT DOOR]: PASS (touch hint variant on touch)",
+   "Top banner with course title when a door is open: PASS (slides; fades under reduced motion; one-line at <=360px tall)",
+   "Persistent top-right + PAUSE / MENU button: FIXED (phones showed only '+ PAUSE'; HUD star counter now compacts under 480px so the full label shows down to 360px wide; '+ PAUSE' only under 360px)",
+   "Persistent speaker icon + star counter: PASS",
+   "Jump-into-painting button and r\u00e9sum\u00e9 star prompt: PASS functionally; visual FIXED (muddy ring replaced by an opacity-only halo layer, steady under reduced motion)",
+   "Toasts: PASS (aria-live polite, cleared from store after 3.4 s so a repeat shows; real engine 'New star!' shown over overlay)",
+   "Touch thumbstick + jump: PASS (dead zone, setStick values, release on pointer up / pause, JUMP once per tap and per keyboard activation; real engine: setStick(0,1) moves the avatar, jump() fires; controls clear the bar at 390x844 and 320x568)",
+   "Pause menu focus trap, arrow/Home/End, focus return: PASS (Tab wraps, Shift+Tab wraps, focus returns to pause button after keyboard open, mouse clicks leave focus on body; backdrop click closes)",
+   "Pause menu fast travel to all five sections + r\u00e9sum\u00e9 star: PASS (setPaused(false) then enterCourse(id,{instant:true}); overlay opens, toast, flash)",
+   "Pause menu one-click PDF download: FIXED (moved into the always-visible footer beside Back; was below the fold on phones; labels adapt: 'Download r\u00e9sum\u00e9 (PDF)' / 'R\u00e9sum\u00e9 PDF' / 'PDF' at 320 px, full aria-label kept; href /Resume%20-%20Daniel%20Avila.pdf, download attribute)",
+   "Pause menu sound toggle, plain link, Back: PASS",
+   "Flash layer: PASS (0.64 s white flash, single element on rapid bumps; reduced motion: 0.24 s soft fade)",
+   "Accessibility (real buttons/links, focus rings, 44px targets, sr descriptions, reduced motion): PASS",
+   "320 px to desktop layouts: PASS after fixes (checked 320x568, 360x740, 390x844, 568x320, 844x390, 1280x720, 1920x1080)",
+   "Originality / no invented facts: PASS (all copy from portfolio.ts and contract; no Nintendo names, art or sounds in the UI)",
+   "Performance: PASS after fix (removed the per-frame box-shadow repaint; thumbstick writes transforms directly, no React state while dragging; React never renders per frame)"
+  ],
+  "issuesFixed": [
+   "Title screen on short landscape screens (568x320): the '64' overlapped the plain-version link and the hint row overlapped the credit. Fix: the logo is now sized by height under 460px tall, and .da64-title__main uses `justify-content: safe center` without min-height:0, so it can never spill (game.css).",
+   "Pause menu: the PDF r\u00e9sum\u00e9 download was below the fold on phones. It moved to the always-visible footer next to Back, with width-dependent labels and a stable accessible name (PauseMenu.tsx, game.css).",
+   "The call-to-action glow animated box-shadow, so it repainted every frame, and it rendered as a muddy olive ring over navy. It is now a ::before halo animated with opacity only, and steady under reduced motion (game.css).",
+   "The phone HUD truncated '+ PAUSE / MENU' to '+ PAUSE'. The HUD star counter now compacts to one star plus n/6 under 480px, so the full label fits down to 360px (game.css).",
+   "Browser Back after switching to the plain version left the page in plain mode with no hash. Added a hashchange handler so Back/Forward move between the game and the plain page (GameRoot.tsx).",
+   "While the WebGL context was lost, the HUD controls and the title screen were still tabbable behind the notice, Esc could open the pause menu over it, and Enter could start the game. Now the HUD and title are inert, openPause and pressStart are guarded, the pause menu is hidden, the notice is an aria-modal alertdialog that takes focus, and it waits until an open course overlay closes so it never steals that overlay's focus (GameRoot.tsx, LobbyHud.tsx, TitleScreen.tsx, Notices.tsx).",
+   "The context-lost button said 'Tap to reload 3D' on desktop too. It now reads 'Reload the 3D view' (Notices.tsx).",
+   "The harness gained an opt-in ?engine=real flag that loads src/game/engine through a dynamic import, so the UI can be checked against the real engine before the registry flips. It is dev-only harness code (src/app/dev/ui/page.tsx)."
+  ],
+  "issuesRemaining": [
+   "After a course overlay closes, keyboard focus lands on <body>. The opener (a HUD button) is inert during 'exiting', so CourseOverlay's focus return cannot land. This is harmless for play (Space jumps) but not ideal for keyboard-only visitors. It would need a contract tweak or a delayed focus once the phase returns to 'lobby'.",
+   "The mouse wheel only cycles doors over the canvas, not over the HUD bar itself, because the engine owns the wheel on the canvas.",
+   "When the pause menu closes, the UI plays uiBack and the engines play 'unpause', so the two sounds overlap. Audio is the engine's and audio module's call.",
+   "On landscape phones around 800-900px wide, the top banner sits slightly right of centre between the corner controls. It does not overlap anything.",
+   "Not tested on a real phone or with a screen reader. Touch was tested with emulated touch, and audio output was not measured."
+  ],
+  "filesChanged": [
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/components/game/GameRoot.tsx",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/components/game/PauseMenu.tsx",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/components/game/LobbyHud.tsx",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/components/game/TitleScreen.tsx",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/components/game/Notices.tsx",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/components/game/game.css",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/app/dev/ui/page.tsx"
+  ],
+  "integrationNotes": [
+   "The real engine (src/game/engine) works with GameRoot without changes. Verified: title -> Enter -> lobby, NEXT DOOR -> door 0 open with banner and CTA, Esc pause/unpause, CTA -> course overlay with flash and 'New star!', Esc -> exactly one exitCourse(), back to the lobby. On mobile, the stick moves the avatar and JUMP fires. Flipping loadGame() in services.ts is still the only wiring needed.",
+   "The pause menu's footer now holds the PDF link (class da64-pause__pdf) and Back. The side column holds Sound, Plain HTML version and Controls.",
+   "GameRoot now listens for hashchange: when the URL loses its hash in plain mode it switches to the game, and when the hash targets the plain page in game mode it switches to plain.",
+   "/dev/ui?engine=real is available for further integration checks. It is dev-only harness code."
+  ],
+  "verification": [
+   "Dev server http://localhost:3000 was reachable (HTTP 200) for the whole review. All checks ran on the live server, not an offline bundle.",
+   "`npx tsc --noEmit -p .` exits 0 after the final edits.",
+   "Behaviour suite: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/review-ui/checks-live.mjs, 13 checks: tab order, focus return, fast travel, queued start, plain/back/forward, deep links, failure paths, context lost, touch stick, flash/toast/reduced motion, typing guard, HUD mouse focus, phase spam. All pass with errs: [] after the fixes.",
+   "Real-engine runs through /dev/ui?engine=real on desktop and --mobile. Shots: live/real-title.png, real-door.png, real-pause.png, real-course.png, real-exit.png, real-back.png, real-mobile.png.",
+   "Screenshots, all opened and judged, under /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/review-ui/live/. Before: title-desktop, title-mobile, title-320, title-land (overlap), near-desktop, near-mobile, crop-cta (muddy ring), pause-desktop, pause-mobile, pause-320 (PDF hidden), pause-land, star-320, near-land, near-320, near-568, course-desktop, toast-desktop. After: v2-near-desktop (halo), v2-near-360, v2-near-320, v2-star-rm, v3-pause-mobile, v3-pause-320, v3-title-844, v3-title-568, v3-title-1920, v3-lost.",
+   "The driver reported no page errors, console errors or hydration warnings in any live run."
+  ]
+ }
+}

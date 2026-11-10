@@ -1,26 +1,41 @@
 {
-  "name": "Daniel Avila - Desktop Support Technician",
+  "name": "Daniel Avila 64 - Portfolio of Daniel Avila",
   "short_name": "Daniel Avila",
-  "description": "Portfolio of Daniel Avila, Desktop Support Technician specializing in hardware, software, and technical support",
+  "description": "Portfolio of Daniel Avila, Desktop Support Technician and Cyber Security student at County College of Morris, presented as a playable low-poly 3D hub world.",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3970EB",
-  "orientation": "portrait-primary",
+  "orientation": "any",
+  "background_color": "#0a0f2c",
+  "theme_color": "#0a0f2c",
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "categories": ["portfolio", "professional", "technology"],
-  "lang": "en-US"
+  "lang": "en-US",
+  "dir": "ltr"
 }

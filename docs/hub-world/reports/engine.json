@@ -1,0 +1,132 @@
+{
+ "key": "engine",
+ "build": {
+  "summary": "I finished, verified and polished the game engine. A previous attempt had left a near-complete engine in src/game/engine but never reported, and it had only been tested through a server-less twin while the dev server was down. This run re-verified everything against the live dev server at http://localhost:3000/dev/engine, using an extended copy of shot.mjs and scripted scenarios.\n\nWhat `createGame` (src/game/engine/index.ts) provides:\n- **Rendering and loop:** a retro renderer (480 px internal short side, 360 on touch or small screens, antialias off, CSS pixelated upscale). A frame loop with dt clamped to 0.05 s that sleeps when paused, when the tab is hidden, or once an overlay fully covers the canvas.\n- **Phase machine and sequences:** the full title \u2192 intro \u2192 lobby \u2192 entering \u2192 course \u2192 exiting machine. Every scripted moment runs on one cancellable sequence runner whose cancel callbacks restore a sane state.\n- **Controller:** camera-relative free roam at 6.5 u/s, gravity 29, an exact 1.6 m jump peak, 0.1 s coyote time, a jump buffer, and land, push, step, jump and land sounds. Collision is a sub-stepped circle (ROOM.avatarRadius) against the layout segments, the pedestal and door leaves while a door is less than 60% open.\n- **Guided navigation:** paths plan around the pedestal and out of alcoves through the doorway, then are followed smoothly with a stall watchdog.\n- **Picking:** raycasts with a wall-occlusion check. Tap versus drag, drag-orbit, a pointer cursor on hover, and a debounced wheel.\n- **Cameras:** title orbit, intro swoop, a follow camera that stays inside the lobby (and on the door axis when the avatar is in an alcove), an over-the-shoulder door shot, the dive push-in, the exit shot and the star shot. FOV widens in portrait.\n- **Robustness:** handles WebGL failure and context loss/restore, suspends audio when the tab is hidden, cleans up fully on dispose, and installs the dev hook `window.__da64` with `api`, `state()`, `teleport()` and `screenOf()`, plus extra test helpers.\n\nChanges this run:\n1. **Dev-only override seam** (`src/game/engine/overrides.ts`). The harness can swap in the real avatar or world with `?avatar=real` / `?world=real`. The engine still builds both through `@/game/modules`, and the override is ignored in production.\n2. **Door shot reframed.** The camera now sits further back with a wider FOV, so the avatar shows head to toe with the floating sign, the star emblem and the painting all in frame. Before, only the back of the head showed and the sign was clipped. Checked with the real avatar and world on desktop and mobile.",
+  "files": [
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/index.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/game.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/renderer.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/input.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/controller.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/nav.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/camera.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/sequences.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/scripts.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/picking.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/doors.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/devHook.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/math.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/tuning.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/overrides.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/app/dev/engine/page.tsx"
+  ],
+  "verification": [
+   "Type-check: `npx tsc --noEmit -p .` reports 0 errors for the whole repo at the end of the run. Midway there was one error in src/game/world/index.ts (DoorDeps.proxyMaterial, another engineer mid-edit); it was gone at the final check.",
+   "All runs below were against the live server at http://localhost:3000/dev/engine with the driver /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/engine-live/live.mjs. Scenarios s2, s3, s45, s67, s8, s9, s10, s11, s12, s13, smisc, saudio, sfuzz, walls, real, doors2/3 and intro are in that folder, each with a .log of its output. Screenshots are in /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/engine/live/ and were all opened and reviewed.",
+   "Title to lobby: the intro takes 1.71 s. The audio trace shows unlock, start, phase=intro, then music lobby and phase=lobby (saudio).",
+   "Collision: every probe stayed valid when walking into the pedestal, the north wall face, the jamb edge, a closed door leaf (push animation plays, stops at z=-11.58), the alcove back, side and front shoulders, and the west alcove. A wall probe sampled position every 4 ms over 15,373 samples at 15 spots (three plain walls, door wall faces, five octagon corners, pedestal, arches, alcove, jamb), holding WASD, W+D and jumping: 0 invalid samples, minimum clearance 0, so walls were actually reached. A controller fuzz of 2 x 400,000 random steps with random dt up to 0.05, speeds up to 2x run and random door states had 0 escapes.",
+   "goToDoor for all five doors (s3): distance to the stand point 0.000, door openAmount 1, yaw equal to the door's outward yaw, and focusedDoor/nearDoor/controlMode guided set in the store. See 09-guided-doors-sheet.png, 25/26/27-door-shot-*.png.",
+   "Free input cancels a path: tapping A during a run gives navActive false, controlMode free, focusedDoor -1 (s45).",
+   "enterCourse('career') from spawn: run, three growing hops (land/jump sounds), dive, then dive + warpIn together, flash, then starGet, course music, phase=course and overlay=career in that order. Avatar hidden, collected=[career], toast 'New star!'. Rendering stopped in course: frames frozen at 608 across 0.7 s. exitCourse: flash, warpOut, backflip, land, then lobby at the exit point (distance 0, yaw 0 facing the lobby). See 10-enter-sequence-sheet.png, 12-exit-sequence-sheet.png.",
+   "Fast travel while paused: enterCourse('about', {instant:true}) from across the room reached course in under 200 ms including screenshot time, and unpaused. Switching overlay to overlay (skills) works, and exit lands at the NW exit point (-6.081, -6.081). See 14-fast-travel-sheet.png.",
+   "R\u00e9sum\u00e9 star flow: runs to STAR_STAND, starPose, starBurst and starPose sound, overlay=resume with toast 'R\u00e9sum\u00e9 unlocked!'. It keeps rendering behind the card (frames 606 to 654). Leaving returns to the lobby. See 15-resume-star-sheet.png.",
+   "Free-roam dive: walking into the NE alcove and pressing jump dives into certifications. Jumping while facing away does not dive. An airborne touch of the canvas from outside dive range dives. Exit afterwards hands back free control. Measured jump peak is 1.600. See 16-free-roam-dive-sheet.png.",
+   "Scripted clicks (s9): sign 1 runs to door 1. A closed door 3 runs there and does not enter. The exposed painting 3 starts the hop sequence, then course. A floor click at (4,-2) arrives at (3.983,-1.976). A bare-wall click does nothing (walls run). A 260 px drag orbits the camera without moving the avatar. A star click starts the r\u00e9sum\u00e9 flow. Hover cursor is 'pointer' over a sign or open painting and '' over the floor.",
+   "Pause (s10): time, frames, position and doors are identical after 1.2 s paused mid-run and 1 s paused mid-hop. Keys, Space, wheel and click are ignored while paused, as are goToDoor, cycleDoor and jump. Unpausing resumes the run or sequence. exitCourse while paused unpauses. The harness Esc toggles pause.",
+   "Mobile (--mobile, 390x844 at dpr 2, s11): internal resolution 360x779 (canvas 360x779), ui.touch true, FOV 70-80. setStick(0,1) moves (blocked by the pedestal); setStick(1,0) gives about 6.5 u/s; 0.4 gives about 2.6 u/s; release stops; jump() goes airborne. Tapping the painting and the sign works. See 19-mobile-sheet.png and 26-door-shot-v2-mobile.png.",
+   "Reduced motion (--reduced-motion, s12): the camera is already cut behind the avatar 40 ms after start; title to lobby takes 138 ms. goToDoor cuts straight to the door shot. enterCourse takes 451 ms (no run-up, hops or push-in). exitCourse takes 161 ms. See 20-reduced-motion-sheet.png.",
+   "Dispose and re-create: after dispose, renderer memory shows 0 geometries and 0 textures, window.__da64 is removed, and every engine listener is gone (only the harness's own two window keydown listeners remain). Every API call on the disposed engine is a no-op. Re-creating on the same canvas plays normally, and three more dispose/create cycles are clean. Geometry count plateaus at 70 over repeated door cycles plus an enter/exit, so no leak.",
+   "Misc (smisc): wheel and W on the title are ignored. The wheel debounces three rapid notches to one door. NEXT from spawn starts at door 0 and PREV at door 4. cycleDoor wraps around. nearStar toggles near the pedestal. WebGL context loss sets ui.webgl='lost' and stops the loop; restore sets 'ok' and renders again (23-after-context-restore.png). Simulated tab hide: 0 frames while hidden, rendering resumes when visible.",
+   "API fuzz (sfuzz): 3 seeds x 160 random API calls at random times gave 0 invariant violations (store phase matches engine phase, overlay only in course, no hidden avatar, illegal position or running sequence in the lobby, no NaN). It always settles to a playable lobby, and goToDoor(2) still arrives afterwards.",
+   "Real avatar and world through the engine (?avatar=real&world=real): 39 draw calls, 5,959 triangles. Title, lobby, run, door shots, hops, dive, backflip, exit and star pose all look right. See 24-real-modules-sheet.png and 28-intro-freeroam-real.png."
+  ],
+  "knownIssues": [
+   "Audio suspend/resume on tab hide is confirmed only by reading the code (game.ts onVisibility). The stub audio's suspend() logs nothing, and the real audio engine is not in the registry yet. Sound order was checked with the stub's ?audiolog trace, not by listening.",
+   "Hover picking raycasts about four times a second while the mouse is over the canvas. three's intersectObjects allocates its hit objects, so this path is not strictly allocation-free; the per-frame simulation and camera paths are.",
+   "Reduced-motion r\u00e9sum\u00e9 star: the avatar still runs to the pedestal (about 1.9 s in total). Only the pose wait is shortened and the camera cuts. Guided runs are treated as locomotion, not as a motion effect.",
+   "Free-roam S/W are camera-relative. When the avatar walks to the south wall the follow camera turns to show that wall, so the movement frame turns with it. This is intended, but it means 'S' does not always mean south.",
+   "Pause is refused during title and intro (in line with the mock engine's behaviour). The UI should not show the pause button before the lobby.",
+   "The headless runs log one failed request to va.vercel-scripts.com (Vercel analytics, from layout.tsx, ERR_BLOCKED_BY_ORB). It is unrelated to the engine and there were no page errors."
+  ],
+  "integrationNotes": [
+   "When integrating, point services.loadGame() at `import('./engine')` (it exports `createGame`). The engine takes world and avatar only from @/game/modules and audio only from getAudio().",
+   "The engine sets the canvas's `image-rendering: pixelated`, `touch-action: none` and `cursor`, and restores them on dispose. The CSS size of the canvas belongs to the React layer; the engine watches it with a ResizeObserver.",
+   "The engine plays music: title on create, lobby after the intro, course when an overlay opens, lobby on exit, null on dispose. GameRoot should not set music itself.",
+   "The UI owns Esc. CourseOverlay should call api.exitCourse(), which also works while paused (it unpauses quietly). For the r\u00e9sum\u00e9 card, exitCourse just returns to the lobby with no backflip or flash.",
+   "Toasts the engine sets: 'New star!' for a newly collected course and 'R\u00e9sum\u00e9 unlocked!' for the r\u00e9sum\u00e9 star. The engine clears the toast on exit; the UI may also clear it on a timer.",
+   "Rendering stops 1.6 s after a course overlay opens (the canvas is assumed fully covered). The r\u00e9sum\u00e9 overlay is assumed to be a small card, so rendering continues behind it.",
+   "Dev-only `/dev/engine?avatar=real&world=real` runs the engine against the real modules before the registry is flipped. The harness also accepts ?autostart, ?hud=0, ?rm, ?touch and ?audiolog."
+  ],
+  "contractGaps": [
+   "No contract gaps blocked the work. GameOptions has no way to inject modules for testing, so I added a dev-only seam inside my own folder (engine/overrides.ts) rather than changing the contract.",
+   "The contract has no quality flag on GameOptions, so the engine derives quality from `touch` ('low' on touch, 'high' otherwise)."
+  ],
+  "blueprintDeviations": [
+   "Internal resolution is measured on the short side of the canvas (480 px desktop, 360 px touch or small screens) rather than strictly on height, so pixels stay the same size in portrait; a phone gets 360x779 instead of about 165x360. Rendering never exceeds devicePixelRatio.",
+   "The 'R\u00e9sum\u00e9 unlocked!' on-screen text from the substitution table is delivered through ui.toast when the r\u00e9sum\u00e9 star is first collected."
+  ]
+ },
+ "review": {
+  "verdict": "solid-after-fixes",
+  "summary": "I reviewed the game engine and found it in strong shape. I read every file in src/game/engine and the harness, then tested each requirement against the live dev server at http://localhost:3000/dev/engine. I used my own puppeteer driver with the registry stubs and with ?avatar=real&world=real, on desktop, --mobile and --reduced-motion. Shots are in shots/review-engine/ and I opened and checked them.\n\nThe builder's claims mostly held up. Collision is watertight, guided pathing arrives exactly, the phase machine and sequence runner survived random API fuzzing and deliberate race tests, and dispose frees everything.\n\nI found and fixed two camera defects:\n1. With the camera dragged up while pressed against a wall, the follow camera climbed to y = 8.9, above the 7.5 m walls. It is now capped (6.1 at most in the same probe).\n2. On guided runs that cross the middle of the room, the camera flew right over the pedestal star (0.42 m from its centre on the ground plan, 0.70 m from the star). It now slides round a 1.9 m keep-out circle (measured minimum distance 1.95).\n\nSmaller fixes: dragging now resets the avatar's idle timer, as the spec asks for any input. Hover picking is throttled to every 4th frame while the mouse moves. The dev hook gained pick(x, y), and screenOf() now returns a pixel a real click would hit; the old box-centre point fell into gaps in the real world's crest and pedestal meshes. Type-check is clean. The GameApi contract is unchanged.",
+  "requirementChecks": [
+   "PASS title -> intro -> lobby: 1.72 s on desktop, 86 ms with reduced motion. The camera swoops in (cut under reduced motion). Wheel and keys are ignored on the title.",
+   "PASS retro pipeline: 853x480 internal on a 1280x720 desktop and 360x779 on --mobile (390x844 at dpr 2). antialias is off, the canvas is CSS-scaled with image-rendering: pixelated, and touch builds the world and avatar at low quality.",
+   "PASS loop: dt clamped to 0.05 s. Pausing freezes time, frames and position (identical after 1 s paused mid-run). Keys are ignored while paused, and unpausing resumes the run.",
+   "PASS controller: 6.5 u/s run, gravity 29, exact 1.6 m jump peak, coyote time, jump buffer, land one-shot, camera-relative movement. Step, jump and land sounds are in the audio trace.",
+   "PASS collision: 7,011 frame samples while holding 7 key combinations plus jumps at 15 spots (walls, octagon corners, jambs, alcoves, pedestal, door leaves) gave 0 invalid positions with minimum clearance 0, so walls were actually reached. A 300k-step controller fuzz gave 0 escapes.",
+   "PASS goToDoor for all five doors: distance to the stand point 0.000, openAmount 1, store focusedDoor and controlMode guided. The avatar finishes turning to face the door within about 0.4 s of arriving. A path from inside alcove 0 to door 4 leaves through the doorway and arrives.",
+   "PASS free input cancels a path: tapping D mid-path gives navActive false, controlMode free and focusedDoor -1.",
+   "PASS cycleDoor: with no door focused it starts from the nearest door (or its neighbour if the avatar is already there). The wheel debounces three rapid notches to one door.",
+   "PASS enterCourse('career'/'education'): run-up, three growing hops, dive, avatar hidden, ripple, then dive, warpIn, flash, overlay, phase course, starGet and course music, in that order. Rendering stops about 1.6 s after the overlay opens.",
+   "PASS exitCourse: music lobby, warpOut, backflip and land, ending at exitPoint (0, -8.6) facing the lobby. A free-roam entry hands back free control; a guided entry restores the guided focus.",
+   "PASS instant fast travel: about 180 ms even while paused (it unpauses). Switching from overlay to overlay works, and the exit lands at the NW exit point.",
+   "PASS r\u00e9sum\u00e9 star flow: runs to STAR_STAND, then starPose and starGet, toast 'R\u00e9sum\u00e9 unlocked!', and keeps rendering behind the card. Leaving returns to the lobby.",
+   "PASS free-roam alcove jump: in the NE alcove, Space dives into certifications (833 ms to course).",
+   "PASS picking with the real world: the sign runs to its door, the exposed painting starts the hop sequence, a closed door runs there, a floor click arrives at (3.99, -1.97), the star starts the r\u00e9sum\u00e9 flow, and a 260 px drag orbits without moving the avatar. The hover cursor is 'pointer' over signs and paintings and '' over the floor. On mobile, taps on the floor and the star work.",
+   "PASS mobile: setStick moves at about 6.4 u/s at full deflection and about 2.2 at 0.4; release stops; jump() goes airborne; FOV 74 in portrait.",
+   "PASS reduced motion: camera cut, no shake, enter 444 ms, exit 160 ms. The r\u00e9sum\u00e9 flow still includes the walk to the pedestal (about 1.9 s).",
+   "FIXED cameras never show outside the room: the follow camera could rise to 8.9 m (walls are 7.5 m) when squeezed against a wall with the camera dragged up. It is now capped at 6.1, with a hard limit in apply().",
+   "FIXED travelling camera passed right over the pedestal star (0.70 m from the star). A keep-out circle now holds it at 1.95 m or more.",
+   "PASS door shot frames the painting over the avatar's shoulder with the sign and badge in frame, desktop and mobile; FOV widens in portrait.",
+   "PASS robustness: context loss sets ui.webgl='lost' and stops the loop; restore sets 'ok' and renders again. A simulated hidden tab renders 0 frames, and rendering resumes when it is visible again.",
+   "PASS dispose: renderer memory goes to 0 geometries and 0 textures, all canvas listeners are removed, window.__da64 is deleted, and cursor, touch-action and image-rendering are restored. Every API call afterwards is a no-op, and dispose then re-create through the harness is clean.",
+   "PASS API fuzz: 220 random calls at random intervals gave 0 invariant violations, and it settled into a playable lobby where goToDoor(2) still arrives.",
+   "PASS dev hook window.__da64 has api, state(), teleport() and screenOf(), plus pick() which I added. The harness has start, prev, next, enter and warp for each course, exit, pause, jump, dispose+recreate, and a live store readout.",
+   "PASS originality and facts: no Nintendo names, assets or sounds in the engine, and no invented facts about Daniel (the engine carries no content)."
+  ],
+  "issuesFixed": [
+   "camera.ts: the follow camera's eye height had no cap (squeeze rise + dragged pitch x4 + jump lift) and reached 8.9 m, above the 7.5 m walls. Now: dragged pitch fades out as the camera is squeezed, squeeze rise is capped at 1.8, the wanted eye is clamped to wallHeight - 1.4, and apply() hard-clamps to wallHeight - 0.6.",
+   "camera.ts: travelling and guided shots let the eye pass 0.42 m (ground plan) from the pedestal centre, so the camera could fly through the star. Added keepOffPedestal(), a 1.9 m keep-out applied after every spring step and on cuts; it removes the inward velocity so the eye slides round smoothly.",
+   "game.ts: onDrag now calls avatar.wake(). The spec says any input resets the idle and sleep timers, and drag-orbit did not.",
+   "game.ts: hover raycasts ran every frame while the mouse moved, and three's intersectObjects allocates. They are now throttled to at most one every 4 frames, plus the existing periodic re-check.",
+   "devHook.ts: added pick(x, y), which returns what a real click would hit. screenOf() now scans the projected box for a pixel that resolves to the target; the box centre missed the real world's three-star crests and landed in the air between the pedestal and its star, which made scripted clicks unreliable."
+  ],
+  "issuesRemaining": [
+   "Cosmetic: at spawn the pedestal star is lined up directly behind the avatar's head in the follow camera, so it reads like a crown, most noticeably on mobile. This comes from the layout (spawn due south of the pedestal); I left it alone because moving the camera sideways would make it swing as the avatar walks toward the pedestal.",
+   "Disposing after a WebGL context loss and restore logs many 'INVALID_OPERATION: delete: object does not belong to this context' warnings. This is a harmless three.js quirk (it deletes buffers created before the loss). Rendering after the restore is correct.",
+   "Audio suspend/resume on a hidden tab is verified only in code: the stub audio's suspend() logs nothing and the real audio module is not in the registry yet.",
+   "Mobile: the camera's view into an alcove and the exit shot crop the sign above the door. The painting and avatar stay framed.",
+   "Hover picking still allocates (three's raycast hit objects) about 15 times a second while the mouse moves. The per-frame simulation and camera paths do not allocate.",
+   "Reduced-motion r\u00e9sum\u00e9 flow still includes the walk to the pedestal (about 1.9 s); only the camera cuts and the pose wait is short."
+  ],
+  "filesChanged": [
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/camera.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/game.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/engine/devHook.ts"
+  ],
+  "verification": [
+   "npx tsc --noEmit -p . exits 0 with no errors in the repo (final run after all edits).",
+   "Dev server was reachable at http://localhost:3000. Driver: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/review-engine/drv.mjs. Scenarios s1 (core flows and walls), s2 (clicks, hover, drag, mobile stick), s5 (wheel, audio order, visibility, context loss, dispose), s7/s8 (camera height), s9 (API fuzz and races), s10 (camera filmstrips), s11 (star proximity) and s12 (dispose memory) are in the same folder.",
+   "Screenshots and contact sheets are in /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/review-engine/, among them a1-sheet.png, sheet-s2-enter.png, sheet-m2.png, sheet-s5.png, sheet-s10.png, sheet-s10b.png, sheet-m10.png, and s8-ceiling-before.png / s8-ceiling-after.png. All were opened and reviewed.",
+   "Before the fixes: worst camera height 8.884 and minimum camera-to-star distance 0.70. After: worst camera height 6.098 and minimum 1.95, and the core, fuzz and click scenarios were rerun with no regressions.",
+   "With the real modules: 47-49 draw calls and about 6.3k triangles in the lobby; no page errors (apart from the context-restore warnings listed under remaining issues)."
+  ],
+  "integrationNotes": [
+   "Point services.loadGame() at import('./engine'), which exports createGame. The engine builds world and avatar only through @/game/modules (with a dev-only override seam in engine/overrides.ts for the harness) and audio only through getAudio().",
+   "The engine itself plays uiMove on goToDoor and pause/unpause on setPaused. GameRoot's closePause also plays uiBack, and fastTravel plays uiSelect then calls setPaused(false), which plays unpause. Integration may want to drop one of each pair.",
+   "setPaused is refused during title and intro, so the UI should only offer pause from the lobby onward (GameRoot's openPause already checks phase === 'lobby').",
+   "With the real world, the sign pickables are the star crests above each door (crest-N), not the label board. Clicking the board text does not resolve to a sign. That belongs to the world module, not the engine."
+  ]
+ }
+}

@@ -1,0 +1,66 @@
+[Title] danielavila.tech — Super Mario 64 Hybrid Portfolio Design Blueprint
+Project Overview: An interactive 3D web portfolio inspired by the Peach's Castle hub world in Super Mario 64. The website uses a Hybrid Navigation Architecture that blends full third-person free-roam movement with one-click guided auto-navigation, allowing visitors to either play through the castle lobby or effortlessly cycle through doors and paintings to view education, technical skills, certifications, and career experience.
+[Heading1] 1. Core Foundation & UX Architecture
+[Heading2] 1.1 The "Press Start" Title Screen
+[|li] Visual Presentation: Visitors land on a bold, chunky 3D "DANIEL AVILA 64" logo over either an interactive low-poly 3D bust (inspired by the Mario face screen) or a slow panoramic camera orbit of the castle courtyard.
+[|li] Entry Trigger: Clicking the flashing "PRESS START" button plays the classic start chime and smoothly swoops the camera into the castle lobby behind the player avatar.
+[|li] Audio Toggle: A persistent speaker icon in the corner lets visitors mute or unmute retro sound effects and background music at any time.
+[Heading2] 1.2 The Low-Poly "Daniel 64" Avatar
+[|li] 3D Model Specs: Approximately 600 to 800 triangles using flat/Gouraud vertex shading and crisp 64x64px nearest-neighbor textures for an authentic 1996 N64 aesthetic and instant browser loading.
+[|li] Visual Design: Built on classic N64 proportions, customized with longer hair and dressed in either a sharp casual tech outfit or a stylized low-poly navy blazer.
+[|li] Animation State Machine:
+[|li] Idle: Subtle breathing bounce; glances left and right after 5 seconds.
+[|li] Sleep (Easter Egg): After 20 seconds of inactivity, sits down and nods off with floating "Zzz" particles.
+[|li] Run Cycle: Classic arms-out N64 sprint with small white dust puffs at the feet.
+[|li] Door Push/Pull: Reaches forward to push castle doors open before entering an alcove.
+[|li] Single Jump / Dive: Used when jumping around the lobby or diving into a painting canvas.
+[|li] Backflip Exit: Plays when jumping back out of a painting overlay onto the lobby floor.
+[|li] Star Pose ("Here we go!"): Triggered when interacting with the central Resume Star pedestal.
+[Heading2] 1.3 The "Pause Menu" UX Safety Net
+[|li] Instant Accessibility: Pressing ESC or clicking the persistent [ + PAUSE / MENU ] button in the top-right corner brings up the classic Super Mario 64 Pause Menu.
+[|li] Fast-Travel & Resume Access: Allows recruiters, mobile visitors, or users in a hurry to immediately jump to any section overlay or download the standard PDF resume in a single click without needing to walk around.
+[Heading1] 2. Spatial Layout: The Castle Foyer & Open-Alcove Design
+To avoid slow multiple loading screens (opening a door, fading to black, walking into a second room, and jumping into a painting), the castle hub uses an Open-Alcove Architecture inside a single compact octagonal room:
+[|li] The Main Octagonal Lobby: Features the iconic checkerboard floor, a red central carpet with a custom "DA" emblem, a skybox ceiling with clouds, and warm N64 vertex lighting.
+[|li] The Five Labeled Doors: Arranged in a semi-circle around the main walls of the foyer. Each door features a floating 3D signpost and glowing Star emblem above the frame:
+[|li] Education (Far Left — 1-Star Door)
+[|li] Skills (Mid Left — 3-Star Door)
+[|li] Career & Labs (Center — Big Star Door)
+[|li] Certifications (Mid Right — 3-Star Door)
+[|li] About & Contact (Far Right — 1-Star Door)
+[|li] Seamless Door-to-Painting Reveal: Each door is recessed into a deep stone archway. Approaching a door (by walking or clicking) swings it open on its hinges with the classic door creak sound, immediately revealing the glowing Course Painting hanging inside the alcove.
+[|li] The Center Pedestal: Located in the center of the red carpet with a wooden signpost and rotating Golden Power Star for instant access to contact links and the PDF resume.
+[Heading1] 3. The Hybrid Control System
+Both control schemes remain active simultaneously and transition seamlessly without requiring the user to pick a mode:
+| Control Method | User Input | On-Screen Behavior |
+| 1. Guided Door Cycling | Clicking < PREV DOOR or NEXT DOOR > UI buttons at the bottom of the screen, or scrolling the mouse wheel. | The avatar automatically turns and sprints along a smooth path to the selected door. The door opens and the camera frames the painting over the avatar's shoulder. |
+| 2. Direct Point-and-Click | Clicking or tapping directly on any Door, Signpost, or Painting in the 3D scene. | The avatar sprints to the clicked door to open it. Clicking an exposed painting causes the avatar to triple-jump directly into the canvas. |
+| 3. Full Free-Roam | Pressing WASD, Arrow Keys, Spacebar (Jump), or dragging an on-screen mobile thumbstick. | Any automatic pathing cancels immediately. The camera enters third-person follow mode, giving the visitor full manual control to run, jump, open doors, and leap into paintings. |
+| 4. Pause Menu Override | Pressing ESC or clicking the top-right [ + PAUSE / MENU ] button. | Plays the pause chime and opens a clean 2D navigation menu with direct section links and a one-click PDF resume download. |
+
+[Heading1] 4. Step-by-Step User Journey
+[|li] Title Screen Entry: Visitor clicks "PRESS START" on the "DANIEL AVILA 64" title screen; the camera swoops down behind low-poly Daniel standing on the center emblem in the foyer.
+[|li] Lobby Navigation: A subtle bottom HUD displays [ < Prev ]  LOBBY (Use WASD to walk or Click a Door)  [ Next > ].
+[|li] Approaching a Door: Moving near or clicking a door triggers the proximity sensor, swinging the wooden door open to reveal the illuminated painting inside the alcove and displaying a top banner with the course title.
+[|li] Jumping Into the Painting: Jumping into the canvas (Spacebar) or clicking the painting triggers a dive animation, a concentric WebGL liquid-ripple shader across the painting texture, the classic warp sound effect, and a brief white screen flash.
+[|li] Reading the Course Overlay: A high-contrast, responsive HTML/CSS overlay styled after the SM64 "Act Select / Star Screen" opens, displaying crisp, selectable, and mobile-friendly portfolio text.
+[|li] Jumping Back Out: Clicking [ JUMP OUT OF PAINTING (ESC) ] closes the overlay, triggers a reverse ripple, and ejects the avatar out of the painting with a backflip onto the castle floor outside that door.
+[Heading1] 5. Door, Painting & Content Mapping
+| Door & Badge | Painting Visual Theme | Inside the Painting (Overlay Content Structure) |
+| Door 1: EDUCATION(1-Star Door — Far Left) | "The Royal Archive": A low-poly painting of a fortress library and courtyard. | Course 1: Academic Foundation — Degree details, institution, academic milestones, and selectable coursework cards covering Information Security, Computer Forensics, Database Management (SQL), and Mathematics. |
+| Door 2: SKILLS(3-Star Door — Mid Left) | "Hazy Maze Server Room": A subterranean cyber cavern with retro terminals. | Course 2: Technical Arsenal — Categorized inventory grids for Security & Forensics (incident handling, digital evidence processing, network security controls, change management), Data & Programming (SQL DDL/DML, schema design, query optimization), and Hardware & Networking. |
+| Door 3: CAREER & LABS(Big Star Door — Center) | "Tick Tock Network": Interlocking clockwork gears, firewalls, and mission flags. | Course 3: Experience & Technical Projects — Structured as clickable "Star Missions" (e.g., Star 1: Enterprise SQL Database Implementation, Star 2: Forensic Evidence & Incident Response Lab, Star 3: Professional Experience) detailing the objective, tools used, and outcome. |
+| Door 4: CERTIFICATIONS(3-Star Door — Mid Right) | "Wing Cap Tower": A sunlit sky tower surrounded by floating golden Power Stars. | Course 4: Credentials & Badges — Each completed or in-progress certification is displayed as a 3D spinning Power Star or Cap Badge with the issuing organization, date, competencies, and verification link. |
+| Door 5: ABOUT & CONTACT(1-Star Door — Far Right) | "Peach's Courtyard": A relaxed outdoor castle garden at sunset. | Course 5: Player Profile & Comms — Personal bio, career focus, direct links to LinkedIn, GitHub, and Email, plus a collectible Star button to download the official PDF resume. |
+
+[Heading1] 6. Technical Stack & Phased Development Roadmap
+[Heading2] 6.1 Recommended Tech Stack
+[|li] 3D Web Engine: Three.js (or React Three Fiber) rendering directly inside an HTML5 Canvas.
+[|li] Custom Shaders: Lightweight GLSL WebGL fragment shader for the concentric water-ripple distortion when entering and exiting paintings.
+[|li] 3D Assets: Compressed .glb models created in Blender (under 2MB total) using 64x64px nearest-neighbor textures.
+[|li] UI & SEO Layer: Semantic HTML/CSS overlays for all course text and the Pause Menu so content remains crisp on all screens, copy-paste friendly, and indexable by search engines and resume parsers.
+[Heading2] 6.2 Four-Stage Build Plan
+[|li] Stage 1: Whitebox Prototype — Build the octagonal foyer using basic Three.js geometry, add a placeholder character capsule, and implement the Hybrid Controls (WASD free-roam + < Prev | Next > auto-pathing) and proximity door triggers.
+[|li] Stage 2: Painting Ripple Shader & HTML Overlays — Implement the WebGL canvas ripple transition and build the responsive SM64-styled HTML/CSS course overlays for Education, Skills, Career/Labs, Certifications, and Contact.
+[|li] Stage 3: Low-Poly Art & Avatar Integration — Replace whitebox shapes with textured N64 castle walls, doors, paintings, and the custom rigged "Daniel 64" .glb character model and animations.
+[|li] Stage 4: Audio, Title Screen & Polish — Add the "Press Start" title screen, Pause Menu fast-travel modal, mobile touch controls, and optional retro sound effects.

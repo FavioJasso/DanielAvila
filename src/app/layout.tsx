@@ -1,31 +1,66 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Outfit, Press_Start_2P, Titan_One } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
-import emailjs from "emailjs-com";
+import { profile, SITE_URL } from "@/content/portfolio";
+import { StructuredData } from "@/components/seo/StructuredData";
+import {
+  GAME_NAME,
+  OG_IMAGE,
+  SITE_NAME,
+  siteDescription,
+  siteKeywords,
+  siteTitle,
+  socialDescription,
+  THEME_COLOR,
+} from "@/components/seo/site";
 import "./globals.css";
 
-emailjs.init("O7IxMgPavA6zaZ2Mq");
+/* Fonts are self-hosted by next/font (no layout shift, no third-party request).
+   --font-display: chunky cartridge-era headings and logo
+   --font-pixel:   small HUD labels and button prompts
+   --font-body:    all readable portfolio text */
+const fontDisplay = Titan_One({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-titan",
+  display: "swap",
+});
+const fontPixel = Press_Start_2P({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-pixel-face",
+  display: "swap",
+});
+const fontBody = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  display: "swap",
+});
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Let the game canvas run under the notch / home indicator.
+  viewportFit: "cover",
+  themeColor: THEME_COLOR,
+};
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.danielavila.tech/"),
-  title: "Daniel Avila - Desktop Support Technician | IT Professional",
-  description:
-    "Daniel Avila - Experienced Desktop Support Technician at STORIS, Inc. and County College of Morris. Specializing in hardware, software installation, technical support, and IT asset management.",
-  keywords: [
-    "Daniel Avila",
-    "Desktop Support Technician",
-    "IT Support",
-    "Technical Support",
-    "Hardware Support",
-    "Software Installation",
-    "IT Help Desk",
-    "Computer Repair",
-    "Inventory Management",
-    "STORIS",
-    "County College of Morris",
-  ],
-  authors: [{ name: "Daniel Avila" }],
-  creator: "Daniel Avila",
-  publisher: "Daniel Avila",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: siteTitle,
+    template: `%s | ${profile.name}`,
+  },
+  description: siteDescription,
+  applicationName: GAME_NAME,
+  keywords: siteKeywords,
+  authors: [{ name: profile.name, url: SITE_URL }],
+  creator: profile.name,
+  publisher: profile.name,
+  category: "technology",
+  alternates: {
+    canonical: "/",
+  },
   robots: {
     index: true,
     follow: true,
@@ -40,33 +75,28 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.danielavila.tech/",
-    title: "Daniel Avila - Desktop Support Technician | IT Professional",
-    description:
-      "Experienced Desktop Support Technician specializing in hardware, software, and technical support. Currently working at STORIS, Inc. and County College of Morris IT Help Desk.",
-    siteName: "Daniel Avila Portfolio",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Daniel Avila - Desktop Support Technician",
-      },
-    ],
+    url: "/",
+    siteName: SITE_NAME,
+    title: siteTitle,
+    description: socialDescription,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Daniel Avila - Desktop Support Technician",
-    description:
-      "Experienced Desktop Support Technician specializing in hardware, software, and technical support.",
-    images: ["/og-image.png"],
+    title: siteTitle,
+    description: socialDescription,
+    images: [{ url: OG_IMAGE.url, alt: OG_IMAGE.alt }],
   },
-  verification: {
-    google: "your-google-verification-code",
+  /* src/app/favicon.ico is linked by Next automatically and listed first.
+     /icon.png is src/app/icon.png; the rest live in public/. */
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
   },
-  alternates: {
-    canonical: "https://www.danielavila.tech/",
-  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -75,31 +105,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#3970EB" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="preconnect" href="https://fonts.bunny.net" />
-        <link
-          href="https://fonts.bunny.net/css?family=monda:500,700|quicksand:500,600,700"
-          rel="stylesheet"
-        />
-        <script
-          type="module"
-          src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
-        ></script>
-        <script
-          noModule
-          src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
-        ></script>
-      </head>
-      <body
-        className="antialiased bg-white text-[#212020]"
-        suppressHydrationWarning
-      >
+    <html
+      lang="en"
+      // Anchor links glide only for visitors who have not asked for reduced motion.
+      className={`motion-safe:scroll-smooth ${fontDisplay.variable} ${fontPixel.variable} ${fontBody.variable}`}
+    >
+      {/* The `!` (important) variants are needed while globals.css still carries
+          the previous site's un-layered `body { background; color; font-family }`
+          rule, which otherwise beats Tailwind's layered utilities. */}
+      <body className="font-body! antialiased bg-ink! text-cream!">
+        <StructuredData />
         {children}
         <Analytics />
       </body>

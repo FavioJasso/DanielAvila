@@ -1,0 +1,462 @@
+/* ==================================================================
+   Plain HTML version — page chrome (header, hero, section bands, footer)
+   and print rules. Class prefix: pp-.
+
+   The portfolio content itself is drawn by the shared section components
+   and styled in course.css; this file is loaded after it.
+   ================================================================== */
+
+.pp {
+  --pp-gutter: clamp(1rem, 4vw, 2.5rem);
+  --pp-anchor-offset: 5.25rem;
+  min-height: 100vh;
+  background: var(--paper);
+  -webkit-user-select: text;
+  user-select: text;
+}
+.pp-wrap {
+  width: min(100%, 72rem);
+  margin-inline: auto;
+  padding-inline: max(var(--pp-gutter), env(safe-area-inset-left))
+    max(var(--pp-gutter), env(safe-area-inset-right));
+}
+
+.pp-skip {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 60;
+  padding: 0.65rem 1rem;
+  font-weight: 700;
+  color: var(--cream);
+  text-decoration: none;
+  background: var(--ink);
+  border: 3px solid var(--star);
+  border-radius: 10px;
+  transform: translateY(-250%);
+}
+.pp-skip:focus {
+  transform: none;
+}
+
+/* Header */
+.pp-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(255, 250, 240, 0.94);
+  border-bottom: 3px solid var(--ink);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.pp-header__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.25rem;
+  padding-block: 0.5rem;
+}
+.pp-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  margin-right: auto;
+  color: var(--ink);
+  text-decoration: none;
+}
+.pp-brand img {
+  width: 40px;
+  height: 40px;
+}
+.pp-brand__name {
+  font-family: var(--cx-font-display);
+  font-size: 1.2rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.pp-nav {
+  min-width: 0;
+}
+.pp-nav__list {
+  display: flex;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pp-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--cx-text);
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 8px;
+}
+.pp-nav__link:hover {
+  color: var(--ink);
+  background: var(--cream);
+  text-decoration: underline;
+  text-decoration-thickness: 0.14em;
+  text-underline-offset: 0.3em;
+  text-decoration-color: var(--star-deep);
+}
+.pp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+/* Narrow screens: brand and actions on the first row, the nav scrolls
+   sideways on a second row (works without JavaScript). */
+@media (max-width: 1023px) {
+  .pp {
+    /* Two-row sticky header (~111px) plus breathing room. */
+    --pp-anchor-offset: 8.25rem;
+  }
+  .pp-nav {
+    order: 3;
+    flex: 1 0 100%;
+    margin-inline: calc(var(--pp-gutter) * -1);
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Fade the trailing edge so a clipped link reads as "scroll for more". */
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
+  }
+  .pp-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .pp-nav__list {
+    width: max-content;
+    /* The extra end padding lets the last link scroll clear of the fade. */
+    padding-inline: calc(var(--pp-gutter) - 0.65rem) 2.5rem;
+  }
+}
+@media (max-width: 520px) {
+  /* Keep brand and actions on one row: the name is in the hero below. */
+  .pp-brand__name {
+    display: none;
+  }
+  .pp-actions > .btn-retro {
+    min-height: 44px;
+    padding: 0.4em 0.8em;
+    font-size: 0.9rem;
+  }
+}
+
+.pp-main:focus {
+  outline: none;
+}
+
+/* Hero */
+.pp-hero {
+  padding-block: clamp(2.5rem, 7vw, 5rem);
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, rgba(57, 112, 235, 0.14), rgba(57, 112, 235, 0)),
+    radial-gradient(40rem 24rem at 0% 110%, rgba(255, 201, 60, 0.22), rgba(255, 201, 60, 0)),
+    var(--paper);
+  border-bottom: 3px solid var(--ink);
+  scroll-margin-top: var(--pp-anchor-offset);
+}
+.pp-hero__grid {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+}
+@media (min-width: 820px) {
+  .pp-hero__grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  }
+}
+.pp-hero__name {
+  margin: 0.9rem 0 0;
+  font-family: var(--cx-font-display);
+  font-size: clamp(2.75rem, 9vw, 5rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+}
+.pp-hero__title {
+  margin-top: 0.8rem;
+  font-size: clamp(1.3rem, 3.4vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #2553c7;
+}
+.pp-hero__summary {
+  max-width: 54ch;
+  margin-top: 1rem;
+  font-size: clamp(1.0625rem, 2vw, 1.2rem);
+  color: var(--cx-text);
+}
+.pp-hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1.75rem;
+}
+/* Darker brand blue under the button label for AA contrast. */
+.pp-hero__cta .btn-retro:not(.btn-retro--gold) {
+  color: #ffffff;
+  background: #2553c7;
+}
+.pp-hero__meta {
+  margin-top: 1.4rem;
+}
+.pp-hero__photo {
+  justify-self: center;
+  width: min(100%, 21rem);
+  background: #ffffff;
+  border: 3px solid var(--ink);
+  border-radius: 28px;
+  box-shadow: 10px 10px 0 var(--star), 10px 10px 0 3px var(--ink);
+  overflow: hidden;
+}
+.pp-hero__photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Small screens: a compact portrait above the name. */
+@media (max-width: 819px) {
+  .pp-hero__grid {
+    gap: 1.5rem;
+  }
+  .pp-hero__photo {
+    order: -1;
+    justify-self: start;
+    width: clamp(8.5rem, 38vw, 12rem);
+    border-radius: 22px;
+    box-shadow: 6px 6px 0 var(--star), 6px 6px 0 3px var(--ink);
+  }
+}
+
+/* Sections */
+.pp-section {
+  padding-block: clamp(3rem, 7vw, 5rem);
+  scroll-margin-top: var(--pp-anchor-offset);
+}
+.pp-section--tint {
+  background: var(--cream);
+  border-block: 3px solid var(--ink);
+}
+.pp-section__head {
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+}
+.pp-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cx-label);
+}
+.pp-eyebrow::before {
+  content: "";
+  width: 0.9rem;
+  height: 0.9rem;
+  background: var(--star-deep);
+  clip-path: var(--cx-star-shape);
+}
+.pp-h2 {
+  margin: 0.35rem 0 0;
+  font-family: var(--cx-font-display);
+  font-size: clamp(2rem, 5.5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  color: var(--cx-strong);
+}
+.pp-section__intro {
+  max-width: 60ch;
+  margin-top: 0.6rem;
+  font-size: 1.0625rem;
+  color: var(--cx-soft);
+}
+
+/* Contact: a navy band that reuses the dark theme. */
+.pp-contact {
+  background-color: var(--night);
+  background-image: linear-gradient(180deg, var(--dusk) 0%, var(--night) 38%);
+  border-top: 3px solid var(--ink);
+}
+
+/* Footer */
+.pp-footer {
+  padding-block: 2.5rem max(2.5rem, env(safe-area-inset-bottom));
+  color: var(--cream);
+  background: var(--ink);
+  border-top: 4px solid var(--star);
+}
+.pp-footer__grid {
+  display: grid;
+  gap: 1.75rem;
+  justify-items: center;
+  text-align: center;
+}
+.pp-footer__tagline {
+  max-width: 30ch;
+  font-family: var(--cx-font-display);
+  font-size: clamp(1.25rem, 3.6vw, 1.75rem);
+  line-height: 1.2;
+  color: var(--star);
+}
+.pp-footer__about {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+}
+.pp-footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--cx-font-display);
+  font-size: 1.15rem;
+  color: var(--cream);
+}
+.pp-footer__brand img {
+  width: 36px;
+  height: 36px;
+  padding: 3px;
+  background: var(--paper);
+  border-radius: 10px;
+}
+.pp-footer__small {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.pp-footer__credit {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.pp-footer__credit a {
+  display: inline-block;
+  padding: 0.35rem 0.6rem;
+  background: var(--paper);
+  border-radius: 10px;
+}
+.pp-footer__credit a:focus-visible {
+  outline: 3px solid var(--star);
+  outline-offset: 3px;
+}
+.pp-footer__credit img {
+  display: block;
+  width: 103px;
+  height: auto;
+}
+/* Wide: tagline across the top, then who (left) and credit (right). */
+@media (min-width: 700px) {
+  .pp-footer__grid {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+  .pp-footer__tagline {
+    grid-column: 1 / -1;
+    padding-bottom: 1.75rem;
+    border-bottom: 2px solid rgba(183, 192, 232, 0.25);
+    justify-self: stretch;
+    max-width: none;
+  }
+  .pp-footer__about {
+    justify-self: start;
+    justify-items: start;
+    text-align: left;
+  }
+  .pp-footer__credit {
+    justify-items: end;
+    text-align: right;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-nav__link {
+    transition: none;
+  }
+}
+
+/* Print: a clean black-on-white document with every section expanded. */
+@media print {
+  .pp {
+    --pp-gutter: 0;
+    min-height: 0;
+    background: #ffffff;
+  }
+  .pp,
+  .pp .cx--dark {
+    --cx-text: #111111;
+    --cx-soft: #333333;
+    --cx-strong: #000000;
+    --cx-label: #1d3f99;
+    --cx-link: #1d3f99;
+    --cx-card: #ffffff;
+    --cx-card-raised: #ffffff;
+    --cx-well: #ffffff;
+    --cx-line: #bbbbbb;
+    --cx-chip-bg: #ffffff;
+    --cx-chip-line: #999999;
+    --cx-chip-text: #111111;
+    --cx-ok: #19743a;
+    --cx-wip: #1d3f99;
+    --cx-card-shadow: none;
+  }
+  .pp-skip,
+  .pp-nav,
+  .pp-actions,
+  .pp-hero__cta,
+  .pp .cx-contact__message,
+  .pp .cx-resume-star,
+  .pp .cx-star3d__glow {
+    display: none !important;
+  }
+  .pp-header {
+    position: static;
+    border-bottom-width: 1px;
+    background: none;
+  }
+  .pp-hero,
+  .pp-section,
+  .pp-contact,
+  .pp-footer {
+    padding-block: 1.25rem;
+    background: none !important;
+    border: 0;
+    color: #111111;
+  }
+  .pp-hero__photo {
+    width: 9rem;
+    box-shadow: none;
+  }
+  .pp-footer__tagline,
+  .pp-footer__brand,
+  .pp-footer__small,
+  .pp-footer__credit {
+    color: #111111;
+  }
+  .pp .cx-card,
+  .pp .cx-inv,
+  .pp .cx-job,
+  .pp .cx-brief__row,
+  .pp .cx-link {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+  .pp .cx-star3d__spin,
+  .pp .cx-resume-star__star {
+    animation: none;
+  }
+  .pp-h2,
+  .pp .cx-h3 {
+    break-after: avoid;
+  }
+}

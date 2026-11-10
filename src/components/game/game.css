@@ -1,0 +1,1390 @@
+/* ------------------------------------------------------------------ */
+/* DANIEL AVILA 64 — game UI layer                                     */
+/* Title screen, lobby HUD, pause menu, touch controls, toasts, flash. */
+/* Tokens and shared primitives (.btn-retro, .panel-retro, .text-*)    */
+/* come from src/app/globals.css; everything here is prefixed .da64-.  */
+/*                                                                     */
+/* Stacking inside the stage:                                          */
+/*   0 canvas · 10 HUD · 20 title · 25 context-lost · 30 pause         */
+/*   40 course overlay (its own) · 45 toasts · 50 flash                */
+/* ------------------------------------------------------------------ */
+
+/* Game mode: the stage is the whole viewport, so the page must not scroll. */
+html[data-da64="game"],
+html[data-da64="game"] body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* Before hydration, a URL that points into the plain page ("#plain-portfolio",
+   "#contact", …) already shows it: no title-screen flash on reload, and the
+   plain-version link works without JS. Once GameRoot has mounted, `ui.mode`
+   is in charge. */
+html:has(#plain-portfolio:target, #plain-portfolio :target) .da64-stage:not([data-hydrated]) {
+  display: none;
+}
+
+.da64-stage {
+  --edge-t: max(10px, env(safe-area-inset-top, 0px));
+  --edge-r: max(10px, env(safe-area-inset-right, 0px));
+  --edge-b: max(10px, env(safe-area-inset-bottom, 0px));
+  --edge-l: max(10px, env(safe-area-inset-left, 0px));
+
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: 100;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: 500;
+  /* Visible until the engine paints its first frame. */
+  background: radial-gradient(120% 90% at 50% 22%, var(--dusk) 0%, var(--ink) 72%);
+  -webkit-tap-highlight-color: transparent;
+}
+.da64-stage[hidden] {
+  display: none;
+}
+
+.da64-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  touch-action: none;
+  outline: none;
+}
+
+.da64-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.da64-title a:focus-visible,
+.da64-lost a:focus-visible {
+  outline: 3px solid var(--star);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Key caps in hints and the controls reference. */
+.da64-title kbd,
+.da64-pause kbd {
+  display: inline-block;
+  padding: 0.55em 0.6em 0.4em;
+  font-family: var(--font-pixel);
+  font-size: 0.56rem;
+  line-height: 1;
+  text-transform: uppercase;
+  vertical-align: 0.12em;
+  color: var(--cream);
+  background: rgba(10, 15, 44, 0.82);
+  border: 2px solid rgba(255, 244, 214, 0.75);
+  border-bottom-width: 4px;
+  border-radius: 6px;
+}
+
+/* Square icon button (speaker). */
+.da64-iconbtn {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Title screen                                                        */
+/* ------------------------------------------------------------------ */
+
+.da64-title {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  /* the middle row keeps its content height, so a tiny viewport scrolls
+     instead of squashing the logo into the credit */
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
+  padding: var(--edge-t) var(--edge-r) var(--edge-b) var(--edge-l);
+  overflow: hidden auto;
+  text-align: center;
+  /* Soft vignette: the orbiting lobby shows through the middle. */
+  background: radial-gradient(
+    ellipse 78% 68% at 50% 44%,
+    rgba(10, 15, 44, 0.3) 0%,
+    rgba(10, 15, 44, 0.64) 62%,
+    rgba(10, 15, 44, 0.95) 100%
+  );
+  transition:
+    opacity 420ms ease,
+    visibility 0s linear 420ms;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.da64-title[data-leaving] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.da64-title__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+.da64-title__plain {
+  min-height: 44px;
+  padding: 0.5em 0.95em;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+.da64-title__plain-short {
+  display: none;
+}
+
+.da64-title__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* `safe`: if it ever is too tall, it grows the row (and the title
+     scrolls) instead of spilling over the bar and the credit. */
+  justify-content: safe center;
+  gap: clamp(8px, 2.4vh, 22px);
+  width: 100%;
+  padding-block: 6px;
+}
+
+/* --- Logo ---------------------------------------------------------- */
+/* Original lettering: per-word colour (gold / brand blue / cream), a   */
+/* thick ink outline, a stacked-shadow extrusion and a two-tone face.   */
+
+.da64-logo {
+  --logo-size: clamp(2.1rem, min(11.6vw, 16.5vh), 6.6rem);
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    "daniel n64"
+    "avila  n64";
+  align-items: center;
+  justify-content: center;
+  column-gap: 0.14em;
+  margin: 0;
+  padding: 0.1em 0.12em 0.34em;
+  font-family: var(--font-display);
+  font-size: var(--logo-size);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.035em;
+  animation: da64-bob 3.4s ease-in-out infinite;
+}
+.da64-logo__word {
+  display: inline-flex;
+  white-space: nowrap;
+}
+.da64-logo__word--daniel {
+  grid-area: daniel;
+  justify-self: start;
+  transform: rotate(-4deg);
+  --face: var(--star);
+  --face-hi: #fff1ad;
+  --face-lo: #ffad1f;
+  --depth: var(--star-deep);
+}
+.da64-logo__word--avila {
+  grid-area: avila;
+  justify-self: end;
+  margin-top: -0.06em;
+  font-size: 1.19em;
+  transform: rotate(-4deg);
+  --face: #4a80f2;
+  --face-hi: #9cc0ff;
+  --face-lo: var(--royal);
+  --depth: #1c3391;
+}
+.da64-logo__word--n64 {
+  grid-area: n64;
+  margin-left: -0.02em;
+  font-size: 2.42em;
+  letter-spacing: 0.02em;
+  transform: rotate(7deg) translateY(-0.02em);
+  --face: var(--cream);
+  --face-hi: #fffdf4;
+  --face-lo: #ffd88a;
+  --depth: var(--ruby);
+}
+.da64-logo__ch {
+  position: relative;
+  display: inline-block;
+  color: var(--face);
+  -webkit-text-stroke: 0.12em var(--ink);
+  paint-order: stroke fill;
+  /* extrusion (4 steps) → ink keel → soft ground shadow */
+  text-shadow:
+    0 0.035em 0 var(--depth),
+    0 0.07em 0 var(--depth),
+    0 0.105em 0 var(--depth),
+    0 0.14em 0 var(--depth),
+    0 0.18em 0 var(--ink),
+    0 0.27em 0.07em rgba(4, 7, 26, 0.55);
+}
+/* Glossy face: a lit upper band over the base colour. */
+.da64-logo__ch::after {
+  content: attr(data-ch);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-stroke: 0 transparent;
+  text-shadow: none;
+  background: linear-gradient(
+    180deg,
+    var(--face-hi) 0%,
+    var(--face-hi) 36%,
+    var(--face) 36.5%,
+    var(--face) 62%,
+    var(--face-lo) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  pointer-events: none;
+}
+
+.da64-title__role {
+  margin: 0;
+  font-size: clamp(0.95rem, 2.3vw, 1.3rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  color: var(--cream);
+  text-shadow:
+    0 2px 0 var(--ink),
+    0 0 12px rgba(10, 15, 44, 0.9);
+}
+.da64-title__role > span {
+  white-space: nowrap;
+}
+.da64-title__role-sep {
+  color: var(--star);
+}
+
+.da64-start {
+  min-height: 58px;
+  padding: 0.95em 1.6em 0.85em;
+  font-family: var(--font-pixel);
+  font-size: clamp(0.82rem, 2.3vw, 1.05rem);
+  letter-spacing: 0.08em;
+  border-radius: 14px;
+  box-shadow:
+    0 5px 0 var(--ink),
+    0 0 26px rgba(255, 201, 60, 0.5);
+}
+.da64-start:active {
+  box-shadow:
+    0 2px 0 var(--ink),
+    0 0 26px rgba(255, 201, 60, 0.5);
+}
+.da64-start__label {
+  animation: da64-blink 1.15s linear infinite;
+}
+.da64-start[data-busy] .da64-start__label,
+.da64-start:hover .da64-start__label,
+.da64-start:focus-visible .da64-start__label {
+  animation: none;
+}
+
+.da64-title__slot {
+  display: grid;
+  place-items: center;
+  min-height: 1.9rem;
+}
+.da64-title__slot > * {
+  grid-area: 1 / 1;
+  margin: 0;
+}
+.da64-title__status,
+.da64-title__hints {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--cream);
+  text-shadow: 0 1px 0 var(--ink);
+}
+.da64-title__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.da64-spinner {
+  width: 0.95em;
+  height: 0.95em;
+  border: 3px solid rgba(255, 244, 214, 0.3);
+  border-top-color: var(--star);
+  border-radius: 50%;
+  animation: da64-spin 0.8s linear infinite;
+}
+
+.da64-title__credit {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.da64-title__credit a {
+  display: inline-block;
+  padding: 12px 2px;
+  color: var(--cream);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.da64-title__credit a:hover {
+  color: var(--star);
+}
+
+/* ------------------------------------------------------------------ */
+/* Lobby HUD                                                           */
+/* ------------------------------------------------------------------ */
+
+.da64-hud {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  /* +8px at the bottom: room for the bar's hard drop shadow */
+  padding: var(--edge-t) var(--edge-r) calc(var(--edge-b) + 8px) var(--edge-l);
+  /* Let clicks, drags and the wheel fall through to the canvas… */
+  pointer-events: none;
+  transition: opacity 260ms ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* …except on the controls themselves. */
+.da64-hud button,
+.da64-hud .da64-bar,
+.da64-hud .da64-stick {
+  pointer-events: auto;
+}
+.da64-hud[data-state="dim"] {
+  opacity: 0.32;
+}
+.da64-hud[data-state="hidden"] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.da64-hud__top {
+  display: grid;
+  /* Equal side columns keep the banner centred; they never shrink below the
+     corner controls, so on a tight screen it is the banner that wraps. */
+  grid-template-columns: 1fr minmax(0, auto) 1fr;
+  align-items: start;
+  gap: 10px;
+}
+.da64-hud__corner {
+  grid-column: 1;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.da64-hud__banner-slot {
+  grid-column: 2;
+  justify-self: center;
+  min-width: 0;
+}
+.da64-hud__pause {
+  grid-column: 3;
+  justify-self: end;
+  padding-inline: 0.9em;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.da64-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 12px;
+  color: var(--cream);
+  background: rgba(10, 15, 44, 0.72);
+  border: 3px solid var(--cream);
+  border-radius: 12px;
+  box-shadow: 0 4px 0 rgba(10, 15, 44, 0.9);
+}
+.da64-stars__pips {
+  display: inline-flex;
+  gap: 2px;
+}
+.da64-stars__single {
+  display: none;
+}
+.da64-stars__count {
+  padding-top: 2px;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+/* Uncollected stars: the shared icon's empty state is nearly invisible on
+   navy, so give it a cream outline here (a lone <path> = the empty star). */
+.da64-stars svg path:only-child,
+.da64-row__star path:only-child {
+  fill: rgba(255, 244, 214, 0.12);
+  stroke: rgba(255, 244, 214, 0.6);
+}
+
+/* Top banner: slides down when a door is open nearby. */
+.da64-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 6px 16px 6px 6px;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(calc(-100% - 28px));
+  transition:
+    transform 340ms cubic-bezier(0.2, 1.25, 0.4, 1),
+    opacity 180ms ease,
+    visibility 0s linear 340ms;
+}
+.da64-banner[data-open] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+.da64-banner__thumb {
+  flex: none;
+  display: block;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+}
+.da64-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.da64-banner__kicker {
+  font-size: 0.58rem;
+  line-height: 1.5;
+  color: var(--sky);
+}
+.da64-banner__title {
+  font-size: clamp(1rem, 2.4vw, 1.3rem);
+  text-wrap: balance;
+}
+.da64-banner__painting {
+  font-size: 0.84rem;
+  line-height: 1.3;
+  color: var(--cream);
+}
+
+.da64-hud__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Row above the bar: [stick] [action buttons] [jump]. */
+.da64-hud__mid {
+  display: grid;
+  /* Side columns never shrink below the stick / jump button; on a tight
+     screen the action buttons in the middle give way (their text wraps). */
+  grid-template-columns: 1fr minmax(0, auto) 1fr;
+  align-items: end;
+  gap: 10px;
+}
+.da64-hud__mid > .da64-stick {
+  grid-column: 1;
+  justify-self: start;
+}
+.da64-hud__actions {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+.da64-hud__mid > .da64-jump {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.da64-cta {
+  position: relative;
+  max-width: 100%;
+  min-height: 52px;
+  padding: 0.5em 1.15em;
+  font-size: clamp(1rem, 2.6vw, 1.2rem);
+  box-shadow: 0 5px 0 var(--ink);
+  animation: da64-pop 260ms ease-out;
+}
+/* A soft, breathing halo behind the call to action. It is a separate layer
+   animated with opacity only, so it never repaints the button (or the HUD)
+   on every frame the way an animated box-shadow would. */
+.da64-cta::before {
+  content: "";
+  position: absolute;
+  inset: -4px -4px -1px;
+  z-index: -1;
+  border-radius: 16px;
+  box-shadow:
+    0 0 16px 5px rgba(255, 214, 92, 0.85),
+    0 0 0 3px rgba(255, 244, 214, 0.55);
+  opacity: 0.25;
+  pointer-events: none;
+  animation: da64-cta-glow 1.6s ease-in-out 260ms infinite alternate;
+}
+.da64-cta__thumb {
+  flex: none;
+  display: block;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+
+/* Bottom bar. */
+.da64-bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 780px);
+  margin-inline: auto;
+  padding: 8px;
+  background: rgba(10, 15, 44, 0.86);
+  border: 3px solid var(--star);
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 3px var(--ink),
+    0 5px 0 3px var(--ink);
+}
+.da64-bar__btn {
+  min-height: 48px;
+  white-space: nowrap;
+}
+.da64-bar__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  text-align: center;
+}
+.da64-bar__name {
+  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+  text-wrap: balance;
+}
+.da64-bar__hint {
+  font-size: 0.84rem;
+  line-height: 1.25;
+  color: var(--cream);
+  text-wrap: balance;
+}
+
+/* ------------------------------------------------------------------ */
+/* Touch controls                                                      */
+/* ------------------------------------------------------------------ */
+
+.da64-stick {
+  position: relative;
+  width: 124px;
+  height: 124px;
+  border: 3px solid rgba(255, 244, 214, 0.88);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 0 39%, rgba(255, 244, 214, 0.28) 40% 42%, transparent 43%),
+    radial-gradient(circle at 50% 45%, rgba(57, 112, 235, 0.42), rgba(10, 15, 44, 0.66) 72%);
+  box-shadow: 0 0 0 3px rgba(10, 15, 44, 0.85);
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+.da64-stick[data-active] {
+  border-color: var(--star);
+}
+.da64-stick__knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #fff6d8 0%, var(--star) 46%, var(--star-deep) 100%);
+  box-shadow: 0 4px 0 rgba(10, 15, 44, 0.85);
+  will-change: transform;
+  pointer-events: none;
+}
+
+.da64-jump {
+  width: 86px;
+  height: 86px;
+  margin: 0 4px 14px 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  background: radial-gradient(circle at 36% 28%, #fff1b8 0%, var(--star) 52%, var(--star-deep) 100%);
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  box-shadow:
+    0 5px 0 var(--ink),
+    0 0 0 3px rgba(255, 244, 214, 0.7);
+  cursor: pointer;
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+.da64-jump:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 1px 0 var(--ink),
+    0 0 0 3px rgba(255, 244, 214, 0.7);
+}
+.da64-jump:focus-visible {
+  outline: 3px solid var(--star);
+  outline-offset: 5px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Pause menu                                                          */
+/* ------------------------------------------------------------------ */
+
+.da64-pause {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  /* +9px at the bottom: the panel's hard drop shadow */
+  padding: calc(var(--edge-t) + 3px) calc(var(--edge-r) + 3px) calc(var(--edge-b) + 9px)
+    calc(var(--edge-l) + 3px);
+  background: rgba(10, 15, 44, 0.76);
+  animation: da64-fade 160ms ease-out;
+}
+.da64-pause__panel {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 920px);
+  max-height: 100%;
+  overflow: hidden;
+  animation: da64-pop 220ms ease-out;
+}
+.da64-pause__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px 8px;
+}
+.da64-pause__title {
+  margin: 0;
+  font-size: clamp(1.9rem, 5vw, 2.7rem);
+  font-weight: 400;
+}
+.da64-pause__stars {
+  border-color: rgba(255, 244, 214, 0.5);
+  box-shadow: none;
+}
+.da64-pause__kicker {
+  margin: 0 0 8px;
+  font-weight: 400;
+  color: var(--sky);
+}
+.da64-pause__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+  padding: 6px 16px 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.da64-pause__list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.da64-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 6px 12px 6px 6px;
+  text-align: left;
+  color: var(--cream);
+  background: rgba(10, 15, 44, 0.52);
+  border: 3px solid rgba(255, 244, 214, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    transform 100ms ease;
+}
+.da64-row:hover,
+.da64-row:focus-visible {
+  /* a touch lighter than --dusk; cream text stays above 7:1 */
+  background: #2f47b8;
+  border-color: var(--star);
+  transform: translateX(3px);
+}
+.da64-row:focus-visible {
+  outline: 3px solid var(--star);
+  outline-offset: 2px;
+}
+.da64-row:active {
+  transform: translate(3px, 2px);
+}
+.da64-row__thumb {
+  display: block;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+}
+.da64-row__thumb--star {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  background: radial-gradient(circle, rgba(255, 201, 60, 0.4) 0%, rgba(10, 15, 44, 0.7) 78%);
+}
+.da64-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.da64-row__kicker {
+  font-size: 0.56rem;
+  line-height: 1.4;
+  color: var(--sky);
+}
+.da64-row__title {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere; /* last resort: never run under the star */
+}
+.da64-row__sub {
+  font-size: 0.85rem;
+  line-height: 1.25;
+  color: var(--muted);
+}
+.da64-row:hover .da64-row__kicker,
+.da64-row:focus-visible .da64-row__kicker,
+.da64-row:hover .da64-row__sub,
+.da64-row:focus-visible .da64-row__sub {
+  color: var(--cream);
+}
+.da64-row__star {
+  flex: none;
+}
+
+.da64-pause__side {
+  display: grid;
+  gap: 10px;
+  /* line the first button up with the first course row */
+  padding-top: calc(0.7rem * 1.6 + 8px);
+}
+.da64-pause__action {
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 48px;
+  text-align: left;
+}
+.da64-pause__controls {
+  margin-top: 2px;
+  padding: 12px 14px;
+  background: rgba(10, 15, 44, 0.48);
+  border-radius: 12px;
+}
+.da64-pause__controls dl {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+.da64-pause__controls dl > div {
+  display: grid;
+  grid-template-columns: 4.7em minmax(0, 1fr);
+  align-items: baseline;
+  gap: 8px;
+}
+.da64-pause__controls dt {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  color: var(--star);
+}
+.da64-pause__controls dd {
+  margin: 0;
+  color: var(--cream);
+}
+
+.da64-pause__foot {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 300px));
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 16px 14px;
+  border-top: 3px solid rgba(10, 15, 44, 0.55);
+}
+.da64-pause__pdf,
+.da64-pause__back {
+  min-height: 50px;
+  padding-inline: 0.8em;
+  font-size: 1.12rem;
+  text-align: center;
+}
+.da64-pause__pdf > svg {
+  flex: none;
+}
+.da64-pause__short {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Toasts, flash, notices                                              */
+/* ------------------------------------------------------------------ */
+
+.da64-toasts {
+  position: absolute;
+  inset: max(21%, 128px) 0 auto 0;
+  z-index: 45;
+  display: flex;
+  justify-content: center;
+  padding-inline: 14px;
+  pointer-events: none;
+}
+.da64-toasts[data-over-overlay] {
+  top: var(--edge-t);
+}
+.da64-toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px 9px 14px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: var(--star);
+  background: linear-gradient(180deg, var(--dusk) 0%, var(--night) 100%);
+  border: 3px solid var(--star);
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 3px var(--ink),
+    0 6px 0 3px var(--ink);
+  animation: da64-toast 3400ms ease both;
+}
+
+.da64-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  animation: da64-flash 640ms ease-out both;
+}
+
+.da64-lost {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(10, 15, 44, 0.74);
+}
+.da64-lost__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 420px;
+  padding: 22px 20px 18px;
+  text-align: center;
+}
+.da64-lost__title {
+  margin: 0;
+  font-size: 1.7rem;
+}
+.da64-lost__text {
+  margin: 0;
+  line-height: 1.45;
+}
+.da64-lost__plain {
+  padding: 10px 6px;
+  font-size: 0.92rem;
+  color: var(--sky);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Plain-mode notice: an in-flow strip at the very top of the page (it lives
+   outside the stage, so it is fully self-styled). */
+.da64-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px max(8px, env(safe-area-inset-right, 0px)) 6px
+    max(14px, env(safe-area-inset-left, 0px));
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--cream);
+  background: var(--night);
+  border-bottom: 3px solid var(--star);
+}
+.da64-notice p {
+  flex: 0 1 auto;
+  margin: 0;
+  padding-block: 4px;
+}
+.da64-notice strong {
+  color: var(--star);
+}
+.da64-notice__close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--cream);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.da64-notice__close:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.da64-notice__close:focus-visible {
+  outline: 3px solid var(--star);
+  outline-offset: 1px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Keyframes                                                           */
+/* ------------------------------------------------------------------ */
+
+@keyframes da64-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes da64-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes da64-cta-glow {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes da64-toast {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.7);
+  }
+  6% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  10%,
+  86% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+/* quick in, slower out */
+@keyframes da64-flash {
+  0% {
+    opacity: 0;
+  }
+  14% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes da64-flash-soft {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.32;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
+/* Banner drops to its own (centred) row under the corner controls when it
+   cannot sit centred between them. Landscape phones are the exception down
+   to 800px wide: height is scarcer there, so it stays in the top row. */
+@media (max-width: 799px), (max-width: 999px) and (min-height: 461px) {
+  .da64-hud__top {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .da64-hud__corner {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .da64-hud__pause {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .da64-hud__banner-slot {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+/* Pause menu: one column. */
+@media (max-width: 719px) {
+  .da64-pause__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .da64-pause__side {
+    padding-top: 0;
+  }
+  /* On a phone the overlay's header fills the top edge, so the toast moves
+     down to just above the overlay's footer instead of covering the title. */
+  .da64-toasts[data-over-overlay] {
+    top: auto;
+    bottom: calc(var(--edge-b) + 86px);
+  }
+}
+
+/* Bottom bar: label on top, the two door buttons side by side below.
+   (Small landscape phones keep the one-row bar: they are short, not narrow.) */
+@media (max-width: 479px), (max-width: 639px) and (min-height: 461px) {
+  .da64-bar {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+  .da64-bar__label {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    padding: 2px 4px 0;
+  }
+  .da64-bar__btn--prev {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .da64-bar__btn--next {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+/* Portrait phones with touch controls: actions sit above stick + jump. */
+@media (max-width: 479px), (max-width: 599px) and (min-height: 461px) {
+  .da64-hud__mid[data-touch] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .da64-hud__mid[data-touch] > .da64-hud__actions {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  .da64-hud__mid[data-touch] > .da64-stick {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .da64-hud__mid[data-touch] > .da64-jump {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+/* The role line no longer fits on one row: stack it and drop the "|". */
+@media (max-width: 419px) {
+  .da64-title__role {
+    display: flex;
+    flex-direction: column;
+  }
+  .da64-title__role-sep {
+    display: none;
+  }
+}
+
+/* Very narrow phones: one star + count instead of six pips, and tighter
+   pause rows so the longest label ("CERTIFICATIONS") clears its star. */
+@media (max-width: 379px) {
+  .da64-stars__pips {
+    display: none;
+  }
+  .da64-stars__single {
+    display: inline-flex;
+  }
+  .da64-row {
+    gap: 9px;
+    padding-right: 8px;
+  }
+  /* PaintingThumb sizes itself with an inline style, hence !important. */
+  .da64-row__thumb {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .da64-row__title {
+    font-size: 0.9rem;
+  }
+  .da64-row__sub {
+    font-size: 0.8rem;
+  }
+  .da64-row__star {
+    width: 24px;
+    height: 24px;
+  }
+  /* footer: a compact "PDF" button, "Back to lobby" takes the rest */
+  .da64-pause__foot {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .da64-pause__opt {
+    display: none;
+  }
+}
+
+/* Under 360px the corner row cannot hold the full label next to the
+   counter: the button reads "+ PAUSE" (its accessible name is unchanged). */
+@media (max-width: 359px) {
+  .da64-hud__pause-more {
+    display: none;
+  }
+}
+
+@media (max-width: 479px) {
+  /* Phones: one star + "n/6" instead of six pips, which leaves room for
+     the full "+ PAUSE / MENU" label in the top-right corner. */
+  .da64-hud .da64-stars__pips {
+    display: none;
+  }
+  .da64-hud .da64-stars__single {
+    display: inline-flex;
+  }
+  .da64-title__plain-full {
+    display: none;
+  }
+  .da64-title__plain-short {
+    display: inline;
+  }
+  .da64-pause__head {
+    padding: 10px 12px 6px;
+  }
+  .da64-pause__body {
+    padding: 4px 12px 12px;
+  }
+  .da64-pause__foot {
+    gap: 10px;
+    padding: 8px 12px 12px;
+  }
+  .da64-pause__pdf,
+  .da64-pause__back {
+    padding-inline: 0.6em;
+    font-size: 0.98rem;
+    white-space: nowrap;
+  }
+  .da64-pause__long {
+    display: none;
+  }
+  .da64-pause__short {
+    display: inline;
+  }
+}
+
+/* Landscape phones: every pixel of height counts. */
+@media (max-height: 460px) {
+  .da64-title__main {
+    gap: 6px;
+    padding-block: 0;
+  }
+  /* The tilted "64" is ~3x the cap height: size the logo by height here so
+     the whole title (logo, role, button, hints) fits between the corner bar
+     and the credit instead of running into them. */
+  .da64-logo {
+    /* ≈ (height − everything else) / logo height in em */
+    --logo-size: clamp(1.45rem, min(9vw, (100vh - 232px) * 0.34), 3.5rem);
+  }
+  .da64-start {
+    min-height: 50px;
+    padding-block: 0.8em 0.7em;
+  }
+  .da64-title__credit a {
+    padding-block: 8px;
+  }
+  .da64-stick {
+    width: 108px;
+    height: 108px;
+  }
+  .da64-stick__knob {
+    width: 50px;
+    height: 50px;
+    margin: -25px 0 0 -25px;
+  }
+  .da64-jump {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 8px;
+  }
+  .da64-bar {
+    padding: 6px;
+  }
+  .da64-bar__btn {
+    min-height: 44px;
+  }
+  .da64-bar__hint {
+    font-size: 0.78rem;
+  }
+  .da64-banner {
+    gap: 10px;
+    padding: 5px 12px 5px 5px;
+  }
+  .da64-banner__thumb {
+    width: 44px !important; /* PaintingThumb sets an inline size */
+    height: 44px !important;
+  }
+  .da64-banner__title {
+    font-size: 1rem;
+  }
+  .da64-toasts {
+    top: 96px;
+  }
+  .da64-pause__title {
+    font-size: 1.6rem;
+  }
+  .da64-pause__head {
+    padding-block: 6px 2px;
+  }
+  .da64-pause__foot {
+    padding-block: 6px 10px;
+  }
+  .da64-pause__pdf,
+  .da64-pause__back {
+    min-height: 44px;
+  }
+}
+
+/* The shortest landscape phones (320px tall): a one-line banner. */
+@media (max-height: 360px) {
+  .da64-banner {
+    padding: 4px 14px;
+  }
+  .da64-banner__thumb,
+  .da64-banner__painting {
+    display: none !important; /* the thumb carries an inline size */
+  }
+  .da64-banner__text {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .da64-stick {
+    width: 96px;
+    height: 96px;
+  }
+  .da64-stick__knob {
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+  }
+  .da64-jump {
+    width: 68px;
+    height: 68px;
+    font-size: 0.92rem;
+  }
+  .da64-cta {
+    min-height: 46px;
+    padding-inline: 0.8em;
+    font-size: 0.95rem;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion                                                      */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .da64-logo,
+  .da64-start__label,
+  .da64-cta,
+  .da64-cta::before,
+  .da64-pause,
+  .da64-pause__panel {
+    animation: none;
+  }
+  .da64-cta::before {
+    opacity: 0.75; /* a steady halo instead of a pulsing one */
+  }
+  .da64-spinner {
+    animation-duration: 2.4s;
+  }
+  .da64-title,
+  .da64-hud,
+  .da64-row {
+    transition: none;
+  }
+  .da64-row:hover,
+  .da64-row:focus-visible,
+  .da64-row:active {
+    transform: none;
+  }
+  /* The banner and toast fade instead of sliding / popping. */
+  .da64-banner {
+    transform: none;
+    transition:
+      opacity 160ms ease,
+      visibility 0s linear 160ms;
+  }
+  .da64-banner[data-open] {
+    transition-delay: 0s;
+  }
+  .da64-toast {
+    animation: da64-fade 200ms ease-out both;
+  }
+  /* A very brief soft fade instead of a white-out. */
+  .da64-flash {
+    animation: da64-flash-soft 240ms ease-out both;
+  }
+}

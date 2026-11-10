@@ -1,0 +1,144 @@
+{
+ "key": "course",
+ "build": {
+  "summary": "The six course overlays, the plain HTML version and both harness pages are built, but the final code has only been verified outside Next: the shared dev server on port 3000 died at about 14:46 (not my doing) and never came back. Earlier versions of all six overlays and the plain page did render under the real dev server with no console errors. Everything after that was checked in real headless Chrome through a file:// harness I built in the scratchpad (same components, same compiled globals.css and fonts, React StrictMode on).\n\nWhat exists:\n- **Shared section components** (`src/components/course/sections/`): Education, Skills, Career (Star Missions), Certifications, About & Contact, ContactForm, ResumeStarCard. Each renders from `src/content/portfolio.ts` and takes `variant=\"overlay\" | \"plain\"`; the two looks come from one set of CSS custom properties.\n- **CourseOverlay** `{ id, onExit, mission? }`: modal dialog with header band (PaintingThumb, COURSE n, door badge, chunky title, painting title, door accent), scrollable body, footer exit button. Focus moves to the heading, Tab is trapped, Esc calls `onExit` once, focus returns to the opener.\n- **Star Missions and coursework cards**: real tab patterns with arrow keys, Home/End and roving tabindex.\n- **Certification stars**: a true extruded CSS 3D gold star (front, back and ten shaded rim faces) for completed ones, a slower outlined badge for in-progress ones, both paused under reduced motion.\n- **ContactForm**: labels, native validation, aria-live status, button disabled while sending, EmailJS `sendForm` loaded lazily on first submit. Delivery goes through a context so the harnesses use a mock and nothing is ever sent.\n- **PlainPortfolio** `{ actions, nameHeadingLevel? }`: no \"use client\"; skip link, sticky header with nav and actions slot, hero, About, Education, Skills, Experience & Projects, Certifications, navy Contact band, footer, print rules. Anchors #home #about #education #skills #experience #projects #certification #contact all exist; `<main id=\"plain-portfolio\">`.\n- **Harnesses**: `/dev/overlays?id=\u2026&mission=\u2026&open=0&send=fail&review=1` and `/dev/plain?send=fail&review=1&h=2`.",
+  "files": [
+   "src/components/course/CourseOverlay.tsx",
+   "src/components/course/PlainPortfolio.tsx",
+   "src/components/course/course.css",
+   "src/components/course/plain.css",
+   "src/components/course/sections/types.ts",
+   "src/components/course/sections/icons.tsx",
+   "src/components/course/sections/bits.tsx",
+   "src/components/course/sections/useTabs.ts",
+   "src/components/course/sections/EducationSection.tsx",
+   "src/components/course/sections/CourseworkCards.tsx",
+   "src/components/course/sections/SkillsSection.tsx",
+   "src/components/course/sections/CareerSection.tsx",
+   "src/components/course/sections/MissionTabs.tsx",
+   "src/components/course/sections/MissionDetail.tsx",
+   "src/components/course/sections/CertificationsSection.tsx",
+   "src/components/course/sections/SpinningStar.tsx",
+   "src/components/course/sections/AboutSection.tsx",
+   "src/components/course/sections/ContactLinks.tsx",
+   "src/components/course/sections/ContactForm.tsx",
+   "src/components/course/sections/ResumeStarButton.tsx",
+   "src/components/course/sections/ResumeStarCard.tsx",
+   "src/components/course/sections/Credits.tsx",
+   "src/app/dev/overlays/page.tsx",
+   "src/app/dev/overlays/MockTransport.tsx",
+   "src/app/dev/plain/page.tsx"
+  ],
+  "verification": [
+   "Type-check: `npx tsc --noEmit -p .` from /Users/faviojasso/Documents/GitHub/DanielAvila exits with no errors for the whole repo (last run about 15:22).",
+   "Under the real Next dev server (before it died at about 14:46): all six overlays at 1280x720 and 390x844 and the plain page top to bottom rendered with no page errors, console errors or failed requests, apart from one transient 500 caused by another module's src/app/favicon.ico. These shots show intermediate versions, e.g. /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/course/career-desktop.png and plain-d-00.png \u2026 plain-d-07.png, plain-m-00.png \u2026 plain-m-11.png in the same folder.",
+   "Everything below ran against the offline file:// harness (real headless Chrome, React StrictMode, not Next). Harness: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/offline/bundle.mjs. Suite: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/scripts/course-verify.mjs, run as `OFFLINE=1 SHOT=<scratchpad> node course-verify.mjs all`. Result: 98 passed, 0 failed, 1 skipped. Log: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/course/verify-offline.log. The same script runs against the dev server without OFFLINE=1.",
+   "Overlay keyboard (in that suite): opening from a button puts focus on the dialog <h2>; nine Tab presses never leave the dialog and cycle region > selected tab > tabpanel > exit button; Shift+Tab from the first control wraps to the exit button; Tab after clicking the backdrop lands inside; programmatic focus on a control behind the overlay is pulled back; Esc logs exactly one `onExit(education)` and focus returns to the opener. For skills, certifications, about (focus in the email input) and resume, Esc also calls onExit exactly once.",
+   "Tabs (in that suite): coursework cards respond to ArrowRight/ArrowLeft with wrap, Home, End and click, with roving tabindex 0,-1,-1,-1. Star Missions respond to ArrowDown/Up/Left/Right, End and wrap; Star 3 shows both jobs; Tab from the selected mission goes to its tabpanel; `?mission=pc-build` preselects that mission.",
+   "Motion (in that suite): with prefers-reduced-motion the overlay and dialog have animation-name none and the stars are paused; otherwise cx-fade-in / cx-rise run, completed stars spin at 3.4s and in-progress badges at 9s. No verification link is rendered (no certification has a verifyUrl).",
+   "Contact form (mock transport, in that suite): field names are from_name, from_email, message; all required with visible labels; placeholders match the content file; empty submit and an invalid email are blocked by native validation; while sending the button is disabled, status reads 'Sending\u2026' and aria-busy is true; success shows 'Message sent successfully!' and resets the form; with send=fail it shows 'Failed to send message. Please try again.' and keeps the input. No request to EmailJS was made. Shots: form-ok.png and form-fail.png in the shots/course folder.",
+   "Plain page structure (in that suite): exactly one <h1> ('Daniel Avila'); heading levels never skip; all eight anchor ids exist and #plain-portfolio is the <main>; no duplicate ids; header, nav, main and footer are siblings; every in-page link has a target; two real `<a href download>` r\u00e9sum\u00e9 links; mailto and tel links; external links carry rel=noopener; every <img> has alt; no tabs, with 5 missions, 2 jobs, 4 coursework cards and 5 certifications expanded; the skip link is the first Tab stop and moves focus to <main>; `nameHeadingLevel={2}` renders the name as <h2>; no horizontal overflow at 320, 390, 768, 1024 and 1280 px.",
+   "Overlay sizing (in that suite): all six overlays at 320x568, 390x844, 844x390, 768x1024 and 1920x1080 have no horizontal overflow, the dialog fits the viewport and the exit button is visible and at least 44 px tall. Reading area is 324\u2013372 px at 320x568 and 242 px in 844x390 landscape.",
+   "Content coverage (in that suite): of 311 strings in src/content/portfolio.ts, 297 are rendered in the overlays (clicking through every tab) and 297 in the plain page. The same 14 are missing from both: SITE_URL, internal ids, the three EmailJS ids (passed to sendForm) and the two form result messages (shown after submit, covered by the form check).",
+   "Server-renderability of the final code: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/offline/ssr.mjs renders <PlainPortfolio/> with react-dom/server in Node (43,297 bytes); every string the plain page shows in the browser is present in that static markup. This is not a Next RSC render; the earlier /dev/plain server page did return 200 under Next before the outage.",
+   "Contrast: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/scripts/contrast-audit.mjs computes WCAG contrast for every visible text element: 533 checked, 0 below AA. Gradient surfaces are approximated by one stop each and the stroked chunky titles are excluded.",
+   "Final screenshots (offline harness, 53 PNGs: six overlays desktop and mobile at each scroll position, plain page top to bottom desktop and mobile; no page errors, console warnings or failed requests): /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/course/final-off/ (e.g. d-certifications-0.png, d-resume-0.png, m-plain-04.png). I read a representative subset of these plus s320-career.png, land-career.png, land-resume.png, wide-skills.png and about-d1/d2/d3.png in the parent folder, and fixed what they showed. Not every one of the 53 was opened.",
+   "3D star: prototype sheets at 14 angles and large near-edge-on views (proto-star.png, proto-star-big.png in the shots/course folder) show a solid, correctly sorted extruded star.",
+   "Print: print-media renders print-0.png and print-6.png in the shots/course folder (slices 1\u20135 not opened) show black on white with the navy contact band converted and nav and buttons hidden. They were taken before I also hid the form heading and r\u00e9sum\u00e9-star button in print; that last tweak has not been re-rendered. Keyboard focus ring on the light page: plain-focus-cta.png."
+  ],
+  "knownIssues": [
+   "The final code has not been run under the Next dev server (down since about 14:46; I did not start one, per the rules). Hydration, the r\u00e9sum\u00e9 PDF URL check and the Next RSC render of /dev/plain should be re-run once a server is up: `SHOT=<scratchpad> node scripts/course-verify.mjs all`, plus contrast-audit.mjs and final-shots.mjs without OFFLINE=1.",
+   "The real EmailJS delivery path was never exercised, by design. The call is `sendForm(serviceId, templateId, form, publicKey)` with the ids and field names from the content file; one manual send is needed before launch.",
+   "The content file contains the Nintendo character name 'Piranha Plant' (missions[4].outcome, the 3D-printing project). I render content verbatim and did not edit it; the content owner should decide whether to reword it.",
+   "Copy marked `needsReview` (four coursework cards, the two lab missions) is rendered as normal text. It carries a `data-needs-review` attribute, and `?review=1` on either harness outlines it, so Daniel can confirm it before launch.",
+   "The header thumbnails still show the stub painting art; the real art arrives when the services registry is flipped.",
+   "Safe-area insets are coded with env() but could not be tested on a notched device.",
+   "The certification verification-link branch is untested with data, because no certification has a verifyUrl.",
+   "Final print layout after the last print tweak (hiding the form heading and r\u00e9sum\u00e9-star button) was not re-rendered."
+  ],
+  "contractGaps": [
+   "CourseOverlayProps gained an optional `mission?: string` (preselects a Star Mission). PlainPortfolioProps gained an optional `nameHeadingLevel?: 1 | 2`. The existing props are unchanged.",
+   "globals.css sets `h1\u2026h6 { font-family: Monda }` and a Quicksand body font, unlayered, so they beat Tailwind utilities. Every heading in my module carries a class that sets its font explicitly.",
+   "I reference `--font-outfit`, `--font-titan` and `--font-pixel-face` (set on <html> by layout.tsx) directly, because the `@theme inline` font tokens are not guaranteed to be emitted as CSS variables.",
+   "The shared `.btn-retro` (cream on royal, about 4.1:1) and `.btn-retro--ruby` (cream on ruby, about 4.3:1) fall just under AA 4.5:1 at 16 px. I override colours locally for my two uses (overlay exit button, plain hero 'Get in touch'); fixing the primitives in globals.css would be better.",
+   "PaintingThumb sets width and height inline from its `size` prop; I override with `!important` inside `.cx-frame` so the framed thumbnail can scale responsively.",
+   "Environment: a transient 500 on every page from src/app/favicon.ico ('PNG is not in RGBA format') while another module replaced it, then the dev server exited at about 14:46 and no process has listened on port 3000 since. Earlier tsc runs showed errors in src/app/dev/audio/tests.ts and src/game/engine/game.ts (other modules, mid-edit); the final run is clean."
+  ],
+  "blueprintDeviations": [
+   "Plain version: missions are grouped as Work experience, Technical labs, Personal projects (r\u00e9sum\u00e9 order) instead of Star 1\u20135 order, and the 'Star n \u00b7 kind' line is left out there. The overlay keeps Star 1\u20135 as tabs.",
+   "Plain version headings: h2 is the conventional label (About, Education, Skills, Certifications, Contact) with the playful course title as an eyebrow; the career section uses 'Experience & Technical Projects' as its h2. 'About & Contact' is split into two nav entries.",
+   "R\u00e9sum\u00e9 overlay: the exit button reads '[ BACK TO THE LOBBY (ESC) ]' because the pedestal star is not a painting; the five courses use '[ JUMP OUT OF PAINTING (ESC) ]'.",
+   "The painting blurb in the overlay header is hidden at 640 px and below, and the whole painting line is hidden when the viewport is under 520 px tall, to keep the reading area.",
+   "Coursework cards are a selectable row with a description box underneath (item-menu style, tab semantics) rather than cards that expand in place. The plain version shows all four expanded.",
+   "The About overlay also carries the tagline, the one-line summary and a credits strip (copyright, role, Camino Code logo), so every content string is reachable in-game.",
+   "LinkedIn and GitHub use generic line icons with text labels, not brand logos.",
+   "Content strings intentionally not rendered: SITE_URL, internal ids, the three EmailJS ids (used as sendForm arguments). The form's success and failure messages appear only after a submit."
+  ],
+  "integrationNotes": [
+   "Imports are unchanged: `CourseOverlay` from `@/components/course/CourseOverlay` and `PlainPortfolio` from `@/components/course/PlainPortfolio`. GameRoot's existing `<CourseOverlay id={overlay} onExit={commands.exitCourse} />` works as is.",
+   "Esc: CourseOverlay listens on `document` in the capture phase and calls stopPropagation. GameRoot's window-capture listener runs first and already returns while an overlay is open, so Esc is handled once.",
+   "Focus on close returns to the element that had focus when the overlay opened. If that element is gone (e.g. a pause-menu fast-travel button), it falls back to the first element with `data-overlay-return-focus`. Adding that attribute to a persistent control such as the PAUSE / MENU button makes the return deterministic; otherwise focus falls to <body>.",
+   "PlainPortfolio's root is `<div class=\"cx cx--light pp\">` containing the skip link, <header>, `<main id=\"plain-portfolio\" tabIndex={-1}>` and <footer> as siblings. Hide or inert the wrapper, not just the <main>; GameRoot's `plainPageRoot()` already climbs to it.",
+   "The name heading level is one constant, `NAME_HEADING_LEVEL` in PlainPortfolio.tsx, or the `nameHeadingLevel` prop. It defaults to <h1>; pass 2 if the title screen keeps its own <h1>.",
+   "The `actions` slot sits at the right of the sticky header. Below 520 px the brand name is hidden and a `.btn-retro` in the slot is shrunk, so keep it to one compact button.",
+   "Overlay and plain page can be in the DOM together: element ids are namespaced by variant (`cx-overlay-\u2026`, `cx-plain-\u2026`, `pp-\u2026`).",
+   "The overlay is `position: fixed; z-index: 40`. The flash layer should sit above it.",
+   "The contact form needs no `emailjs.init`: it dynamically imports emailjs-com on first submit and passes the public key explicitly. `ContactTransportContext` (exported from sections/ContactForm.tsx) swaps the delivery for tests; both harness pages always provide a mock.",
+   "CSS: CourseOverlay imports course.css; PlainPortfolio imports course.css and plain.css. Both depend on the tokens in globals.css and on `--font-outfit`, `--font-titan` and `--font-pixel-face` being set on <html>.",
+   "The hero photo in PlainPortfolio uses next/image with `priority`. If the plain page is in the DOM but hidden behind the game at first paint, that preload competes slightly with the title screen; drop `priority` there if that matters.",
+   "The harness pages live under /dev and 404 in production through the existing dev layout. /dev/plain is a server component on purpose."
+  ]
+ },
+ "review": {
+  "verdict": "solid-after-fixes",
+  "summary": "I reviewed the course overlays and the plain HTML version on the live dev server at localhost:3000, which is up again. The builder's report said this code had only been checked outside Next. The module holds up well: all six overlays and the plain page look polished at desktop, mobile, 320 px and landscape phone sizes. The page driver showed no page or console errors. Type-check is clean and the builder's own test suite passes live (99 passed, 0 failed). The WCAG contrast check flagged 0 of 533 text elements. I found and fixed three real problems.\n1. Focus did not come back after closing an overlay in the game. The HUD (heads-up display: the lobby's on-screen buttons) is disabled until the jump-out animation finishes, so the one attempt to move focus back on close always failed. The documented `data-overlay-return-focus` hook was effectively broken as a result. It now retries for a few seconds.\n2. Opening a Star Mission with Enter or Space on a phone-width screen scrolled the focused tab out of view.\n3. On the plain page at phone and tablet widths, links to `#projects` and other anchors landed with the heading under the sticky header. The section nav there also scrolls sideways with no hint that more links exist.\nOne item fails and is outside my files: the content file names a Nintendo character (\"Piranha Plant\").",
+  "requirementChecks": [
+   "PASS: Shared section components render from src/content/portfolio.ts with variant overlay|plain: education, skills, career, certifications, about/contact, r\u00e9sum\u00e9 card. No invented facts in module-authored strings; the labels (Milestones, Career focus, Bonus star, R\u00e9sum\u00e9 unlocked!, and so on) are non-factual.",
+   "PASS: Education shows degree, institution, status, location, milestones and selectable coursework cards. These are real tabs with arrow keys, Home/End and roving tabindex, verified live.",
+   "PASS: Skills are shown as categorized inventory grids (5 groups with item counts).",
+   "FIXED: Career Star Missions: 5 clickable tabs, each with objective, tools and outcome, and Star 3 shows both jobs; ?mission= preselects a mission. Keyboard activation no longer scrolls the focused tab out of view on stacked layouts.",
+   "PASS: Certifications: extruded CSS 3D gold star for completed ones, outlined badge for in-progress ones, plus issuer, date (where present), competencies and status. The verification link appears only when verifyUrl exists (none do). Reduced motion pauses the stars at a three-quarter angle; checked computed styles and rm-certs.png.",
+   "PASS: About & Contact: bio, career focus, email, phone, LinkedIn, GitHub, the r\u00e9sum\u00e9-star download (the PDF returns 200 application/pdf) and the contact form. The form uses emailjs-com sendForm, imported lazily. With the mock transport: validation, the Sending\u2026 state, success and failure all pass. Real EmailJS delivery was not exercised.",
+   "PASS: R\u00e9sum\u00e9 star overlay is a compact card with the PDF button and contact links; exit button reads [ BACK TO THE LOBBY (ESC) ].",
+   "PASS: CourseOverlay dialog: role=dialog with aria-modal and aria-labelledby; focus moves to the h2; Tab and Shift+Tab are trapped; focus that escapes is pulled back. Esc calls onExit exactly once, also inside GameRoot (/dev/ui?state=course gives exitCourse() once and no pause). The exit button reads [ JUMP OUT OF PAINTING (ESC) ] and is at least 44 px at every tested size.",
+   "FIXED: Focus return after close. The game HUD is inert during the exit sequence, so the old single focus() call never worked in-game. It now retries every 100 ms for up to 4 s and stops as soon as anything else takes focus. Verified that an element marked data-overlay-return-focus gets focus once the lobby is back.",
+   "PASS: Typing in the overlay contact form inside GameRoot with the real engine is not taken over by game keys (W, M, Space, arrows): the textarea value was correct and mute was not toggled.",
+   "PASS: PlainPortfolio is server-renderable (/dev/plain is a server component). It has main#plain-portfolio and the legacy anchors #home #about #education #skills #experience #projects #certification #contact, a single h1, no skipped heading levels, and everything shown in the browser is present in the server HTML.",
+   "FIXED: Plain page anchor offset at 1023 px and below. The header is about 111 px but the scroll margin was 108 px. Added a fade on the trailing edge of the sideways-scrolling mobile nav, with end padding so the last link (Contact) clears the fade.",
+   "PASS: Every content string is reachable: 298 of 311 rendered in both overlays and plain page. The 13 not shown are internal ids, the 3 EmailJS ids, and the success/failure messages that only appear after a submit.",
+   "PASS: Contrast audit: 533 text elements, 0 below WCAG AA.",
+   "FAIL (outside module files): The content file's missions[4].outcome contains the Nintendo character name 'Piranha Plant' and the module renders it verbatim. The content owner needs to reword it; I did not edit portfolio.ts."
+  ],
+  "issuesFixed": [
+   "src/components/course/CourseOverlay.tsx: focus return on close was a single focus() call that silently failed whenever the target was inert, which is always the case in-game during the exit sequence. Added a tryFocus helper that checks the target is connected and rendered and confirms focus actually landed. Now it retries every 100 ms (up to 40 times), stops when anything else takes focus, and skips the retry entirely when there is no opener and no opt-in target. I deliberately did not add a fallback to the HUD pause button: Space is the jump key, and a focused button would take it (tested: Space then opened the pause menu).",
+   "src/components/course/sections/MissionTabs.tsx: activating a tab from the keyboard (a click event with detail 0) no longer scrolls the briefing into view on stacked layouts. Tap and click still do.",
+   "src/components/course/plain.css: --pp-anchor-offset raised to 8.25rem at 1023 px and below, so anchored headings clear the roughly 111 px sticky header (they were partly under it at 108 px). The mobile section nav now fades out at its trailing edge so it reads as scrollable, and has end padding so the last link scrolls clear of the fade."
+  ],
+  "issuesRemaining": [
+   "Content (not my files): src/content/portfolio.ts missions[4].outcome mentions 'Piranha Plant', a Nintendo character name. The content owner should decide whether to reword it.",
+   "Real EmailJS delivery has never been exercised (the dev harnesses always use a mock). One manual send is needed before launch.",
+   "Header thumbnails still show the stub painting art until the services registry is flipped.",
+   "In-game, the HUD becomes inert while a painting is entered, which drops focus to <body>. So the overlay usually has no opener to return focus to. Returning focus in-game needs GameRoot to put data-overlay-return-focus on a persistent control (see integration notes)."
+  ],
+  "filesChanged": [
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/components/course/CourseOverlay.tsx",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/components/course/sections/MissionTabs.tsx",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/components/course/plain.css"
+  ],
+  "integrationNotes": [
+   "To return keyboard focus after a course closes, GameRoot can add data-overlay-return-focus to a persistent control. CourseOverlay now waits until that control is no longer inert (the end of the exit sequence) and gives up early if anything else takes focus. Choose that target knowing that a focused button takes the Space (jump) key.",
+   "With /dev/ui?state=course&engine=real, Esc calls exitCourse() but the real engine stays in phase 'course'. The harness pokes the store directly, so the engine never entered the course itself. This is an observation about the engine and harness, not a course-module issue; with the mock engine, exit works end to end.",
+   "PlainPortfolio's hero image uses next/image priority. If the plain page sits hidden behind the game at first paint, consider dropping priority there."
+  ],
+  "verification": [
+   "npx tsc --noEmit -p . from the repo root: clean, before and after the fixes.",
+   "The builder's suite run live against the dev server (no OFFLINE): 99 passed, 0 failed, both before and after the fixes. Logs: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/review-course/verify-live.log and verify-live-2.log in the same folder.",
+   "Contrast audit live (scripts/contrast-audit.mjs): 533 text elements, 0 below AA.",
+   "Screenshots of every overlay and the plain page, scrolled top to bottom at desktop 1280x720 and mobile 390x844, with no page errors or console errors: shots/review-course/r-d-*.png and r-m-*.png. Opened and judged a representative set (education, career, certifications, about, resume and plain at both sizes).",
+   "Edge sizes: land-education.png (844x390), s320-resume.png and s320-resume-2.png (320x568). Reduced motion: rm-certs.png. Inside GameRoot: gr-course.png.",
+   "Live checks inside GameRoot: Esc gives a single exitCourse() with no pause; typing in the textarea with the real engine is not taken over by game keys; the opt-in data-overlay-return-focus target receives focus after phase returns to lobby (before the fix focus stayed on BODY).",
+   "After the fixes: m-anchor-projects-2.png shows the #projects heading clear of the sticky header and the nav fade. The last nav link clears the fade when the nav is scrolled to the end (link right edge 350 px, fade starts at 350 px), and the page has no horizontal overflow at 390 px. Pressing Enter on a mission tab at 390 px leaves the dialog scroll at 0.",
+   "Screenshot folder: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/review-course/"
+  ]
+ }
+}

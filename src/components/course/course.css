@@ -1,0 +1,1677 @@
+/* ==================================================================
+   Course overlays + plain HTML version.
+
+   Class prefix: cx- (shared portfolio content and the overlay chrome).
+   The plain page's own chrome (pp-) lives in plain.css.
+
+   Everything a section component draws is coloured through the --cx-*
+   custom properties below, so the same markup renders on the dark game
+   panels (.cx--dark) and on the light paper page (.cx--light).
+
+   Note on headings: globals.css sets `h1…h6 { font-family: Monda }`, so
+   every heading here carries a class that names its font explicitly.
+   ================================================================== */
+
+.cx {
+  --cx-accent: var(--star);
+  --cx-font-body: var(--font-outfit), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cx-font-display: var(--font-titan), "Arial Black", system-ui, sans-serif;
+  --cx-font-pixel: var(--font-pixel-face), ui-monospace, monospace;
+  /* five-point star, reused for bullets and the 3D star layers */
+  --cx-star-shape: polygon(
+    50% 0%, 61.8% 34.5%, 97.6% 34.5%, 68.6% 56%, 79.4% 90.5%,
+    50% 69.5%, 20.6% 90.5%, 31.4% 56%, 2.4% 34.5%, 38.2% 34.5%
+  );
+
+  font-family: var(--cx-font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--cx-text);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Dark: navy game panels, cream text. */
+.cx--dark {
+  --cx-text: var(--cream);
+  --cx-soft: var(--muted);
+  --cx-strong: #ffffff;
+  /* Small label text in the door colour, lightened so every accent keeps
+     AA contrast on the navy panels and cards. */
+  --cx-label: color-mix(in srgb, var(--cx-accent) 60%, #ffffff);
+  --cx-link: var(--sky);
+  --cx-focus: var(--star);
+  --cx-card: rgba(255, 255, 255, 0.06);
+  --cx-card-raised: rgba(255, 255, 255, 0.1);
+  --cx-well: rgba(10, 15, 44, 0.55);
+  --cx-line: rgba(183, 192, 232, 0.28);
+  --cx-edge: var(--ink);
+  --cx-card-shadow: 0 4px 0 rgba(4, 7, 24, 0.45);
+  --cx-bullet: var(--star);
+  --cx-chip-bg: rgba(10, 15, 44, 0.6);
+  --cx-chip-line: rgba(183, 192, 232, 0.4);
+  --cx-chip-text: var(--cream);
+  --cx-ok: #6fe39a;
+  --cx-wip: var(--sky);
+  --cx-danger: #ff9c9f;
+  --cx-field-bg: rgba(10, 15, 44, 0.7);
+  --cx-field-line: rgba(183, 192, 232, 0.55);
+  --cx-placeholder: #9aa5d6;
+}
+
+/* Light: cream paper, navy text. */
+.cx--light {
+  --cx-text: #1d2452;
+  --cx-soft: #4a5380;
+  --cx-strong: var(--ink);
+  --cx-label: #2553c7;
+  --cx-link: #2553c7;
+  --cx-focus: #2553c7;
+  --cx-card: #ffffff;
+  --cx-card-raised: #ffffff;
+  --cx-well: var(--paper);
+  --cx-line: #d9cda9;
+  --cx-edge: var(--ink);
+  --cx-card-shadow: 0 4px 0 rgba(19, 27, 77, 0.12);
+  --cx-bullet: var(--star-deep);
+  --cx-chip-bg: #eef3ff;
+  --cx-chip-line: #b9c8f2;
+  --cx-chip-text: #1d2452;
+  --cx-ok: #19743a;
+  --cx-wip: #2553c7;
+  --cx-danger: #b3262b;
+  --cx-field-bg: #ffffff;
+  --cx-field-line: #7c84ad;
+  --cx-placeholder: #6a7299;
+}
+
+/* A theme class may also be nested (the plain page's navy contact band),
+   so re-resolve the inherited text colour wherever the theme changes. */
+.cx--dark,
+.cx--light {
+  color: var(--cx-text);
+}
+
+/* Prose links only: buttons and cards carry their own classes. */
+.cx a:not([class]) {
+  color: var(--cx-link);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+.cx a:not([class]):hover {
+  text-decoration-thickness: 0.16em;
+}
+.cx :is(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--cx-focus);
+  outline-offset: 3px;
+}
+.cx--light .btn-retro:focus-visible {
+  outline-color: var(--cx-focus);
+}
+
+.cx-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Shared content primitives                                            */
+/* ------------------------------------------------------------------ */
+
+.cx-section {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+  min-width: 0;
+}
+.cx-block {
+  min-width: 0;
+}
+
+.cx-lead {
+  max-width: 62ch;
+  font-size: 1.0625rem;
+  color: var(--cx-soft);
+}
+
+/* Sub-section heading with a little star marker. */
+.cx-h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0 0 0.9rem;
+  font-family: var(--cx-font-display);
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--cx-strong);
+}
+.cx-h3::before {
+  content: "";
+  flex: none;
+  width: 0.95rem;
+  height: 0.95rem;
+  background: var(--cx-bullet);
+  clip-path: var(--cx-star-shape);
+}
+
+/* Card title in the body face. */
+.cx-title {
+  margin: 0;
+  font-family: var(--cx-font-body);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--cx-strong);
+}
+
+/* Tiny uppercase label ("Objective", "Topics" …). */
+.cx-label {
+  margin: 0;
+  font-family: var(--cx-font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cx-label);
+}
+
+.cx-card {
+  min-width: 0;
+  padding: clamp(1rem, 2.2vw, 1.4rem);
+  background: var(--cx-card);
+  border: 2px solid var(--cx-line);
+  border-radius: 14px;
+}
+.cx--light .cx-card {
+  box-shadow: var(--cx-card-shadow);
+}
+
+.cx-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cx-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0.15rem 0.7rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--cx-chip-text);
+  background: var(--cx-chip-bg);
+  border: 1.5px solid var(--cx-chip-line);
+  border-radius: 15px; /* a pill on one line, a soft box when it wraps */
+}
+.cx-chips--tags .cx-chip {
+  border-radius: 8px;
+  border-style: dashed;
+}
+
+.cx-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.cx-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+}
+.cx-pill--done {
+  color: var(--cx-ok);
+}
+.cx-pill--wip {
+  color: var(--cx-wip);
+}
+.cx-pill--verified {
+  color: var(--ink);
+  background: var(--star);
+  border-color: var(--ink);
+}
+.cx-pill--open {
+  color: var(--cx-ok);
+}
+.cx-pill--open::before {
+  content: "";
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* White tile behind third-party logos so they read on either theme. */
+.cx-logo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--cx-logo-size, 56px);
+  height: var(--cx-logo-size, 56px);
+  padding: 3px;
+  background: #ffffff;
+  border: 2px solid var(--cx-edge);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.cx-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 7px;
+}
+
+/* List with gold star bullets. */
+.cx-starlist {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cx-starlist > li {
+  position: relative;
+  padding-left: 1.65rem;
+  max-width: 70ch;
+}
+.cx-starlist > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.32em;
+  width: 1rem;
+  height: 1rem;
+  background: var(--cx-bullet);
+  clip-path: var(--cx-star-shape);
+}
+
+.cx-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+  color: var(--cx-soft);
+}
+.cx-meta > li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.cx-icon {
+  flex: none;
+  width: 1.1em;
+  height: 1.1em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Education                                                            */
+/* ------------------------------------------------------------------ */
+
+.cx-school {
+  --cx-logo-size: clamp(56px, 12vw, 84px);
+  display: flex;
+  gap: clamp(0.9rem, 2.5vw, 1.4rem);
+  align-items: flex-start;
+  border-left: 6px solid var(--cx-accent);
+}
+@media (min-width: 600px) {
+  .cx-school {
+    align-items: center;
+  }
+}
+.cx-school__name {
+  margin: 0;
+  font-family: var(--cx-font-display);
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: var(--cx-strong);
+}
+.cx-school__degree {
+  margin-top: 0.3rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--cx-text);
+}
+.cx-school .cx-meta {
+  margin-top: 0.5rem;
+}
+.cx-school__status {
+  font-weight: 700;
+  color: var(--cx-strong);
+}
+
+/* Coursework: selectable cards + a description box (overlay), or a grid
+   of fully expanded cards (plain). */
+.cx-courses__tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+@media (min-width: 760px) {
+  .cx-courses__tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.cx-course-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 60px;
+  padding: 0.55rem 0.75rem;
+  font-family: var(--cx-font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: left;
+  color: var(--cx-text);
+  background: var(--cx-card);
+  border: 2px solid var(--cx-line);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+.cx-course-tab:hover {
+  background: var(--cx-card-raised);
+  border-color: var(--cx-soft);
+}
+.cx-course-tab[aria-selected="true"] {
+  color: var(--cx-strong);
+  background: var(--cx-card-raised);
+  border-color: var(--cx-accent);
+  box-shadow: 0 4px 0 var(--cx-edge);
+  transform: translateY(-2px);
+}
+.cx-course-tab__mark {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  background: var(--cx-line);
+  clip-path: var(--cx-star-shape);
+}
+.cx-course-tab[aria-selected="true"] .cx-course-tab__mark {
+  background: var(--star);
+}
+.cx-courses__panel {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+  border-color: var(--cx-accent);
+}
+.cx-courses__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 600px) {
+  .cx-courses__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1080px) {
+  .cx-courses__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.cx-course {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  height: 100%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Skills — inventory grids                                             */
+/* ------------------------------------------------------------------ */
+
+.cx-skills {
+  gap: 1.1rem;
+}
+.cx-inv {
+  background: var(--cx-card);
+  border: 2px solid var(--cx-line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.cx--light .cx-inv {
+  box-shadow: var(--cx-card-shadow);
+}
+.cx-inv__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 2px solid var(--cx-line);
+  background: var(--cx-card);
+}
+.cx-inv__title {
+  margin: 0;
+  font-family: var(--cx-font-display);
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--cx-strong);
+}
+.cx-inv__count {
+  flex: none;
+  font-family: var(--cx-font-pixel);
+  font-size: 0.7rem;
+  line-height: 1;
+  color: var(--cx-label);
+}
+.cx-inv__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.7rem;
+  list-style: none;
+}
+@media (min-width: 600px) {
+  .cx-inv__grid {
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: 0.55rem;
+    padding: 0.8rem;
+  }
+}
+.cx-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  min-height: 58px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--cx-text);
+  background: var(--cx-well);
+  border: 2px solid var(--cx-line);
+  border-radius: 10px;
+}
+.cx--dark .cx-slot {
+  box-shadow: inset 0 3px 0 rgba(4, 7, 24, 0.35);
+}
+.cx-slot::before {
+  content: "";
+  flex: none;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: var(--cx-accent);
+  border-radius: 2px;
+  transform: rotate(45deg);
+}
+.cx--light .cx-slot::before {
+  background: var(--royal);
+}
+/* Long entries get a double-width slot. */
+.cx-slot--wide {
+  grid-column: span 2;
+}
+
+/* ------------------------------------------------------------------ */
+/* Career & Labs — Star Missions                                        */
+/* ------------------------------------------------------------------ */
+
+.cx-missions {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+.cx-missions__list {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+}
+@media (min-width: 900px) {
+  .cx-missions {
+    grid-template-columns: minmax(15rem, 19rem) minmax(0, 1fr);
+    align-items: start;
+    gap: 1.5rem;
+  }
+}
+/* Keep the mission list in view while a long briefing scrolls — only when
+   the whole list fits in the reading area. */
+@media (min-width: 900px) and (min-height: 700px) {
+  .cx-missions__list {
+    position: sticky;
+    top: 0;
+  }
+}
+.cx-mission-tab {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 56px;
+  padding: 0.4rem 0.8rem 0.4rem 0.55rem;
+  font-family: var(--cx-font-body);
+  text-align: left;
+  color: var(--cx-text);
+  background: var(--cx-card);
+  border: 2px solid var(--cx-line);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+.cx-mission-tab:hover {
+  background: var(--cx-card-raised);
+  border-color: var(--cx-soft);
+}
+.cx-mission-tab[aria-selected="true"] {
+  background: var(--cx-card-raised);
+  border-color: var(--cx-accent);
+  box-shadow: 0 4px 0 var(--cx-edge);
+  transform: translateY(-2px);
+}
+.cx-mission-tab__star {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+}
+.cx-mission-tab__star > svg {
+  grid-area: 1 / 1;
+}
+.cx-mission-tab__num {
+  grid-area: 1 / 1;
+  padding-top: 3px;
+  font-family: var(--cx-font-display);
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--cream);
+}
+.cx-mission-tab[aria-selected="true"] .cx-mission-tab__num {
+  color: var(--ink);
+}
+.cx-mission-tab__kicker {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cx-soft);
+}
+.cx-mission-tab[aria-selected="true"] .cx-mission-tab__kicker {
+  color: var(--cx-label);
+}
+.cx-mission-tab__title {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.22;
+  color: var(--cx-strong);
+}
+.cx-missions__panel {
+  min-width: 0;
+  scroll-margin-top: 0.75rem;
+}
+
+.cx-mission {
+  display: grid;
+  gap: 1.15rem;
+  min-width: 0;
+}
+.cx-mission__kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cx-label);
+}
+.cx-mission__title {
+  margin: 0;
+  font-family: var(--cx-font-display);
+  font-size: clamp(1.25rem, 2.8vw, 1.6rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: var(--cx-strong);
+}
+.cx-mission__title--sm {
+  font-family: var(--cx-font-body);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+
+/* Objective / Tools used / Outcome briefing rows. */
+.cx-brief {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+}
+.cx-brief__row {
+  display: grid;
+  gap: 0.35rem 1rem;
+  padding: 0.8rem 1rem;
+  background: var(--cx-card);
+  border: 2px solid var(--cx-line);
+  border-left: 6px solid var(--cx-accent);
+  border-radius: 10px;
+}
+.cx-brief__row > dd {
+  margin: 0;
+  min-width: 0;
+  max-width: 68ch;
+}
+@media (min-width: 600px) {
+  .cx-brief__row {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    align-items: baseline;
+  }
+}
+.cx-mission__extra {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.cx-specs {
+  display: grid;
+  max-width: 40rem;
+  margin: 0;
+  border: 2px solid var(--cx-line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.cx-specs__row {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 30%) minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.45rem 0.9rem;
+}
+.cx-specs__row:nth-child(odd) {
+  background: var(--cx-card);
+}
+.cx-specs__row > dt {
+  font-weight: 700;
+  color: var(--cx-soft);
+}
+.cx-specs__row > dd {
+  margin: 0;
+  font-weight: 500;
+  color: var(--cx-strong);
+  overflow-wrap: anywhere;
+}
+
+.cx-linkbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.4rem 0.9rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--cx-link);
+  text-decoration: none;
+  background: transparent;
+  border: 2px solid currentColor;
+  border-radius: 10px;
+  transition: background-color 120ms ease;
+}
+.cx-linkbtn:hover {
+  background: var(--cx-card-raised);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.cx-jobs {
+  display: grid;
+  gap: 1rem;
+}
+.cx-job {
+  display: grid;
+  gap: 0.85rem;
+}
+.cx-job__head {
+  --cx-logo-size: 60px;
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+.cx-job__company {
+  margin-top: 0.1rem;
+  font-weight: 600;
+  color: var(--cx-text);
+}
+.cx-job .cx-meta {
+  margin-top: 0.4rem;
+}
+.cx-job__summary {
+  max-width: 70ch;
+  font-weight: 500;
+  color: var(--cx-text);
+}
+
+/* Plain version: missions grouped by kind, all expanded. */
+.cx-career-plain {
+  gap: clamp(2rem, 4vw, 2.75rem);
+}
+.cx-career-plain__group {
+  scroll-margin-top: var(--pp-anchor-offset, 1rem);
+}
+.cx-career-plain__list {
+  display: grid;
+  gap: 1.25rem;
+}
+/* Phones: a job inside a mission card drops its own frame, so the text
+   is not squeezed by two sets of padding. */
+@media (max-width: 599px) {
+  .cx-career-plain .cx-job {
+    padding: 1.1rem 0 0;
+    background: none;
+    border: 0;
+    border-top: 2px solid var(--cx-line);
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+@media (min-width: 960px) {
+  .cx-career-plain__list--pair,
+  .cx-career-plain .cx-jobs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Certifications                                                       */
+/* ------------------------------------------------------------------ */
+
+.cx-certs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cx-cert {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  gap: 1rem 1.1rem;
+  align-items: center;
+  height: 100%;
+}
+.cx-cert--completed {
+  border-color: color-mix(in srgb, var(--star) 55%, var(--cx-line));
+}
+.cx-cert--in-progress {
+  border-style: dashed;
+}
+.cx-cert__head {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.cx-cert__details {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  align-self: start;
+  min-width: 0;
+}
+.cx-cert__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+}
+/* Label above value; the issuer's logo (when there is one) sits beside. */
+.cx-cert__fact {
+  --cx-logo-size: 38px;
+  display: grid;
+  align-items: center;
+  column-gap: 0.55rem;
+  min-width: 0;
+}
+.cx-cert__fact--logo {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+.cx-cert__fact .cx-logo {
+  grid-row: span 2;
+  padding: 2px;
+  border-radius: 9px;
+  border-width: 1.5px;
+}
+.cx-cert__fact > dt {
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cx-soft);
+}
+.cx-cert__fact > dd {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--cx-strong);
+}
+.cx-cert__text {
+  color: var(--cx-text);
+}
+
+/* CSS 3D star: a real extruded shape — a faceted front and back face
+   joined by ten rim faces (positioned by SpinningStar.tsx) — spun around
+   the Y axis. */
+.cx-star3d {
+  --cx-star-size: 72px;
+  --cx-star-depth: 0.15; /* rim thickness as a fraction of the size */
+  position: relative;
+  flex: none;
+  display: inline-block;
+  width: var(--cx-star-size);
+  height: var(--cx-star-size);
+  perspective: calc(var(--cx-star-size) * 6);
+}
+.cx-star3d__spin {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: cx-spin-y 3.4s linear infinite;
+}
+.cx-star3d__face {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--cx-star-shape);
+  background: conic-gradient(
+    from 0deg at 50% 52.5%,
+    #ffe27a 0deg 36deg,
+    #f5a800 36deg 72deg,
+    #ffe27a 72deg 108deg,
+    #f5a800 108deg 144deg,
+    #ffe27a 144deg 180deg,
+    #f5a800 180deg 216deg,
+    #ffe27a 216deg 252deg,
+    #f5a800 252deg 288deg,
+    #ffe27a 288deg 324deg,
+    #f5a800 324deg 360deg
+  );
+}
+.cx-star3d__face--front {
+  transform: translateZ(calc(var(--cx-star-size) * var(--cx-star-depth) / 2));
+}
+.cx-star3d__face--back {
+  transform: translateZ(calc(var(--cx-star-size) * var(--cx-star-depth) / -2));
+}
+/* One rim face: centred on its outline edge, turned to follow it, then
+   stood on end so its height spans the star's thickness. */
+.cx-star3d__rim {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--cx-star-size) * var(--cx-rim-length) + 1px);
+  height: calc(var(--cx-star-size) * var(--cx-star-depth));
+  background: var(--cx-rim-shade);
+  transform: translate3d(
+      calc(var(--cx-star-size) * var(--cx-rim-x) - 50%),
+      calc(var(--cx-star-size) * var(--cx-rim-y) - 50%),
+      0
+    )
+    rotateZ(var(--cx-rim-angle)) rotateX(90deg);
+}
+.cx-star3d__glow {
+  position: absolute;
+  inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 201, 60, 0.38), rgba(255, 201, 60, 0));
+  pointer-events: none;
+}
+.cx--light .cx-star3d__glow {
+  background: radial-gradient(closest-side, rgba(255, 201, 60, 0.5), rgba(255, 201, 60, 0));
+}
+
+/* In-progress badge: a slower, outlined star inside a dashed ring. */
+.cx-star3d--outline .cx-star3d__spin {
+  animation-duration: 9s;
+}
+.cx-star3d__outline {
+  position: absolute;
+  inset: 12%;
+  width: 76%;
+  height: 76%;
+  overflow: visible;
+  fill: color-mix(in srgb, var(--cx-wip) 14%, transparent);
+  stroke: var(--cx-wip);
+  stroke-width: 5;
+  stroke-linejoin: round;
+}
+.cx-star3d__ring {
+  position: absolute;
+  inset: 0;
+  border: 2.5px dashed var(--cx-wip);
+  border-radius: 50%;
+  opacity: 0.75;
+}
+
+@keyframes cx-spin-y {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* About & Contact                                                      */
+/* ------------------------------------------------------------------ */
+
+.cx-profile {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: start;
+}
+@media (min-width: 760px) {
+  .cx-profile--with-id {
+    grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
+  }
+}
+.cx-profile__main {
+  display: grid;
+  gap: clamp(1.1rem, 2.5vw, 1.5rem);
+  align-content: start;
+  min-width: 0;
+}
+/* Without the photo card (plain page): bio beside the career focus. */
+@media (min-width: 900px) {
+  .cx-profile:not(.cx-profile--with-id) .cx-profile__main {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: 2.5rem;
+    align-items: start;
+  }
+}
+.cx-idcard {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+  text-align: center;
+  border-color: var(--cx-accent);
+}
+.cx-photo {
+  width: min(100%, 13rem);
+  aspect-ratio: 1;
+  background: #ffffff;
+  border: 4px solid var(--star);
+  border-radius: 18px;
+  box-shadow: 0 0 0 3px var(--ink), 0 6px 0 3px var(--ink);
+  overflow: hidden;
+}
+.cx-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+}
+.cx-idcard__name {
+  margin: 0.4rem 0 0;
+  font-family: var(--cx-font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: var(--cx-strong);
+}
+.cx-idcard__role {
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--cx-text);
+}
+.cx-idcard__tagline {
+  max-width: 24ch;
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--cx-soft);
+}
+.cx-idcard .cx-meta {
+  justify-content: center;
+}
+.cx-idcard .cx-pill {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.cx-bio {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 68ch;
+  font-size: 1.0625rem;
+}
+.cx-bio__lead {
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--cx-strong);
+}
+.cx-highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cx-highlight {
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+  height: 100%;
+  border-top: 6px solid var(--cx-accent);
+}
+.cx-focus {
+  border-left: 6px solid var(--star);
+}
+.cx-focus > p {
+  max-width: 70ch;
+  font-size: 1.0625rem;
+}
+
+.cx-contact {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: start;
+}
+@media (min-width: 860px) {
+  .cx-contact {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+}
+.cx-contact__side {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.cx-links {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cx-link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 56px;
+  padding: 0.5rem 0.85rem;
+  color: var(--cx-text);
+  text-decoration: none;
+  background: var(--cx-card);
+  border: 2px solid var(--cx-line);
+  border-radius: 12px;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+a.cx-link:hover {
+  background: var(--cx-card-raised);
+  border-color: var(--cx-link);
+}
+.cx-link__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--cx-link);
+  background: var(--cx-well);
+  border: 2px solid var(--cx-line);
+  border-radius: 10px;
+}
+.cx-link__icon .cx-icon {
+  width: 20px;
+  height: 20px;
+}
+.cx-link__label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cx-soft);
+}
+.cx-link__value {
+  display: block;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--cx-strong);
+  overflow-wrap: anywhere;
+}
+a.cx-link .cx-link__value {
+  color: var(--cx-link);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+/* The collectible résumé star: a big gold push button. */
+.cx-resume-star {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  color: var(--ink);
+  text-decoration: none;
+  background: linear-gradient(180deg, #ffe07a 0%, var(--star) 55%, #f7b21d 100%);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 0 6px 0 var(--ink);
+  transition: transform 80ms ease, box-shadow 80ms ease, filter 120ms ease;
+}
+.cx-resume-star:hover {
+  filter: brightness(1.06);
+}
+.cx-resume-star:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--ink);
+}
+.cx-resume-star__star {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  background: radial-gradient(circle at 50% 40%, var(--dusk), var(--ink));
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  animation: cx-bob 1.8s ease-in-out infinite;
+}
+.cx-resume-star__title {
+  display: block;
+  font-family: var(--cx-font-display);
+  font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+.cx-resume-star__note {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+@keyframes cx-bob {
+  0%,
+  100% {
+    transform: translateY(2px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Contact form */
+.cx-form {
+  display: grid;
+  gap: 0.9rem;
+}
+.cx-form-wrap {
+  display: grid;
+  gap: 1.1rem;
+}
+.cx-form__prompt {
+  max-width: 60ch;
+  color: var(--cx-text);
+}
+.cx-field {
+  display: grid;
+  gap: 0.3rem;
+}
+.cx-field > label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--cx-strong);
+}
+.cx-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.6rem 0.8rem;
+  font-family: var(--cx-font-body);
+  font-size: 1rem; /* ≥ 16px: no zoom-on-focus on iOS */
+  line-height: 1.4;
+  color: var(--cx-strong);
+  background: var(--cx-field-bg);
+  border: 2px solid var(--cx-field-line);
+  border-radius: 10px;
+}
+.cx-input::placeholder {
+  color: var(--cx-placeholder);
+  opacity: 1;
+}
+textarea.cx-input {
+  min-height: 8.5rem;
+  resize: vertical;
+}
+.cx-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+.cx-form__status {
+  min-height: 1.5rem;
+  font-weight: 700;
+}
+.cx-form__status[data-state="sent"] {
+  color: var(--cx-ok);
+}
+.cx-form__status[data-state="failed"] {
+  color: var(--cx-danger);
+}
+.cx-form__status[data-state="sending"] {
+  color: var(--cx-soft);
+}
+
+/* Credits at the end of the About & Contact overlay */
+.cx-credits {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  padding-top: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--cx-soft);
+  border-top: 2px solid var(--cx-line);
+}
+.cx-credits__who {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.cx-credits__who img {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  padding: 3px;
+  background: var(--paper);
+  border-radius: 10px;
+}
+.cx-credits__by {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+.cx-credits__logo {
+  display: inline-block;
+  padding: 0.3rem 0.5rem;
+  background: var(--paper);
+  border-radius: 10px;
+}
+.cx-credits__logo img {
+  display: block;
+  width: 82px;
+  height: auto;
+}
+
+/* Résumé star card ("resume" overlay) */
+.cx-resume-card {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: center;
+  text-align: center;
+}
+.cx-resume-card__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+}
+.cx-resume-card__sub {
+  max-width: 40ch;
+  color: var(--cx-soft);
+}
+.cx .cx-resume-card__cta {
+  font-size: 1.1rem;
+  padding: 0.7em 1.3em;
+}
+.cx-resume-card .cx-links {
+  width: 100%;
+  text-align: left;
+}
+.cx-resume-card .cx-link__value {
+  font-size: 0.95rem;
+}
+@media (min-width: 620px) {
+  .cx-resume-card .cx-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Overlay chrome ("course select")                                     */
+/* ------------------------------------------------------------------ */
+
+.cx-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right))
+    max(18px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+  /* Mostly opaque navy with a faint star field, so text never fights
+     the 3D scene behind it. */
+  background-color: rgba(10, 15, 44, 0.94);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='%23ffc93c' fill-opacity='.2'%3E%3Cpath d='M26 20l2.2 6.2 6.2 2.2-6.2 2.2L26 37l-2.2-6.2-6.2-2.2 6.2-2.2z'/%3E%3Cpath d='M132 104l1.6 4.6 4.6 1.6-4.6 1.6-1.6 4.6-1.6-4.6-4.6-1.6 4.6-1.6z'/%3E%3C/g%3E%3Cg fill='%238fc1ff' fill-opacity='.24'%3E%3Ccircle cx='92' cy='38' r='1.6'/%3E%3Ccircle cx='44' cy='126' r='1.6'/%3E%3Ccircle cx='158' cy='64' r='1.1'/%3E%3Ccircle cx='10' cy='78' r='1.1'/%3E%3Ccircle cx='104' cy='162' r='1.3'/%3E%3Ccircle cx='70' cy='84' r='.9'/%3E%3C/g%3E%3C/svg%3E");
+  overscroll-behavior: contain;
+  animation: cx-fade-in 180ms ease-out both;
+}
+.cx-dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 68rem);
+  height: min(100%, 58rem);
+  max-height: 100%;
+  min-height: 0;
+  background: var(--night);
+  border: 3px solid var(--star);
+  border-radius: 18px;
+  box-shadow: 0 0 0 3px var(--ink), 0 8px 0 3px var(--ink), 0 26px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: cx-rise 320ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+.cx-dialog--compact {
+  width: min(100%, 44rem);
+  height: auto;
+}
+.cx-dialog--compact .cx-frame {
+  width: clamp(52px, 9vw, 68px);
+}
+.cx-dialog--compact .cx-dialog__title {
+  margin-bottom: 0;
+}
+
+.cx-dialog__header {
+  flex: none;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(0.8rem, 2.4vw, 1.4rem);
+  padding: clamp(0.8rem, 2vw, 1.15rem) clamp(1rem, 3vw, 1.75rem);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.045) 0 14px,
+      rgba(255, 255, 255, 0) 14px 28px
+    ),
+    linear-gradient(180deg, var(--dusk) 0%, var(--night) 100%);
+  border-bottom: 4px solid var(--cx-accent);
+  box-shadow: 0 3px 0 var(--ink);
+  z-index: 1;
+}
+/* The painting, hung slightly askew in a gold frame. */
+.cx-frame {
+  display: grid;
+  place-items: center;
+  width: clamp(58px, 10vw, 96px);
+  aspect-ratio: 1;
+  background: var(--ink);
+  border: 4px solid var(--star);
+  border-radius: 8px;
+  box-shadow: 0 0 0 3px var(--ink), 0 5px 0 3px var(--ink);
+  overflow: hidden;
+  transform: rotate(-3deg);
+}
+.cx-frame > canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.cx-frame--star {
+  background: radial-gradient(circle at 50% 45%, var(--dusk), var(--ink));
+  transform: none;
+}
+.cx-dialog__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.7rem;
+  margin: 0;
+  font-family: var(--cx-font-pixel);
+  font-size: 0.66rem;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cx-label);
+}
+.cx-dialog__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.cx-dialog__title {
+  margin: 0.3rem 0 0.4rem;
+  font-size: clamp(1.4rem, 4vw, 2.3rem);
+  overflow-wrap: anywhere;
+}
+/* The heading only receives focus programmatically (so screen readers start
+   reading at the title); it is not a control, so it shows no ring. */
+.cx .cx-dialog__title:focus,
+.cx .cx-dialog__title:focus-visible {
+  outline: none;
+}
+.cx-dialog__painting {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--cx-soft);
+}
+.cx-dialog__painting > b {
+  font-weight: 700;
+  color: var(--cx-text);
+}
+
+.cx-dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: clamp(1rem, 3vw, 1.75rem) clamp(1rem, 3vw, 1.75rem) clamp(1.5rem, 4vw, 2.25rem);
+  scrollbar-color: #5566c9 transparent;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.cx-dialog__body:focus-visible {
+  outline-offset: -5px;
+}
+.cx-dialog__intro {
+  margin-bottom: clamp(1.1rem, 2.5vw, 1.5rem);
+}
+
+.cx-dialog__footer {
+  flex: none;
+  display: flex;
+  justify-content: center;
+  padding: 0.75rem 1rem calc(0.75rem + 4px);
+  background: var(--ink);
+  border-top: 3px solid var(--star);
+}
+/* `.cx` prefix: these adjust the shared .btn-retro primitive, so they must
+   win regardless of stylesheet order. */
+.cx .cx-dialog__exit {
+  max-width: 100%;
+  color: #ffffff; /* AA on the ruby button at small sizes */
+  font-size: clamp(0.8rem, 3.5vw, 1.05rem);
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+@keyframes cx-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cx-rise {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Phones: the full-size course dialogs go edge to edge. */
+@media (max-width: 640px) {
+  .cx-overlay--full {
+    padding: 0;
+  }
+  .cx-overlay--full .cx-dialog {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .cx-overlay--full .cx-dialog__header {
+    padding-top: max(0.8rem, env(safe-area-inset-top));
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  .cx-overlay--full .cx-dialog__body {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  .cx-overlay--full .cx-dialog__footer {
+    padding-bottom: max(calc(0.75rem + 4px), env(safe-area-inset-bottom));
+  }
+  .cx-dialog__eyebrow {
+    font-size: 0.56rem;
+  }
+  .cx-dialog__painting {
+    font-size: 0.875rem;
+  }
+  .cx-dialog__blurb {
+    display: none;
+  }
+}
+
+/* Very narrow phones: a smaller title keeps the header to two lines. */
+@media (max-width: 380px) {
+  .cx-frame {
+    width: 50px;
+  }
+  .cx-dialog__title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Short viewports (phones in landscape): shrink the chrome so the
+   reading area keeps most of the height. */
+@media (max-height: 520px) {
+  .cx-overlay {
+    padding: max(6px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right))
+      max(10px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  }
+  .cx-dialog__header {
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
+  }
+  .cx-frame {
+    width: 44px;
+    border-width: 3px;
+  }
+  .cx-dialog__title {
+    margin: 0.15rem 0 0;
+    font-size: 1.25rem;
+  }
+  .cx-dialog__painting {
+    display: none;
+  }
+  .cx-dialog__footer {
+    padding: 0.4rem 1rem calc(0.4rem + 4px);
+  }
+  .cx .cx-dialog__exit {
+    min-height: 44px;
+    font-size: 0.85rem;
+  }
+  .cx-dialog--compact {
+    height: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-overlay,
+  .cx-dialog {
+    animation: none;
+  }
+  /* Hold the stars at a three-quarter angle instead of spinning. */
+  .cx-star3d__spin {
+    animation-play-state: paused;
+    animation-delay: -0.32s;
+  }
+  .cx-star3d--outline .cx-star3d__spin {
+    animation-delay: -0.85s;
+  }
+  .cx-resume-star__star {
+    animation: none;
+  }
+  .cx-course-tab,
+  .cx-mission-tab,
+  .cx-resume-star,
+  .cx-link,
+  .cx-linkbtn {
+    transition: none;
+  }
+}
+
+/* Dev aid (/dev/overlays?review=1, /dev/plain?review=1): outline copy the
+   content file marks `needsReview`. Never shown to visitors. */
+.cx-show-review [data-needs-review] {
+  outline: 2px dashed #ff5ad0;
+  outline-offset: 4px;
+}

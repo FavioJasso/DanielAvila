@@ -1,38 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- danielavila.tech is a single page. The #anchors are the section ids of the
+     plain HTML version (see `sections` in src/content/portfolio.ts). -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.danielavila.tech/</loc>
-    <lastmod>2025-01-14</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.danielavila.tech/#about</loc>
-    <lastmod>2025-01-14</lastmod>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.danielavila.tech/#education</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.danielavila.tech/#skills</loc>
-    <lastmod>2025-01-14</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.danielavila.tech/#experience</loc>
-    <lastmod>2025-01-14</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.danielavila.tech/#projects</loc>
-    <lastmod>2025-01-14</lastmod>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.danielavila.tech/#certification</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.danielavila.tech/#contact</loc>
-    <lastmod>2025-01-14</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
