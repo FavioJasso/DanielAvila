@@ -1,10 +1,26 @@
 @import "tailwindcss";
 
 :root {
+  /* legacy tokens (previous site) */
   --background: #ffffff;
   --foreground: #212020;
   --brand-blue: #3970EB;
   --space-gray: #F6F6F6;
+
+  /* DANIEL AVILA 64 palette */
+  --ink: #0a0f2c;        /* deepest navy: outlines, game backdrop, text on light */
+  --night: #131b4d;      /* panel navy */
+  --dusk: #27358f;       /* raised panel / gradient top */
+  --royal: #3970eb;      /* Daniel's brand blue, kept from the previous site */
+  --sky: #8fc1ff;        /* light blue accents, links on dark */
+  --star: #ffc93c;       /* gold stars, primary highlights */
+  --star-deep: #e08a00;  /* gold shadow / extrusion */
+  --ruby: #d8343a;       /* carpet red, danger / exit */
+  --leaf: #2fae5a;       /* success, "completed" */
+  --cream: #fff4d6;      /* primary text on dark */
+  --paper: #fffaf0;      /* light card background */
+  --stone: #b9b2a3;      /* castle stone, muted borders */
+  --muted: #b7c0e8;      /* secondary text on dark (AA on --night) */
 }
 
 @theme inline {
@@ -12,6 +28,24 @@
   --color-foreground: var(--foreground);
   --color-brand-blue: var(--brand-blue);
   --color-space-gray: var(--space-gray);
+
+  --color-ink: var(--ink);
+  --color-night: var(--night);
+  --color-dusk: var(--dusk);
+  --color-royal: var(--royal);
+  --color-sky: var(--sky);
+  --color-star: var(--star);
+  --color-star-deep: var(--star-deep);
+  --color-ruby: var(--ruby);
+  --color-leaf: var(--leaf);
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-stone: var(--stone);
+  --color-muted: var(--muted);
+
+  --font-display: var(--font-titan), "Arial Black", system-ui, sans-serif;
+  --font-pixel: var(--font-pixel-face), ui-monospace, monospace;
+  --font-body: var(--font-outfit), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 body {
@@ -108,4 +142,117 @@ h1, h2, h3, h4, h5, h6 {
   50% {
     transform: translateY(-10px);
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* DANIEL AVILA 64 — shared UI primitives                              */
+/* Used by both the game HUD (src/components/game) and the course      */
+/* overlays / plain version (src/components/course). Component-specific */
+/* styles live next to their components, not here.                     */
+/* ------------------------------------------------------------------ */
+
+/* Chunky display text: gold face, dark outline, hard drop shadow. */
+.text-chunky {
+  font-family: var(--font-display);
+  color: var(--star);
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  -webkit-text-stroke: 0.09em var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0 0.09em 0 var(--star-deep), 0 0.16em 0 var(--ink);
+}
+
+/* Small HUD label in the pixel face. */
+.text-pixel {
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Navy panel with a gold rim, used for menus, banners and cards. */
+.panel-retro {
+  background: linear-gradient(180deg, var(--dusk) 0%, var(--night) 100%);
+  color: var(--cream);
+  border: 3px solid var(--star);
+  border-radius: 14px;
+  box-shadow: 0 0 0 3px var(--ink), 0 6px 0 3px var(--ink);
+}
+
+/* Chunky push button. Add .btn-retro--gold / --ruby / --ghost for variants. */
+.btn-retro {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: 44px;
+  padding: 0.55em 1.1em;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.1;
+  color: var(--cream);
+  background: var(--royal);
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 0 4px 0 var(--ink);
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  transition: transform 80ms ease, box-shadow 80ms ease, filter 120ms ease;
+}
+.btn-retro:hover {
+  filter: brightness(1.12);
+}
+.btn-retro:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+.btn-retro:focus-visible {
+  outline: 3px solid var(--star);
+  outline-offset: 3px;
+}
+.btn-retro:disabled {
+  filter: grayscale(0.6) brightness(0.8);
+  cursor: default;
+}
+.btn-retro--gold {
+  background: var(--star);
+  color: var(--ink);
+}
+.btn-retro--ruby {
+  background: var(--ruby);
+}
+.btn-retro--ghost {
+  background: rgba(10, 15, 44, 0.72);
+  border-color: var(--cream);
+  box-shadow: 0 4px 0 rgba(10, 15, 44, 0.9);
+}
+
+/* Visible keyboard focus everywhere inside the game UI. */
+.focus-ring:focus-visible {
+  outline: 3px solid var(--star);
+  outline-offset: 3px;
+}
+
+@keyframes da64-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0.15; }
+}
+@keyframes da64-spin-y {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+@keyframes da64-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes da64-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-retro { transition: none; }
 }

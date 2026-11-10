@@ -1,297 +1,107 @@
-# Deployment Guide - Daniel Avila Portfolio
+# Deployment - Daniel Avila 64
 
-## 🚀 Quick Deploy to Vercel (Recommended)
+## How this site is deployed
 
-Vercel is the recommended platform for deploying Next.js applications.
+The site is hosted on **Vercel**, and the existing Vercel project is connected to
+this GitHub repository (`FavioJasso/DanielAvila`).
 
-### Method 1: GitHub Integration (Easiest)
+- **Pushing to `main` publishes to production** at
+  [https://www.danielavila.tech/](https://www.danielavila.tech/). There is no
+  separate deploy step and no CLI command to run.
+- By default Vercel's Git integration also builds a preview deployment, with its own
+  URL, for other branches and pull requests. Use that to look at a change before
+  merging.
+- With Vercel's default Next.js settings the build runs the `build` script from
+  `package.json` (`next build --turbopack`).
+- The code reads no environment variables, so none need to be set in Vercel. The
+  EmailJS identifiers the contact form uses are public by design and live in
+  `src/content/portfolio.ts`.
+- `@vercel/analytics` is included in the root layout. It only records data when Web
+  Analytics is enabled for the project in the Vercel dashboard.
 
-1. **Push to GitHub**
+So a release is: merge to `main`, wait for the Vercel build, check the live site.
+
+## Before merging to `main`
+
+1. **Type-check and build locally.**
+
    ```bash
-   git add .
-   git commit -m "Ready for deployment"
-   git push origin main
-   ```
-
-2. **Connect to Vercel**
-   - Go to [vercel.com](https://vercel.com)
-   - Click "Add New Project"
-   - Import your GitHub repository
-   - Vercel will auto-detect Next.js settings
-   - Click "Deploy"
-
-3. **Configure Domain** (After first deployment)
-   - Go to Project Settings → Domains
-   - Add your custom domain (e.g., [danielavila.tech](https://www.danielavila.tech/))
-   - Update DNS records as instructed
-   - Vercel provides automatic HTTPS
-
-### Method 2: Vercel CLI
-
-1. **Install Vercel CLI**
-   ```bash
-   npm install -g vercel
-   ```
-
-2. **Login**
-   ```bash
-   vercel login
-   ```
-
-3. **Deploy**
-   ```bash
-   vercel
-   ```
-
-4. **Deploy to Production**
-   ```bash
-   vercel --prod
-   ```
-
-## 🔧 Pre-Deployment Checklist
-
-### Update Configuration Files
-
-1. **Update Domain in `src/app/layout.tsx`**
-   ```typescript
-   metadataBase: new URL("https://www.danielavila.tech/"),
-   ```
-
-2. **Update Domain in `public/sitemap.xml`**
-   Replace all instances of `https://www.danielavila.tech/` with your domain
-
-3. **Update Domain in `src/app/page.tsx`**
-   Update the `url` field in structured data:
-   ```typescript
-   url: "https://www.danielavila.tech/",
-   ```
-
-4. **Update Social Media Links**
-   In `src/app/page.tsx`, update:
-   - LinkedIn URL
-   - GitHub URL
-   - Resume URL
-
-### Add Required Images
-
-Place these images in the `/public` folder:
-
-- `AvilaProfileImage.png` - Your profile photo
-- `og-image.png` - Social media preview (1200x630px)
-- `favicon.ico` - Browser tab icon
-- `icon-192.png` - PWA icon (192x192px)
-- `icon-512.png` - PWA icon (512x512px)
-- `apple-touch-icon.png` - iOS icon
-- `storis-logo.png` - STORIS company logo
-- `ccm-logo.png` - County College of Morris logo
-- `microsoft-logo.png` - Microsoft logo
-- `adda-logo.png` - ADDA logo
-- `white-to-blue.png` - Background gradient image
-- `blue-to-white.png` - Background gradient image
-- `solid-blue-to-white.png` - Background gradient image
-
-### Environment Variables (Optional)
-
-If using analytics or contact forms, create `.env.local`:
-
-```bash
-# Copy example file
-cp .env.example .env.local
-
-# Edit with your values
-NEXT_PUBLIC_SITE_URL=https://www.danielavila.tech/
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-```
-
-Add these in Vercel:
-- Go to Project Settings → Environment Variables
-- Add each variable
-
-## 🌐 Deploy to Other Platforms
-
-### Netlify
-
-1. **Install Netlify CLI**
-   ```bash
-   npm install -g netlify-cli
-   ```
-
-2. **Build**
-   ```bash
+   npx tsc --noEmit -p .
    npm run build
+   npm start        # then open http://localhost:3000
    ```
 
-3. **Deploy**
-   ```bash
-   netlify deploy --prod
-   ```
+2. **Play it through** on a desktop browser and on a phone:
+   title screen -> PRESS START -> walk or cycle to each door -> jump into the
+   painting -> read the overlay -> jump back out; the résumé star; the pause menu
+   (Esc) and its section links and PDF download; the sound toggle; the contact form;
+   the plain HTML version.
 
-### AWS Amplify
+3. **Check the fallbacks.** The plain HTML version must contain every section, and the
+   page must still be useful with JavaScript disabled.
 
-1. Connect your GitHub repository
-2. Configure build settings:
-   ```yaml
-   version: 1
-   frontend:
-     phases:
-       preBuild:
-         commands:
-           - npm install
-       build:
-         commands:
-           - npm run build
-     artifacts:
-       baseDirectory: .next
-       files:
-         - '**/*'
-     cache:
-       paths:
-         - node_modules/**/*
-   ```
+4. **Review the content.** Everything on the site comes from
+   `src/content/portfolio.ts`. Entries marked `needsReview: true` were drafted from
+   the design document and should be confirmed by Daniel before launch.
 
-### Static Export (GitHub Pages, etc.)
+5. **Update the static SEO files if anything they repeat has changed.**
 
-If you want a fully static site:
+   | File | What to update |
+   | --- | --- |
+   | `public/sitemap.xml` | `lastmod` dates; the anchor list if a section id changes |
+   | `public/manifest.json` | Name, description, colours, icon list |
+   | `public/robots.txt` | The sitemap URL, if the domain changes |
+   | `public/og-image.png`, icons, `src/app/favicon.ico` | Regenerate if Daniel's name or role changes (README, "Icons and the social card") |
 
-1. **Update `next.config.js`**
-   ```javascript
-   /** @type {import('next').NextConfig} */
-   const nextConfig = {
-     output: 'export',
-   }
+   The page `<head>` (title, description, canonical, Open Graph, Twitter card) and the
+   JSON-LD are generated from the content file and need no manual edit.
 
-   module.exports = nextConfig
-   ```
+6. **Confirm `/dev` is private.** The harness pages under `/dev` return 404 in a
+   production build; `npm run build && npm start` and open `/dev/whitebox` to check.
 
-2. **Build**
-   ```bash
-   npm run build
-   ```
+## After a deployment
 
-3. **Deploy the `out` folder**
+- Open the live page source and confirm the `<title>`, description, canonical link
+  and `og:` / `twitter:` tags are present, and that these load:
+  `/og-image.png`, `/favicon.ico`, `/icon.png`, `/icon-192.png`, `/icon-512.png`,
+  `/apple-touch-icon.png`, `/manifest.json`, `/sitemap.xml`, `/robots.txt`.
+- Structured data: [Rich Results Test](https://search.google.com/test/rich-results) and
+  the [Schema Markup Validator](https://validator.schema.org/).
+- Link previews: [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/)
+  and [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/). Both cache
+  the old card until asked to re-scrape.
+- Google Search Console: resubmit `https://www.danielavila.tech/sitemap.xml`.
+  No Search Console verification code is configured in the code. If the property is
+  to be verified by meta tag, add the real code as `verification.google` in the
+  `metadata` export of `src/app/layout.tsx`.
 
-## 📊 Post-Deployment Setup
+## Rolling back
 
-### 1. Google Search Console
+Either revert the commit on `main` and push (Vercel deploys the revert), or promote
+an earlier deployment to production from the project's Deployments list in the
+Vercel dashboard.
 
-1. Go to [search.google.com/search-console](https://search.google.com/search-console)
-2. Add your property
-3. Verify ownership (DNS or HTML file)
-4. Submit sitemap: `https://www.danielavila.tech/sitemap.xml`
+## Domain
 
-### 2. Google Analytics (Optional)
+`https://www.danielavila.tech` is the canonical address. It is defined once in code,
+as `SITE_URL` in `src/content/portfolio.ts`, and repeated in `public/sitemap.xml` and
+`public/robots.txt`. If the domain ever changes, update those three places; the
+domain itself is managed in the Vercel project's Domains settings.
 
-1. Create GA4 property at [analytics.google.com](https://analytics.google.com)
-2. Get your Measurement ID (G-XXXXXXXXXX)
-3. Add to `.env.local` or Vercel environment variables
+## Troubleshooting
 
-### 3. Social Media Preview Testing
+| Symptom | Likely cause |
+| --- | --- |
+| Every route fails to compile, the error names `src/app/favicon.ico` | The `.ico` contains PNG frames without an alpha channel. Rebuild it with `src/app/dev/og/build-images.mjs`, which writes RGBA frames |
+| An icon or the social card returns 404 | The file is missing from `public/`, or its name does not match `src/app/layout.tsx` / `public/manifest.json` exactly (names are case-sensitive) |
+| A link preview shows the old image | The network cached it. Re-scrape with the debuggers above |
+| The 3D view does not start | The visitor's browser could not create a WebGL context. The site switches to the plain HTML version; that is the intended fallback |
+| The build fails on Vercel but not locally | Run `npm run build` locally on a clean checkout (`rm -rf .next`) and read the first error |
 
-- **Facebook**: [developers.facebook.com/tools/debug](https://developers.facebook.com/tools/debug)
-- **Twitter**: [cards-dev.twitter.com/validator](https://cards-dev.twitter.com/validator)
-- **LinkedIn**: Share the URL and check preview
+## Credits
 
-### 4. Performance Testing
+Built and maintained by **Camino Code** ([caminocode.com](https://www.caminocode.com/)),
+Applied AI Systems, Data Science and Product Engineering organization based in New Jersey.
 
-- **Google PageSpeed**: [pagespeed.web.dev](https://pagespeed.web.dev)
-- **GTmetrix**: [gtmetrix.com](https://gtmetrix.com)
-- **WebPageTest**: [webpagetest.org](https://webpagetest.org)
-
-### 5. SEO Validation
-
-- **Schema Markup**: [validator.schema.org](https://validator.schema.org)
-- **Structured Data**: [search.google.com/test/rich-results](https://search.google.com/test/rich-results)
-- **HTML Validator**: [validator.w3.org](https://validator.w3.org)
-
-## 🔄 Continuous Deployment
-
-With Vercel + GitHub:
-- Every push to `main` branch auto-deploys to production
-- Pull requests create preview deployments
-- Automatic HTTPS certificates
-- Global CDN distribution
-- Automatic image optimization
-
-## 🐛 Troubleshooting
-
-### Build Fails
-
-```bash
-# Clear cache and rebuild
-rm -rf .next node_modules
-npm install
-npm run build
-```
-
-### Images Not Loading
-
-- Check file names match exactly (case-sensitive)
-- Ensure images are in `/public` folder
-- Verify image paths start with `/`
-
-### Sitemap Not Found
-
-- Verify `sitemap.xml` is in `/public` folder
-- Check file is valid XML
-- Ensure it's accessible at `/sitemap.xml`
-
-### SEO Tags Not Showing
-
-- Clear browser cache
-- Use incognito/private mode
-- Check with social media debuggers
-- Verify metadata in `layout.tsx`
-
-## 📈 Monitoring
-
-After deployment, monitor:
-- **Uptime**: Vercel dashboard shows deployment status
-- **Analytics**: Google Analytics for traffic
-- **Search**: Google Search Console for SEO performance
-- **Errors**: Vercel logs for runtime errors
-
-## 🔒 Security
-
-- ✅ HTTPS enabled automatically (Vercel)
-- ✅ Security headers configured
-- ✅ No sensitive data in code
-- ✅ Environment variables for secrets
-- ✅ CSP headers (Content Security Policy)
-
-## 📱 Domain Setup
-
-### Custom Domain on Vercel
-
-1. Go to Project Settings → Domains
-2. Add your domain
-3. Update DNS:
-   ```
-   Type: A
-   Name: @
-   Value: 76.76.21.21
-
-   Type: CNAME
-   Name: www
-   Value: cname.vercel-dns.com
-   ```
-4. Wait for DNS propagation (up to 48 hours)
-
-### SSL Certificate
-
-- Vercel provides free SSL automatically
-- Certificate renews automatically
-- Forced HTTPS enabled by default
-
----
-
-## ✅ Deployment Complete!
-
-Your site is now live and optimized for:
-- 🚀 Fast loading
-- 📱 Mobile devices
-- 🔍 Search engines
-- 🌐 Social media
-- ♿ Accessibility
-- 🔒 Security
-
-**Need help?** Contact Camino Code or refer to [Next.js Deployment Docs](https://nextjs.org/docs/deployment)
+- **Founder & CEO / Chief of Product:** Favio Jasso
+- **Software Engineer:** John Rey Calesa

@@ -1,12 +1,9 @@
-# robots.txt for Daniel Avila Portfolio
+# robots.txt for danielavila.tech (Daniel Avila - portfolio)
 # https://www.danielavila.tech/robots.txt
 
 User-agent: *
 Allow: /
+# Development harness pages; they return 404 in production anyway.
+Disallow: /dev/
 
-# Disallow admin or private pages if any
-# Disallow: /admin/
-# Disallow: /private/
-
-# Sitemap location
 Sitemap: https://www.danielavila.tech/sitemap.xml

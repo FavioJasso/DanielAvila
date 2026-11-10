@@ -1,0 +1,137 @@
+{
+ "key": "avatar",
+ "build": {
+  "summary": "Built \"Daniel 64\": a 671-triangle (exact, counted from the scene graph) flat-shaded, segmented low-poly avatar generated entirely in code, with a full procedural animation set and world-space effects. `src/game/avatar/index.ts` exports `createAvatar: CreateAvatar` (plus a `countTriangles` helper). Model: 15 rigid meshes on nested Groups (hips, torso, head, upper/lower arms with mitten hands, upper/lower legs, feet), 3 materials (vertex colours, face texture, blazer texture), 64x64 nearest-filtered canvas textures (face with open and closed-eye frames; blazer front with shirt, collar, lapels, gold buttons, pocket square), 1.75 units tall with feet at the origin facing +Z. Likeness: medium-brown skin, dark centre-parted hair covering the ears down to the neck with wavy ends, thick brows, moustache, stubble chin beard, navy blazer over a light-blue shirt, grey-khaki trousers, dark brown shoes. Animations (pose functions writing a 31-channel pose array, smoothstep cross-fades of 0.08-0.15 s, leg IK where feet must stay planted): idle (breathing, weight shift, blink, glance left then right from 5 s every 6 s, sit and sleep with Zzz from 20 s, smooth stand-up on wake), run (stride, rate, lean and dust scale with speed; jog arms blend into an arms-out sprint), jump, fall, land, push, dive, backflip, starPose. Effects: soft blob shadow that shrinks and fades with height, and one batched billboard particle mesh (dust, Z, sparkles) costing a single draw call. Harness at `src/app/dev/avatar/page.tsx` supports live turntable with buttons, stills via query string, `?sheet=1` contact sheet, plus extras (`?turn=1` turnaround, `focus=head`, `res=`, `world=1`, `fog=1`, `rm=1`, `pre=`) and exposes `window.__avatar = { triangles, avatar, step, info }`. IMPORTANT caveat: the shared dev server on localhost:3000 went down mid-task and never came back, so all visual and runtime verification was done by loading the real page.tsx in headless Chrome through an offline runner (requests intercepted and answered from disk, no server started); the actual Next route was never loaded.",
+  "files": [
+   "src/game/avatar/index.ts",
+   "src/game/avatar/rig.ts",
+   "src/game/avatar/poses.ts",
+   "src/game/avatar/geometry.ts",
+   "src/game/avatar/textures.ts",
+   "src/game/avatar/model.ts",
+   "src/game/avatar/effects.ts",
+   "src/game/avatar/palette.ts",
+   "src/app/dev/avatar/page.tsx"
+  ],
+  "verification": [
+   "Type-check: `npx tsc --noEmit -p .` exits 0 for the whole repo; also clean for my files with --noUnusedLocals --noUnusedParameters.",
+   "Dev server: http://localhost:3000 returned 200 at the start, then connection refused for the rest of the task (no next process running). I did not start one. Fallback: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/scripts/avatar/offline.mjs drives headless Chrome against a fake origin, transpiles the real src files with the repo's TypeScript, wraps React from node_modules and mounts the real page.tsx inside StrictMode. No page errors or console errors in any run (only a favicon 404 from the fake origin).",
+   "Triangle count: window.__avatar.triangles = 671. Per mesh: pelvis 30, blazer 70, blazer-front 24, head+hair 158, face 27, upper arms 24 x2, forearm+hand 63 x2, thighs 24 x2, shins 24 x2, shoes 46 x2 (sums to 671). 3 materials. Effects are extra: shadow 36 triangles, particles up to 32 quads.",
+   "Size: mesh bounds minY -0.001, maxY 1.763 at a breathing-stretch of 1.0073, i.e. 1.750 at neutral. renderer.info: 17 draw calls with the harness floor (15 figure + shadow + floor; +1 when particles are alive).",
+   "Neutral pose stills: shots/avatar/neutral-front.png, neutral-side.png, neutral-back.png, neutral-three-quarter.png and turnaround.png (4 body views + 4 head views), all under /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/avatar/. Opened and judged; iterated three times (bigger head, shorter thicker legs, rounder mitten hands, bigger shoes, smaller nose, darker hair, calmer eyes).",
+   "Contact sheet: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/avatar/contact-sheet.png (9 rows, 55 cells: idle incl. glance left/right, sitting, asleep, wake +0.22 s and +0.7 s; run at speed 1.0 and 0.4; jump/fall; land; push; dive; backflip; starPose).",
+   "Face close-ups: same folder, face-front.png, face-three-quarter.png, face-blink.png (closed-eye frame), sleep-face.png.",
+   "Sleeping with Zzz (t = 24.6 s): sleep-zzz.png; measured: sleeping false at 19.9 s, true at 20.1 s, 2 Z particles alive, hips at 0.165. After wake(): sleeping false immediately, Z particles gone and hips at 0.538 after 0.35 s, standing (0.643) after 0.95 s.",
+   "Running with dust: run-dust-side.png, run-dust-three-quarter.png, run-slow-side.png. Measured thigh swing 57 / 77 / 102 degrees at speed 0.3 / 0.6 / 1.0; dust spawned in 4 s: 30 / 33 / 45; zero dust while root.y = 1.",
+   "In-game scale: gamescale-480p.png (res=480, zoom=0.32) and 3x nearest crops inside the stub world at 480p: gamescale-world-3x.png, gamescale-world-sleep-3x.png, gamescale-world-star-3x.png (avatar about 115 px tall). First pass the eyes merged with the brows into dark blobs; I redrew them (white | iris | white under a one-texel lid, brows moved up, fringe opened) and re-checked: eyes, moustache and hair now read at that size; the mouth and the stubble detail do not (the chin just reads darker).",
+   "Contract behaviour (scripted eval): play() of the current anim is a no-op and does not reset the idle timer; wake() and any other play() reset it; every one-shot (land 0.2, push 0.45, dive 0.6, backflip 0.8, starPose 1.6 s) shows 0 pose drift for 1.5 s after its duration; root position/rotation/scale untouched by the module.",
+   "No pops: stepped a 23-step script of transitions at 60 fps and recorded the peak per-frame joint rotation for each: worst cases are the deliberate arm throws into jump and dive (about 50 degrees/frame over a 6-frame blend); a completed backflip into idle peaks at 7 degrees/frame (the full turn is unwound before blending); sleep into run 19 degrees/frame.",
+   "Allocation: CDP heap sampling (256-byte interval) over 19,500 update() frames covering every animation, footfalls, landing puffs, Zzz and sparkles, after a warm-up pass: 0 bytes attributed to src/game/avatar/*. (Without warm-up: 9.8 KB total across 19,500 frames, i.e. JIT warm-up noise, not per-frame allocation.)",
+   "dispose(): renderer.info.memory went from 13 geometries / 5 textures to 1 / 1 (the harness floor) after removing and disposing the avatar.",
+   "Blob shadow: stays at the root's x/z at y = 0.03; scale 1.0 / 0.93 / 0.86 / 0.73 / 0.45 and opacity 0.42 / 0.38 / 0.35 / 0.27 / 0.13 at heights 0 / 0.5 / 1 / 2 / 4; hidden when root.visible is false.",
+   "Reduced motion (?rm=1): breathing bounce 1.6 cm vs 4.6 cm measured before I reduced the normal amplitude by a third (not re-measured after that change); star hop 0.15 vs 0.42 with no spin; sparkles 3 vs 7; landing puffs 2 vs 4; run dust about a quarter.",
+   "Fog: sleep-fog.png rendered with scene.fog set; the particle shader compiled and fogged correctly.",
+   "Harness UI: live-hud.png; clicking the 'land' button changed avatar.anim (fall lead-in, then land), so the buttons drive the avatar."
+  ],
+  "knownIssues": [
+   "The real Next route /dev/avatar was never loaded because the dev server was down; it type-checks and the same page.tsx runs cleanly under StrictMode in the offline runner, but please open http://localhost:3000/dev/avatar once the server is back.",
+   "At in-game size (about 115 px tall at 480p) the mouth and stubble detail are lost; hair, brows, eyes, moustache, blazer front and shirt read. Up close the eyes are deliberately half-lidded and could be read as slightly sleepy.",
+   "The back of the blazer is plain navy (no seam or vent); the hair is one rigid shell and does not move.",
+   "Feet are not IK-planted during run, jump or the star hop (only idle sit, push and crouches keep feet on the floor), so a running foot can dip a centimetre or two through the floor or hover.",
+   "Hand-on-hip in the star pose sits at the front of the waist rather than squarely on the hip.",
+   "The breathing bounce after my final amplitude change (squash 0.008) was not re-measured; expected about 3 cm at the head top.",
+   "Run in `world=1` harness mode has no collisions, so a long simulated run leaves the room (harness only).",
+   "The thumb is a small pyramid that reads as a spike in some side views."
+  ],
+  "integrationNotes": [
+   "Flip `createAvatar` in src/game/modules.ts to `import { createAvatar } from \"./avatar\"`. No other wiring needed; the module creates canvases with `document.createElement`, so it must only be constructed on the client (as the engine already is).",
+   "Add both `avatar.root` and `avatar.effects` to the scene; `effects` must stay untransformed at the origin. The avatar reads `root.position`, `root.rotation.y` and `root.visible` to place the shadow, dust, Zzz and sparkles, so set the root transform before calling `avatar.update(dt, time)` each frame.",
+   "Hiding the avatar with `root.visible = false` (e.g. as it passes the canvas) also hides the blob shadow and stops new particles; particles already alive finish fading.",
+   "Durations match the stub closely: land 0.2 (stub 0.18), push 0.45, dive 0.6, backflip 0.8, starPose 1.6. Use `avatar.duration(name)` rather than constants.",
+   "starPose timeline: wind-up to 0.12 s, hop with a full spin until 0.62 s, pose struck by about 1.0 s, sparkles at 0.86 s from the raised right hand. `world.starBurst()` and the fanfare line up best around 0.85 s after play().",
+   "Backflip rotates about the hips and ends upright at exactly one full turn; play `land` straight after and the turn is unwound before blending, so there is no spin-back.",
+   "Dust only spawns in `run` when `root.position.y < 0.05` and speed > 0.3; `land` and `jump` emit a small ring of puffs when the root is within 0.3 of the floor. The floor is assumed to be y = 0 everywhere; the shadow sits at y = 0.03 with polygon offset, so the carpet should be below that.",
+   "`avatar.sleeping` becomes true at exactly 20 s of uninterrupted idle (the sit takes about 1.1 s, first Z about 0.3 s after he settles), which is when `snore` can start.",
+   "Lighting: materials are MeshLambertMaterial with flatShading, so the avatar needs the world's lights; it was tuned under the stub world's HemisphereLight 1.6 + DirectionalLight 1.4.",
+   "`AvatarOptions.quality: \"low\"` halves the dust per footfall; `reducedMotion` cuts bounce to 35%, removes the star-pose spin and reduces particle counts."
+  ],
+  "contractGaps": [
+   "None blocking. `Avatar.update(dt, time)`: I ignore `time` and keep internal clocks, so pausing or time jumps cannot pop the pose.",
+   "The contract has no way to report the triangle count, so `countTriangles(object)` is an extra named export from src/game/avatar/index.ts used by the harness.",
+   "The contract does not say what should happen to effects when the engine hides the avatar; I chose to hide the shadow and stop spawning when `root.visible` is false.",
+   "ARCHITECTURE.md promises a running dev server on port 3000; it was unreachable for most of this task (see verification)."
+  ],
+  "blueprintDeviations": [
+   "Rigged Blender .glb replaced by a procedural code-built avatar, as the guide's substitution table requires.",
+   "\"Here we go!\" star pose replaced by an original victory pose (hop, spin, one fist raised, other on the hip, gold sparkles); no voice clip.",
+   "Head is about 30% of the height including hair (skull alone about 28%) rather than exactly a quarter, to get the chunky mascot read; total height is still 1.75.",
+   "Textures: the face uses two 64x64 frames (open / closed eyes) swapped for blinks and sleep, and the effects use one 64x64 atlas of four 32x32 cells.",
+   "Under reduced motion the star pose keeps the hop and the final pose but drops the 360 degree spin (my reading of 'keep the poses, drop the bounce').",
+   "Extras not in the brief: blink while awake, eyes closed while asleep, small dust rings on landing and take-off, gold buttons and a brand-blue pocket square on the blazer.",
+   "The relayed user request said 'also use multi agents': I am one worker of the parallel build and have no tool for spawning further agents, so this module was built by me alone."
+  ]
+ },
+ "review": {
+  "verdict": "solid-after-fixes",
+  "summary": "I reviewed the \"Daniel 64\" avatar against Guide 6.4 and the Avatar contract by reading every file in src/game/avatar/** and src/app/dev/avatar/page.tsx. The dev server on localhost:3000 was up, so I tested the real /dev/avatar route in headless Chrome: contact sheet, turnarounds, in-world views at 480p and 360p on mobile, reduced motion, scripted timing checks, joint pop tracing and CDP heap sampling. The builder's main claims hold up: 671 triangles, segmented rig, all nine animations with smoothstep blending, glance at 5 s, sleep at 20 s with Zzz, correct one-shot durations and holds, the module never touches the root, and per-frame code allocates nothing. I found and fixed six problems. (1) Integration bug: the blob shadow sat at y=0.03, under the real world's \"DA\" emblem decal at the spawn point (y=0.036). It would have been hidden exactly where the game starts and would flicker against the door thresholds (y=0.03). (2) Likeness against public/daniel-avila.jpg: the moustache was a thick, drooping band and the hair was centre-parted with curtains. The photo shows a trim moustache and black hair swept back off the forehead. (3) The thumb read as a spike. (4) The push pose read as two raised fists with thumbs up. (5) Dust puffs turned pink on the red carpet because of a long translucent fade. (6) The back of the head, which the follow camera sees most, was one flat black slab. I also improved the harness: it now follows the OS reduced-motion setting, and a new cam=follow option keeps the in-world camera inside the room. tsc is clean.",
+  "requirementChecks": [
+   "600-800 triangles: PASS. window.__avatar.triangles = 671, unchanged after my edits. 17 draw calls in the harness (15 figure, shadow, floor), plus 1 while particles are alive.",
+   "Flat shaded, 64x64 nearest textures: PASS. MeshLambertMaterial with flatShading; CanvasTextures use NearestFilter with no mipmaps.",
+   "Chunky 1996 proportions (big head, short limbs, mitten hands, big shoes): PASS (turn-v3.png).",
+   "Likeness: FIXED. Skin, wavy jaw-length hair, light chin beard, friendly relaxed eyes were already OK. Against the photo, I thinned the moustache to a trim band and repainted the hairline as swept back with lift over the forehead (was a centre parting with curtains). Hair kept near-black, not brown.",
+   "Outfit (navy blazer, light shirt, grey-khaki trousers, dark shoes): PASS.",
+   "Segmented rig (groups, no skinning) with smooth pose blending: PASS. Traced pops in a 15-step transition script at 60 fps: worst real cases are the deliberate arm throws into jump (45 deg/frame) and dive (46 deg/frame) over a 0.1 s blend. The 360 deg readings are 2*pi wrap equivalences on the hips (no visual change).",
+   "Idle breathing: PASS. Head moves 2.3 cm at normal motion, 0.77 cm with reduced motion.",
+   "Glance after 5 s: PASS. Head yaw 0 at 4.9 s, +0.62 at 5.9 s, -0.62 at 7.3 s.",
+   "Sit and sleep at 20 s with floating Zzz: PASS. sleeping is false at 19.9 s and true at 20.1 s; hips settle at 0.165; Z particles alive. play() of the current anim does not reset it; wake() does, and he is standing (hips 0.644) after 1 s.",
+   "Run with arms-out sprint and white dust: FIXED. The arms-out sprint at speed 1 was fine. Dust used to fade to pink over the red carpet; it now stays white (world-run-dust-v3.png).",
+   "jump / fall / land / dive / backflip / starPose: PASS. One-shots hold their final pose for more than 1 s after duration (land 0.2, push 0.45, dive 0.6, backflip 0.8, starPose 1.6). Star pose is original (hop, spin, fist raised, other hand on hip, gold sparkles); no Nintendo pose or voice.",
+   "push (reach forward to push a door): FIXED. Added a forearm twist so the mittens press flat with thumbs in, instead of two thumbs-up fists.",
+   "Blob shadow: FIXED. It is now at y=0.05 with polygonOffset -6, so it clears the world's carpet (0.024), thresholds (0.03) and spawn emblem decal (0.036, offset -4). Shrinking and fading with height is unchanged.",
+   "Effects in world space in avatar.effects: PASS. Root position, rotation and scale are untouched by the module.",
+   "Reduced motion: PASS. Star hop hips peak 0.79 vs 1.07, no spin (0 vs 2*pi), breathing about a third, fewer sparkles and puffs. Checked through the real prefers-reduced-motion media query (--reduced-motion), which the harness now honours.",
+   "No per-frame allocation: PASS. CDP heap sampling at 64 B over about 8,400 update() frames covering every animation, Zzz and sparkles, after warm-up: about 4.6 KB in total attributed to avatar code, i.e. under 1 byte per frame (JIT and event noise; real per-frame allocation would be over 130 KB).",
+   "Contract interface unchanged: PASS. createAvatar: CreateAvatar, with the countTriangles extra export kept.",
+   "Originality and no invented facts: PASS. No Nintendo names, likeness or assets; the only fact used is his appearance from public/daniel-avila.jpg."
+  ],
+  "issuesFixed": [
+   "src/game/avatar/effects.ts: raised SHADOW_Y from 0.03 to 0.05 and polygonOffset from -2 to -6. Before, the shadow would have been hidden under the world's DA emblem decal at SPAWN (room.ts DECAL_Y = 0.036) and z-fought with the door thresholds (y = 0.03).",
+   "src/game/avatar/textures.ts: moustache thinned from a 5-px band drooping at the ends to a trim 2-3 px band, matching the photo; this also frees the mouth to read at game size.",
+   "src/game/avatar/textures.ts: replaced the centre-parted fringe in isHair with a swept-back hairline that curves into the temples, matching the photo.",
+   "src/game/avatar/geometry.ts: crown reshaped from a parting valley to swept-back lift over the forehead.",
+   "src/game/avatar/geometry.ts: alternate hair locks are now a shade lighter (still near-black), so the back of the head, which the follow camera mostly sees, shows facets instead of one black slab.",
+   "src/game/avatar/geometry.ts: thumb shortened and broadened so it no longer reads as a spike side-on.",
+   "src/game/avatar/poses.ts: push pose gets an upper-arm twist (PUSH_TWIST) so the mittens press flat on the door with thumbs in, instead of reading as two raised fists.",
+   "src/game/avatar/index.ts: dust puffs are fully opaque and fade only over the last 30% of their life (was alpha 0.9 fading over 60%), so they stay white on the red carpet.",
+   "src/app/dev/avatar/page.tsx: reduced motion now follows the OS prefers-reduced-motion setting (rm=1 forces it on, rm=0 forces it off), so --reduced-motion tests the real path. Added cam=follow for world=1: the camera sits behind him by yaw, where before the fixed south camera ended up outside the wall when he ran south."
+  ],
+  "issuesRemaining": [
+   "Minor, cosmetic: the star-pose raised fist only reaches head height because of the large head; it reads as a fist pump, not an arm straight to the sky.",
+   "Minor, cosmetic: the blazer back has no seam or vent, and the hair is one rigid shell (the builder noted both); neither reads at the in-game size.",
+   "Minor, cosmetic: feet are not IK-planted during run, jump or the star hop, so they can dip a centimetre or two (the builder noted this).",
+   "Not verified: the avatar under the real world module. src/game/modules.ts still points at the stub world and the brief forbids importing src/game/world directly, so I checked the shadow-height conflict from the world source (room.ts CARPET_Y 0.024, threshold 0.03, DECAL_Y 0.036; same HemisphereLight and DirectionalLight rig) instead of rendering it.",
+   "Outside my files: the dev pages log a blocked request for https://va.vercel-scripts.com/v1/script.debug.js (ERR_BLOCKED_BY_ORB). It comes from src/app/layout.tsx (the SEO owner's file), not the avatar."
+  ],
+  "filesChanged": [
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/avatar/effects.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/avatar/textures.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/avatar/geometry.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/avatar/poses.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/avatar/index.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/app/dev/avatar/page.tsx"
+  ],
+  "integrationNotes": [
+   "The blob shadow now sits at y=0.05 (it was 0.03) so it clears the world's carpet (0.024), door thresholds (0.03) and spawn emblem decal (0.036). The builder's note saying 0.03 is out of date.",
+   "The engine already hides both avatar.root and avatar.effects (game.ts:878-879) and plays push / run / idle as the avatar expects; no wiring changes are needed beyond flipping createAvatar in src/game/modules.ts to ./avatar.",
+   "Harness: /dev/avatar?world=1&cam=follow&yaw=<rad>&res=480 approximates the in-game follow view; rm=0/1 overrides the OS reduced-motion setting."
+  ],
+  "verification": [
+   "Dev server http://localhost:3000 reachable (200); the real /dev/avatar route loaded with no page errors and no console errors from the avatar.",
+   "npx tsc --noEmit -p . : clean for the whole repo, before and after my edits; also clean for avatar files with --noUnusedLocals --noUnusedParameters.",
+   "Shots are in /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/review-avatar/r2/. Before: sheet.png, turn.png, run-front.png, star-front.png, fall-front.png, sleep-front.png, push-tq.png, world-idle.png, world-back.png, world-run-back.png, world-run-mobile.png (camera outside the wall). After: sheet-v2.png, turn-v2.png, turn-v3.png, push-v2.png, push-v3.png, world-back-v2.png, world-run-mobile-v2.png (--mobile, 360p), world-sleep-v2.png, world-run-dust-v3.png, star-rm.png (--reduced-motion). All opened and judged.",
+   "Scripted checks: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/scripts/review-avatar2/behav.js covers glance and sleep timing, the no-op play, wake, one-shot holds, the untouched root and pops. Results: glance 0 / +0.62 / -0.62; sleeping false at 19.9 s and true at 20.1 s; holds all true; root untouched. pop.js and behav2.js traced the 360 deg readings to 2*pi wrap equivalences.",
+   "Reduced motion compared through the real media query: star hop hips 1.065 vs 0.792, spin 6.28 vs 0, breathing 2.31 cm vs 0.77 cm; shadow y = 0.05 confirmed.",
+   "Allocation: /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/tools/ra2-alloc.mjs (CDP HeapProfiler sampling at 64 B after warm-up) found about 4.6 KB in total for avatar code over about 8,400 frames, i.e. no per-frame allocation."
+  ]
+ }
+}

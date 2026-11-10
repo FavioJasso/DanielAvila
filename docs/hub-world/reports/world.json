@@ -1,0 +1,129 @@
+{
+ "key": "world",
+ "build": {
+  "summary": "The 3D world module (castle foyer) works, and it type-checks clean. An earlier attempt had already built most of it. This run checked it against every requirement in the brief using the live dev server (localhost:3000 answered, HTTP 200), then made three small fixes. (1) In reduced motion the painting ripple now has zero UV displacement and is a brightness pulse only; before, 6% of the displacement was left in. (2) The gold star geometry is thicker (depth 0.4 to 0.5) so the stars look chunkier. (3) The harness door0..4 views are re-framed so the floor, arch, door, sign and star emblems are all in shot; the old framing cut off the stars. The world contains: checkerboard floor; round red carpet with gold trim, the DA emblem and a runner to the centre door; stone walls with base course, dado, a star frieze, cornice and corner pillars; five rounded voussoir arches whose wooden leaves with iron bands hang on the layout hinge and swing inward 1.75 rad (about 100 degrees) on a damped spring; alcoves, each with a gold-framed glowing painting and two flickering torches; a bobbing sign per door with the label in its accent colour, plus spinning star emblems (1, 3, big, 3, 1); the pedestal with stone plinth, wooden RESUME signpost and a rotating faceless gold five-point star with sparkles and starBurst(); a sky ceiling with drifting clouds; a closed double door with fan window on the south wall; brand-blue DA banners on the SW and SE walls. Static geometry is merged into one mesh per material. All 64x64 textures are drawn in code with nearest filtering. Lighting is baked into vertex colours on unlit materials, with one hemisphere and one directional light kept for the avatar and the stars.",
+  "files": [
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/index.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/archways.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/builder.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/doors.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/labels.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/lighting.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/painting.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/pedestal.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/plan.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/room.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/south.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/sprites.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/star.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/textures.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/util.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/app/dev/world/page.tsx"
+  ],
+  "verification": [
+   "Type-check: `npx tsc --noEmit -p .` from the repo root exits 0 with no errors (run before and after this run's edits).",
+   "Closed-door screenshots, each opened with Read and judged, all in /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/world2/: lobby.png, spawn.png, top.png, door0..4.png, alcove0.png, alcove2.png, alcove4.png, pedestal.png, pedestal-t.png, ceiling.png, south.png.",
+   "Open-door screenshots in the same folder: open-lobby.png, open-door0..4.png, open-alcove1.png, open-alcove3.png, alcove0-glow.png. open-door2.png and open-door4.png were re-shot with the new framing. The other open-door*.png and the closed door0..4.png use the old door framing, and alcove0, alcove2 and alcove4 were shot closed only.",
+   "Gap check: the harness renders with a magenta backdrop (bg=ff00ff) and counts pixels showing it through gaps. The count was 0 in every perspective preset, closed and open (lobby, spawn, door0..4, alcove0/1/2/3/4, pedestal, ceiling, south). On the default navy backdrop, lobby reported 1691; those pixels are navy sign and banner art of the same colour, which the magenta re-run confirmed.",
+   "Collider alignment: in top-colliders-open.png and top-zoom-door1-colliders.png the magenta lines from layout.ts sit exactly on the wall feet. checkWalls() gives maxDistance 0.020 m over 918 wall vertices and unmatchedColliderEnds 0.",
+   "Ripple: ripple-in-0.45.png shows rings spreading outward with a bright band at the front. ripple-out-0.7.png shows rings converging on the impact point. ripple-rm.png (reduced motion) shows a brightness swell only, and it was re-shot after the amp=0 change. I also captured ripple-in-0.15, ripple-in-0.9, ripple-out-0.3 and ripple-out-0.95 but did not open them.",
+   "Counts from renderer.info: lobby 5706 triangles / 37 draw calls; top (whole room) 5778 / 42; spawn 5518 / 34; pedestal 5432 / 28; open lobby 5618 / 36; mobile low quality 5140 / 21. All are under the ~8k triangle / ~60 call budget. Memory in use: 24 geometries, 23 textures, 10 shader programs.",
+   "Mobile: mobile-spawn.png (--mobile, quality=low, 390x844) has readable sign text, the star facing the camera, and no clipping.",
+   "Painting colour is sRGB-correct: probePainting(1, \u2026) returned rendered RGB equal to the canvas RGB at two texels ([53,214,164] and [35,139,107]).",
+   "Picking: pick() rays resolved to door leaves (index 1 and 3), signs and crests (index 1 and 2), the star (resume-star and signpost), the floor, and painting index 1 once its door was open.",
+   "dispose(): disposeTest() shows GPU memory going from 20 geometries / 17 textures before, to 40/34 with a second world loaded, and back to 20/17 after disposing it, so nothing leaks.",
+   "Allocation: allocTest(6000) reported heapDelta 0 with doors, ripples, glow and bursts all running. Chrome's performance.memory is coarse without a precise-memory flag, so this is weak evidence. A manual read of the per-frame update code (doors.ts, painting.ts, pedestal.ts, index.ts) found no allocations.",
+   "The screenshot driver printed no page or console errors on these runs. One requestfailed for va.vercel-scripts.com was seen on the mobile run; it does not come from this module."
+  ],
+  "knownIssues": [
+   "The paintings show the stub art (a flat colour, a number and a label) because services.ts still points createPaintingCanvas at the stub. The world calls the registry, so the real art will appear when the registry is switched over. I did not look at the real art inside the 3D scene.",
+   "The star is a flat star with a raised centre. Seen edge-on while spinning, it reads briefly as a gold diamond (visible in the non-frozen pedestal.png, spawn.png and south.png). It looks right face-on (pedestal-t.png, mobile-spawn.png). Thickening it reduced the effect but did not remove it.",
+   "Clicking the stone arch or plaster above a door hits nothing pickable (pick returns null) because walls are deliberately not tagged. Only leaves, paintings, signs and crests, the star and pedestal, and the floor are tagged.",
+   "The no-allocation claim rests on the coarse heap measurement plus reading the code. It was not checked with a DevTools allocation profile."
+  ],
+  "contractGaps": [
+   "None blocking. The contract has no hook for an exposed painting to look different once its door is open, so the world eases the halo from setGlow() and the ripple flash itself."
+  ],
+  "blueprintDeviations": [
+   "The room is lit by baked vertex colour on unlit MeshBasicMaterial, not by flat Lambert. The one hemisphere and one directional light (same values as the stub) light only the avatar and the Lambert gold stars, which the brief allows.",
+   "Besides the five alcove torch pairs there are flickering torches on the corner pillars, as decoration."
+  ],
+  "integrationNotes": [
+   "Import createWorld from src/game/world/index.ts; the integration step switches src/game/modules.ts to it. The door, painting and sign named objects are door-leaf-N, painting-N, sign-N and crest-N; the pedestal objects are pedestal, plinth, signpost and resume-star.",
+   "applyEnvironment sets scene.background to navy 0x0a0f2c (seen only if the camera leaves the room) and fog to null.",
+   "Doors ease on a critically damped spring and report openAmount from 0 to 1. The leaf matches doorLeafSegment when closed and lies against the alcove's left wall at 1.75 rad open.",
+   "Harness: /dev/world with ?view=top|lobby|spawn|door0..4|alcove0..4|pedestal|ceiling|south (plus arch0..4, banner0/1, corner, orbit), &open=1, &ripple=in|out&at=s, &glow=1, &burst=s, &t=s, &debug=colliders, &quality=low, &rm=1, &bg=hex, &zoom=&center= for the top view. window.__world exposes { info, world, setView, setCamera, setOpen, checkWalls, probePainting, pick, holes, disposeTest, allocTest }."
+  ]
+ },
+ "review": {
+  "verdict": "solid-after-fixes",
+  "summary": "The 3D world module (castle foyer) meets the spec and now looks better than the builder left it. I read every file in src/game/world plus the harness, then checked each requirement against the live dev server (localhost:3000, HTTP 200). I took 60+ screenshots in shots/review-world and opened them to judge, covering desktop, --mobile and --reduced-motion, and also ran the harness probes. Type-check is clean. I made five fixes, all inside module files and without changing the contract interface. (1) Stars read as a thin gold diamond whenever they turned edge-on. They now have a thick rim band and an eased spin that slows while the star faces you and turns quickly through edge-on. This applies to the door emblems and the pedestal star. (2) Clicking the stone arch around a door hit nothing. Each door now has an invisible, raycast-only click target over the stone surround, tagged as that door. It does not cover the opening, so an exposed painting can still be clicked. (3) The painting halo hardly showed at rest because its round mask was brightest behind the canvas. Halos now use a rounded-rectangle mask that glows round the gold frame, so the painting visibly glows softly at rest and swells when focused. (4) ripple() and setGlow() now ignore NaN or bad inputs. (5) The animation clocks sent to the shaders wrap every hour, so float precision never makes the torches stutter. I also fixed a harness bug where ?glow=0 turned the glow fully on.",
+  "requirementChecks": [
+   "PASS - Checkerboard floor (64x64 marble 2x2 tiles, world-aligned, also under the arches and in the alcoves): c-lobby.png, c-top.png",
+   "PASS - Round red carpet with gold trim, the DA emblem, and a runner to the centre door: c-spawn.png, c-top.png (the emblem is the registry's stub crest; the real art will appear once the registry is switched)",
+   "PASS - Stone walls with base course, dado, star frieze, cornice and corner pillars: c-corner.png, c-door0.png",
+   "PASS - Five deep rounded voussoir arches with keystone; wooden leaves with iron bands hang on the layout hinge and swing inward 1.75 rad (about 100 deg) on a critically damped spring, resting just clear of the alcove's left wall: o-door0..4.png, top-colliders-zoom-nw.png",
+   "PASS - Alcoves with a gold-framed painting and two flickering torches: o-alcove1/3/4.png",
+   "FIXED - Painting 'softly glowing': the resting halo was nearly invisible. New rounded-rectangle halo mask: halo3-alcove3-rest.png (rest), halo2-alcove3-g1.png (focus)",
+   "PASS - Floating sign per door with the label in its accent colour, bobbing; readable on desktop and mobile: o-door4.png (ABOUT & CONTACT, widest), final-mobile-spawn.png",
+   "FIXED - Star emblems (1, 3, big, 3, 1) spinning: they read as diamonds edge-on. Rim thickness and eased spin added: fix-t2.5-door0.png, fix-t2.5-door1.png",
+   "PASS - Pedestal with stone plinth, wooden RESUME signpost, a rotating faceless five-point gold star, sparkles and starBurst(): fix-t4.1-pedestal.png",
+   "PASS - Sky ceiling with drifting clouds (texture offset, wraps): c-ceiling.png",
+   "PASS - Grand closed double door with fan window on the south wall: c-south.png",
+   "PASS - Brand-blue (#3970EB) DA banners on the SW and SE walls: c-south.png, c-banner0/1.png",
+   "PASS - All textures are 64x64 canvases drawn in code with NearestFilter and RepeatWrapping (only the glow mask is linear, and it is a mask, not a surface); sign label canvases are larger but nearest-filtered",
+   "PASS - N64 shading: no shadow maps; baked vertex-colour ambient with corner and alcove occlusion and warm torch, star and carpet pools on unlit materials; one hemisphere and one directional light (for the avatar and the stars)",
+   "PASS - Layout fidelity: checkWalls() gives maxDistance 0.020 m over 918 wall vertices and 0 unmatched collider ends; the collider overlay sits on the wall feet (final-top-colliders.png, top-colliders-zoom-nw.png)",
+   "PASS - No gaps: the magenta-backdrop hole count is 0 in all 18 perspective views, doors closed and open (lobby, spawn, door0-4, alcove0-4, pedestal, ceiling, south, corner, banner0/1)",
+   "PASS - Painting ripple material: 'in' rings spread outward with a bright leading band (ripple-in-0.15/0.45/0.9.png); 'out' converges, then pops with a flash (ripple-out-0.35/0.7/0.85.png); about 1.1 s envelope; the impact uv is honoured (ripple-in-offcentre.png)",
+   "PASS - Painting colour is sRGB-correct: probePainting(1) rendered [53,214,164] matches the canvas [53,214,164] at two texels",
+   "PASS - Reduced motion: zero UV displacement, brightness swell only (final-rm-ripple-in-0.45.png, ripple-rm-out-0.85.png); bob and spin calmed",
+   "PASS - Picking: door leaves, paintings (only once exposed), signs and crests, star and pedestal, and the floor are tagged; pick() checked for each. FIXED: the stone arch now resolves to {kind:'door', index}",
+   "PASS - Budget: top view 5978 triangles / 42 calls; lobby 5778/36; spawn 5678/34; mobile at low quality 5222/21; all under ~8k triangles and ~60 calls",
+   "PASS - dispose(): disposeTest shows geometries/textures at 24/24, then 48/47 with a second world loaded, then back to 24/24",
+   "PASS - update() allocates nothing: allocTest(6000) heapDelta 0 (coarse measure), plus a manual read of doors, painting, pedestal, sprites and index",
+   "PASS - Harness: every ?view preset, open=1, ripple=in|out&at, debug=colliders, and window.__world = { info, world, ... }",
+   "PASS - Originality: generic castle motifs, an original 5x7 bitmap font, a plain faceless star; no Nintendo names, logos or art. No invented facts about Daniel: labels come from DOORS"
+  ],
+  "issuesFixed": [
+   "Emblem and pedestal stars collapsed to a thin gold diamond when edge-on. star.ts: added a rim band (half-thickness 0.13) and starSpin(), an eased spin that lingers face-on at 0.28x speed; used in doors.ts and pedestal.ts",
+   "Clicking the arch stonework around a door hit nothing. doors.ts: added an invisible, raycast-only mesh arch-N over the jambs and voussoir ring (not the opening), tagged {kind:'door', index}, using a shared DoubleSide proxy material from index.ts; tracked for dispose",
+   "The resting painting halo was nearly invisible because the radial mask was hidden behind the canvas. textures.ts: the glow mask's green channel now holds a rounded-rectangle falloff. sprites.ts: painting halos sample that channel through a vRect varying",
+   "ripple() and setGlow() accepted NaN uv or amount, which would put NaN into the shader uniforms. doors.ts now guards both and coerces the direction",
+   "Shader clocks grew without limit, so float32 precision would make the flames stutter after many hours. index.ts wraps uTime at 3600 s",
+   "Harness: ?glow=0 and ?open=0 were treated as on. page.tsx now parses them properly"
+  ],
+  "issuesRemaining": [
+   "Paintings and the carpet and banner crest still show the stub art because services.ts points at the stubs. The real src/game/art output was not checked inside the 3D scene, since the harness may not import another module's folder.",
+   "Plain wall and plaster meshes are deliberately not pickable. Clicks through walls rely on the engine's behindWall() check in src/game/engine/picking.ts, which exists and handles this.",
+   "At the frozen instants that happen to land edge-on, a star still looks like a chunky gold bar. The eased spin makes those frames brief.",
+   "The no-allocation claim rests on Chrome's coarse heap measurement plus a code read, not a DevTools allocation profile."
+  ],
+  "filesChanged": [
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/star.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/doors.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/pedestal.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/index.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/textures.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/game/world/sprites.ts",
+   "/Users/faviojasso/Documents/GitHub/DanielAvila/src/app/dev/world/page.tsx"
+  ],
+  "integrationNotes": [
+   "New pickable per door: an invisible mesh named arch-N (visible=false, raycast only) tagged {kind:'door', index:N}. The engine's Picker raycasts invisible meshes (three's Raycaster does not check visibility), so a click on a door's stone surround now behaves like a click on the door.",
+   "starSpin(phase) in src/game/world/star.ts is the eased spin used for every world star; it is internal to the module.",
+   "There are no contract changes. createWorld from src/game/world/index.ts is ready for modules.ts to switch to it."
+  ],
+  "verification": [
+   "npx tsc --noEmit -p . exits 0 before and after the edits",
+   "Screenshots, opened and judged, are in /private/tmp/claude-501/-Users-faviojasso-Library-Application-Support-Claude-scratch-workspaces-2e78f3bf-6b09-4892-8e37-05d4f25b71e0-0f59886b-c83f-4098-9822-b751fbbcfb93-scratch-2026-11-10-cf9e80/381bbed9-222e-45b2-b07f-9df9e8e2450e/scratchpad/shots/review-world/: c-*.png (closed presets), o-*.png (open presets), ripple-*.png, final-rm-ripple-in-0.45.png, fix-t*.png (stars after the fix), halo2/halo3-*.png (halo), final-top-colliders.png, top-colliders-zoom-nw.png, mobile-spawn.png, final-mobile-spawn.png",
+   "holes() with bg=ff00ff gave 0 in 18 views, doors closed and open",
+   "checkWalls() gave {vertices:918, maxDistance:0.020, unmatchedColliderEnds:0}",
+   "probePainting(1) at two texels gave rendered RGB equal to the canvas RGB",
+   "pick() results: arch-2 and door-leaf-2 resolve to door 2, sign-2 and crest-2 to sign 2, resume-star to star, floor to floor, and painting-1 resolves once its door is open (from the alcove and from the door1 view)",
+   "disposeTest() gave 24/24, then 48/47, then back to 24/24 (geometries/textures)",
+   "allocTest(6000) gave heapDelta 0",
+   "renderer.info: top view 5978 triangles / 42 calls; lobby 5778/36; mobile at low quality 5222/21",
+   "The driver printed no page errors or console errors. The only failed request was va.vercel-scripts.com, which does not come from this module."
+  ]
+ }
+}
